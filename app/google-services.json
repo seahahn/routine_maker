@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "842164710617",
+    "project_id": "routine-maker-303806",
+    "storage_bucket": "routine-maker-303806.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842164710617:android:a8b56fd2229de9c7f222c8",
+        "android_client_info": {
+          "package_name": "com.seahahn.routinemaker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842164710617-rpkt3g6unat7m3ihj4qiqjuje6j0m8ms.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seahahn.routinemaker",
+            "certificate_hash": "b23ed23ee5765ae68089cc725a9c88c6c04dc081"
+          }
+        },
+        {
+          "client_id": "842164710617-btcuhbsl7rp8huq5lghnsva53e6b7j5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpITiBvcKkzgavox_gFJQu8dDDV3I7XlE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842164710617-btcuhbsl7rp8huq5lghnsva53e6b7j5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

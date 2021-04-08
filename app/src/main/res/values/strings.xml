@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">루틴 메이커</string>
+    <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>
+    <string name="naver_client_id">Eqnzx3WTgu0UF1OckiJC</string>
+    <string name="naver_client_secret">1yO6vhssgd</string>
+    <string name="naver_client_name">루틴 메이커</string>
+
+    <string name="email">이메일</string>
+    <string name="emailph">이메일을 입력해주세요</string>
+    <string name="pw">비밀번호</string>
+    <string name="pwph">비밀번호를 입력해주세요</string>
+    <string name="pwguide">8–16자, 최소 1개의 숫자 또는 특수문자 포함</string>
+    <string name="pwconfirm">비밀번호 확인</string>
+    <string name="pwconfirmph">비밀번호를 한번 더 입력해주세요</string>
+    <string name="nickname">닉네임</string>
+    <string name="nicknameph">닉네임을 입력해주세요</string>
+    <string name="checkExist">중복 확인</string>
+    <string name="send">전송</string>
+    <string name="next">다음</string>
+    <string name="reSend">재전송</string>
+    <string name="login">로그인</string>
+    <string name="signup">회원가입</string>
+    <string name="findpw">비밀번호 찾기</string>
+    <string name="sendMail">인증 메일 보내기</string>
+    <string name="verifynum">인증 번호</string>
+    <string name="verifynumph">인증 번호 4자리를 입력해주세요</string>
+    <string name="or">또는</string>
+    <string name="signupAgree">루틴 메이커의 <a href="https://www.salondeahn.me">이용약관</a> 및 <a
+            href="https://www.salondeahn.me">개인정보처리방침</a>에 동의합니다.
+    </string>
+
+    <string name="signuptext1">환영합니다!</string>
+    <string name="signuptext2">루틴과 함께 하는 보람찬 하루, \n준비되셨나요?</string>
+    <string name="findpwtext1">비밀번호 찾기</string>
+    <string name="findpwtext2">가입하신 이메일 주소를 인증해주세요.</string>
+    <string name="findpwtext3">비밀번호 재설정을 잊지 마세요!</string>
+    <string name="resetpwtext1">비밀번호 재설정</string>
+    <string name="resetpwtext2">비밀번호를 재설정해주세요.</string>
+
+
+    <string name="googleLogin">구글 아이디로 로그인</string>
+
+    <string name="toolbarTitle">앱바 타이틀</string>
+    <string name="toolbarFilter">필터</string>
+    <string name="toolbarMore">더보기</string>
+    <string name="toolbarNoti">알림</string>
+    <string name="toolbarSearch">검색</string>
+    <string name="toolbarTrash">삭제</string>
+    <string name="toolbarUpdate">수정</string>
+
+    <string name="leftnavNick">닉네임</string>
+    <string name="leftnavEmail">이메일 주소</string>
+    <string name="leftnavMembership">현재 멤버십</string>
+
+    <string name="notice">공지사항</string>
+    <string name="faq">FAQ</string>
+    <string name="qna">1:1 문의하기</string>
+    <string name="writeReview">앱 리뷰 남기기</string>
+
+    <string name="mypage">마이페이지</string>
+    <string name="update">수정하기</string>
+    <string name="level">레벨</string>
+    <string name="title">타이틀</string>
+    <string name="intro">자기소개</string>
+    <string name="membership">멤버십</string>
+    <string name="payrecord">결제 내역 보기</string>
+    <string name="pwchange">비밀번호 변경하기</string>
+    <string name="logout">로그아웃</string>
+    <string name="exit">회원 탈퇴</string>
+
+</resources>

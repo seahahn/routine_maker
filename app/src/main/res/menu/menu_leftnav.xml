@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+            android:id="@+id/group1"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/mypage"
+                android:title="@string/mypage"/>
+        <item
+                android:id="@+id/notice"
+                android:title="@string/notice"/>
+        <item
+                android:id="@+id/faq"
+                android:title="@string/faq"/>
+        <item
+                android:id="@+id/qna"
+                android:title="@string/qna"/>
+        <item
+                android:id="@+id/writeReview"
+                android:title="@string/writeReview"/>
+
+    </group>
+
+</menu>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".user.LoginActivity">
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" app:srcCompat="@drawable/ic_launcher_background"
+                    android:background="#2699FB"
+                    android:id="@+id/headerimage"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="43dp"
+            />
+
+            <TextView
+                    android:text="@string/email"
+                    style="@style/inputLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="58dp"
+                    android:layout_marginEnd="314dp" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/headerimage"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/emailph"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="40dp" android:layout_marginEnd="40dp" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textView">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        style="@style/inputPlaceholder"
+                />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                    android:text="@string/pw"
+                    style="@style/inputLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="58dp" android:layout_marginEnd="295dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/email"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pwph"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="40dp" android:layout_marginEnd="40dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" android:layout_marginTop="8dp">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/pwInput"
+                        android:inputType="textPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        style="@style/inputPlaceholder"
+                />
+            </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                    android:text="@string/login"
+                    style="@style/distL"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp" android:id="@+id/loginBtn"
+                    app:layout_constraintTop_toBottomOf="@+id/pw" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                    android:text="@string/signup"
+                    style="@style/textBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/signupBtn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/loginBtn" android:layout_marginStart="70dp"/>
+            <TextView
+                    android:text="@string/findpw"
+                    style="@style/textBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/findpw"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="70dp" app:layout_constraintTop_toBottomOf="@+id/loginBtn"/>
+            <TextView
+                    android:text="@string/or"
+                    style="@style/distM"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/or"
+                    app:layout_constraintTop_toBottomOf="@+id/signupBtn"
+                    android:layout_marginStart="32dp" app:layout_constraintStart_toEndOf="@+id/lineLeft"
+                    app:layout_constraintEnd_toStartOf="@+id/lineRight" android:layout_marginEnd="32dp"/>
+            <View
+                    android:id="@+id/lineLeft"
+                    android:layout_width="120dp"
+                    android:layout_height="1dp"
+                    android:background="#000000"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="40dp"
+                    app:layout_constraintTop_toTopOf="@+id/or" app:layout_constraintBottom_toBottomOf="@+id/or"/>
+            <View
+                    android:id="@+id/lineRight"
+                    android:layout_width="120dp"
+                    android:layout_height="1dp"
+                    android:background="#000000"
+                    android:layout_marginEnd="40dp" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/or" app:layout_constraintBottom_toBottomOf="@+id/or"/>
+            <com.google.android.gms.common.SignInButton
+                    android:id="@+id/btn_google_login"
+                    android:layout_width="242dp"
+                    android:layout_height="47dp"
+                    style="@style/distM"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/or"/>
+            <com.nhn.android.naverlogin.ui.view.OAuthLoginButton
+                    android:id="@+id/btn_naver_login"
+                    android:layout_width="234dp"
+                    android:layout_height="41dp"
+                    android:scaleType="centerCrop"
+                    android:background="#FFFFFF"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_google_login"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="32dp" android:layout_marginTop="8dp"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
