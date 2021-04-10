@@ -12,27 +12,31 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-
+        <activity android:name=".notice.NoticeActivity">
+        </activity>
         <activity android:name=".user.MembershipPayActivity">
         </activity>
         <activity android:name=".user.MembershipRecordActivity">
         </activity>
         <activity android:name=".user.MypageActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN"/>-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER"/>-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".user.FindpwActivity">
         </activity>
         <activity
                 android:name=".SplashActivity"
                 android:theme="@style/SplashTheme">
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN"/>
-                 <category android:name="android.intent.category.LAUNCHER"/>
-             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".user.ResetpwActivity">
         </activity>
@@ -43,12 +47,6 @@
         <activity android:name=".TestActivity">
         </activity>
         <activity android:name=".MainActivity">
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN"/>-->
-
-
-<!--             <category android:name="android.intent.category.LAUNCHER"/>-->
-<!--             </intent-filter>-->
         </activity>
     </application>
 

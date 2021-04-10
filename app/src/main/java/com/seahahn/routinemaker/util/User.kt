@@ -3,33 +3,82 @@ package com.seahahn.routinemaker.util
 import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
-import androidx.core.view.GravityCompat
+import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger.d
 import com.nhn.android.naverlogin.OAuthLogin
+import com.seahahn.routinemaker.MainActivity
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.SplashActivity
+import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.user.LoginActivity
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 open class User  : Util() {
 
     private val TAG = this::class.java.simpleName
-    private var homeBtn : Int = 0
-
     lateinit var mOAuthLoginInstance : OAuthLogin
 
-    fun initToolbar(title: TextView, titleText: String, leftIcon: Int) {
+    // 로그인 통신 요청
+    open fun login(service : RetrofitService, email : String, pw : String) {
+        service.login(email, pw).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "로그인 실패 : {$t}")
+            }
 
-        setSupportActionBar(findViewById(R.id.toolbar)) // 커스텀 툴바 설정
-
-        supportActionBar!!.setDisplayShowTitleEnabled(false) //기본 제목을 없애줍니다
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true) // 좌측 화살표 누르면 이전 액티비티로 가도록 함
-
-        // 툴바 좌측 아이콘 설정. 0이면 햄버거 메뉴 아이콘, 1이면 좌향 화살표 아이콘.
-        if(leftIcon == 0) {
-            supportActionBar!!.setHomeAsUpIndicator(R.drawable.hbgmenu) // 왼쪽 버튼 이미지 설정 - 좌측 햄버거 메뉴
-            homeBtn = R.drawable.hbgmenu
-        } else if(leftIcon == 1){
-            supportActionBar!!.setHomeAsUpIndicator(R.drawable.backward_arrow) // 왼쪽 버튼 이미지 설정 - 좌향 화살표
-            homeBtn = R.drawable.backward_arrow
-        }
-        title.text = titleText // 제목 설정
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "로그인 요청 응답 수신 성공")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when (result) {
+                    true -> {
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                        Log.d(TAG, response.body().toString())
+                        val id = gson.get("id").asInt
+                        val email = gson.get("email").asString
+                        val nick = gson.get("nick").asString
+                        val lv = gson.get("lv").asInt
+                        val title = gson.get("title").asString
+                        val cc = gson.get("cc").asInt
+                        val intro = gson.get("intro").asString
+                        val mbs = gson.get("mbs").asInt
+                        val inway = gson.get("inway").asString
+                        val photo = gson.get("photo").asString
+                        startActivity<MainActivity>(
+                            "id" to id,
+                            "email" to email,
+                            "nick" to nick,
+                            "lv" to lv,
+                            "title" to title,
+                            "cc" to cc,
+                            "intro" to intro,
+                            "mbs" to mbs,
+                            "inway" to inway,
+                            "photo" to photo
+                        )
+                        UserInfo.setUserId(applicationContext, id)
+                        UserInfo.setUserEmail(applicationContext, email)
+                        UserInfo.setUserNick(applicationContext, nick)
+                        UserInfo.setUserMbs(applicationContext, mbs)
+                        UserInfo.setUserPhoto(applicationContext, photo)
+                        UserInfo.setUserPass(applicationContext, pw)
+                    }
+                    false -> {
+//                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                        when(applicationContext) {
+                            SplashActivity() -> startActivity<LoginActivity>()
+                            LoginActivity() -> toast(msg)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     // 툴바 버튼 클릭 시 작동할 기능

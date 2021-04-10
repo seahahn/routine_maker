@@ -1,11 +1,18 @@
 <resources>
     <string name="app_name">루틴 메이커</string>
-<!--    <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>-->
+    <!--    <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>-->
     <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>
 
     <string name="naver_client_id">Eqnzx3WTgu0UF1OckiJC</string>
     <string name="naver_client_secret">1yO6vhssgd</string>
     <string name="naver_client_name">루틴 메이커</string>
+
+    <string name="qnaMail">seah.ahn.nt@gmail.com</string>
+    <string name="qnaSubject">루틴 메이커 - 1:1 문의</string>
+    <string name="qnaContent">
+        &#127296; 문의\n
+        문의하실 내용을 적어주세요 :)
+    </string>
 
     <string name="email">이메일</string>
     <string name="emailph">이메일을 입력해주세요</string>
@@ -53,6 +60,9 @@
     <string name="leftnavNick">닉네임</string>
     <string name="leftnavEmail">이메일 주소</string>
     <string name="leftnavMembership">현재 멤버십</string>
+
+    <string name="mbsBasic">베이직</string>
+    <string name="mbsPremium">프리미엄</string>
 
     <string name="notice">공지사항</string>
     <string name="faq">FAQ</string>

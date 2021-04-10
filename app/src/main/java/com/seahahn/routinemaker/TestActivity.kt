@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.nhn.android.naverlogin.OAuthLogin
-import com.seahahn.routinemaker.user.AutoLogin
+import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.user.LoginActivity
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
@@ -59,7 +59,7 @@ class TestActivity : AppCompatActivity() {
             Log.d(TAG, "네이버 로그아웃 : "+isSuccessDeleteToken)
         }
 
-        AutoLogin.clearUser(this)
+        UserInfo.clearUser(this)
 
         Log.d(TAG, "구글 로그아웃")
 

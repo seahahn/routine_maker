@@ -75,4 +75,9 @@ interface RetrofitService {
         @Field("inway") inway: String
     ) : Call<JsonObject>
 
+    @GET("/api/users/mypage_info.php")
+    fun mypageInfo(
+        @Query("id") id: Int
+    ) : Call<JsonObject>
+
 }

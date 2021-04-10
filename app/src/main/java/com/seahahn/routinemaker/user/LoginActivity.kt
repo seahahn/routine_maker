@@ -27,11 +27,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.nhn.android.naverlogin.OAuthLogin
 import com.nhn.android.naverlogin.OAuthLoginHandler
-import com.nhn.android.naverlogin.ui.view.OAuthLoginButton
-import com.seahahn.routinemaker.MainActivity
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.NaverAPI
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.User
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -63,9 +62,9 @@ class LoginActivity : User(), View.OnClickListener {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        if(AutoLogin.getUserId(this).isNotBlank() || AutoLogin.getUserPass(this).isNotBlank()) {
-            val email = AutoLogin.getUserId(this)
-            val pw = AutoLogin.getUserPass(this)
+        if(UserInfo.getUserEmail(this).isNotBlank() || UserInfo.getUserPass(this).isNotBlank()) {
+            val email = UserInfo.getUserEmail(this)
+            val pw = UserInfo.getUserPass(this)
             login(service, email, pw)
         }
 
@@ -187,56 +186,6 @@ class LoginActivity : User(), View.OnClickListener {
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "네이버 로그인 실패 : {$t}")
-            }
-        })
-    }
-
-    // 로그인 통신 요청
-    private fun login(service : RetrofitService, email : String, pw : String) {
-        service.login(email, pw).enqueue(object : Callback<JsonObject> {
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "로그인 실패 : {$t}")
-            }
-
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "로그인 요청 응답 수신 성공")
-                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                val msg = gson.get("msg").asString
-                val result = gson.get("result").asBoolean
-                when (result) {
-                    true -> {
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                        Log.d(TAG, response.body().toString())
-                        val id = gson.get("id").asString
-                        val email = gson.get("email").asString
-                        val nick = gson.get("nick").asString
-                        val lv = gson.get("lv").asInt
-                        val title = gson.get("title").asString
-                        val cc = gson.get("cc").asInt
-                        val intro = gson.get("intro").asString
-                        val photo = gson.get("photo").asString
-                        val inway = gson.get("inway").asString
-                        val created_at = gson.get("created_at").asString
-                        startActivity<MainActivity>(
-                            "id" to id,
-                            "email" to email,
-                            "nick" to nick,
-                            "lv" to lv,
-                            "title" to title,
-                            "cc" to cc,
-                            "intro" to intro,
-                            "photo" to photo,
-                            "created_at" to created_at,
-                            "inway" to inway
-                        )
-
-                        AutoLogin.setUserId(this@LoginActivity, email)
-                        AutoLogin.setUserPass(this@LoginActivity, pw)
-                    }
-                    false -> {
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                    }
-                }
             }
         })
     }
