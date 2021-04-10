@@ -1,30 +1,26 @@
 package com.seahahn.routinemaker.user
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.network.RetrofitClient
-import com.seahahn.routinemaker.network.RetrofitMethod
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.User
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 import java.util.regex.Pattern
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var retrofit : Retrofit
-    private var retrofitMethod = RetrofitMethod()
     private lateinit var service : RetrofitService
 
     companion object {
@@ -37,14 +33,15 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_up)
 
         // 레트로핏 통신 연결
-        initRetrofit()
+        service = initRetrofit()
+        Log.d(TAG, "service : $service")
 
         // 이메일, 비밀번호, 비밀번호 확인, 닉네임 입력값 가져오기
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)
         val pwInput = findViewById<TextInputEditText>(R.id.pwInput)
         val pwconfirmInput = findViewById<TextInputEditText>(R.id.pwconfirmInput)
         val nickInput = findViewById<TextInputEditText>(R.id.nickInput)
-        var email = emailInput.text
+        val email = emailInput.text
         val pw = pwInput.text
         val pwc = pwconfirmInput.text
         val nick = nickInput.text
@@ -53,7 +50,7 @@ class SignUpActivity : AppCompatActivity() {
         val checkEmail = findViewById<Button>(R.id.checkemail)
         val checkNick = findViewById<Button>(R.id.checknick)
         checkEmail.setOnClickListener {
-            Log.d(TAG, "이메일 : " + email)
+            Log.d(TAG, "이메일 : $email")
             checkEmail(service, email.toString())
         }
         checkNick.setOnClickListener {
@@ -81,11 +78,11 @@ class SignUpActivity : AppCompatActivity() {
         val signupBtn = findViewById<Button>(R.id.signupBtn)
         signupBtn.setOnClickListener {
 
-            var formcheck = formCheck(email.toString(), pw.toString(), pwc.toString(), nick.toString(), check)
+            val formcheck = formCheck(email.toString(), pw.toString(), pwc.toString(), nick.toString(), check)
 
-            Log.d(TAG, "formcheck" + formcheck.toString())
-            Log.d(TAG, "emailchecked" + emailchecked.toString())
-            Log.d(TAG, "nickcheckd" + nickcheckd.toString())
+            Log.d(TAG, "formcheck : $formcheck")
+            Log.d(TAG, "emailchecked : $emailchecked")
+            Log.d(TAG, "nickcheckd : $nickcheckd")
 
             if(!formcheck) {
             }
@@ -96,15 +93,12 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this@SignUpActivity, "닉네임 중복 확인을 해주세요", Toast.LENGTH_SHORT).show()
             }
             else if(emailchecked && nickcheckd && formcheck) {
-                signup(service, email.toString(), pw.toString(), nick.toString())
+                doAsync {
+                    signup(service, email.toString(), pw.toString(), nick.toString())
+                }
+                showAlert("이메일 인증 필요", "서비스 이용을 위해서 이메일 인증을 해주세요!", "확인", "")
             }
         }
-    }
-
-    // 레트로핏 객체 생성 및 API 연결
-    fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
-        service = retrofit.create(RetrofitService::class.java)
     }
 
     // 회원가입 통신 요청
@@ -116,15 +110,13 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "회원가입 요청 응답 수신 성공 " + response.body().toString())
-                var gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                var status = gson.get("status").asInt
-                var msg = gson.get("msg").asString
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val status = gson.get("status").asInt
+                val msg = gson.get("msg").asString
 
                 when (status) {
                     200 -> {
                         Toast.makeText(this@SignUpActivity, msg, Toast.LENGTH_SHORT).show()
-                        startActivity<LoginActivity>()
-
                     }
 //                    405 -> {
 //                        Toast.makeText(this@SignUpActivity, "회원가입 실패 : 이메일 또는 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
@@ -139,8 +131,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkEmail(service : RetrofitService, email : String): Boolean {
         // 서버와 통신하여 이메일 중복 확인
-        Log.d(TAG, "이메일 체크 : " + email)
-        if(email.isEmpty() == true) {
+        Log.d(TAG, "이메일 체크 : $email")
+        if(email.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false // 이메일을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
         }
@@ -152,9 +144,9 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "이메일 체크 성공 " + response.body().toString())
-                var gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                var msg = gson.get("msg").asString
-                var result = gson.get("result").asBoolean
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
                 Log.d(TAG, msg)
                 Toast.makeText(this@SignUpActivity, msg, Toast.LENGTH_SHORT).show()
                 emailchecked = result
@@ -165,8 +157,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun checkNick(service : RetrofitService, nick : String): Boolean {
         // 서버와 통신하여 닉네임 중복 확인
-        Log.d(TAG, "닉네임 체크 : " + nick)
-        if(nick.isEmpty() == true) {
+        Log.d(TAG, "닉네임 체크 : $nick")
+        if(nick.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false // 이메일을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
         }
@@ -178,9 +170,9 @@ class SignUpActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "닉네임 체크 성공")
-                var gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                var msg = gson.get("msg").asString
-                var result = gson.get("result").asBoolean
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
                 Log.d(TAG, msg)
                 Toast.makeText(this@SignUpActivity, msg, Toast.LENGTH_SHORT).show()
                 nickcheckd = result
@@ -191,18 +183,18 @@ class SignUpActivity : AppCompatActivity() {
 
     // 입력칸 입력 여부 및 형식 검증
     private fun formCheck(email: String, pw: String, pwc: String, nick: String, check: Boolean): Boolean {
-        if(email.isEmpty() == true) {
+        if(email.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false
-        } else if(pw.isEmpty() == true) {
+        } else if(pw.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
-        else if(!Pattern.matches("^((?=.*\\\\d)|(?=.*\\\\W)).{8,16}\$", pw)) {
+        else if(!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@!%*?&])[A-Za-z\\d$@!%*?&]{8,16}", pw)) {
             Toast.makeText(this@SignUpActivity, "비밀번호 형식을 맞춰주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
-        else if(pwc.isEmpty() == true) {
+        else if(pwc.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "비밀번호를 한번 더 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -212,16 +204,24 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(this@SignUpActivity, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
             return false
         }
-        else if(nick.isEmpty() == true) {
+        else if(nick.isEmpty()) {
             Toast.makeText(this@SignUpActivity, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
-        else if(check != true) {
+        else if(!check) {
             Log.d(TAG, check.toString())
             Toast.makeText(this@SignUpActivity, "이용약관 및 개인정보처리방침에 동의해주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
+    }
+
+    override fun showAlert(title: String, msg: String, pos: String, neg: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(msg)
+            .setPositiveButton(pos) { _: DialogInterface, _: Int -> startActivity<LoginActivity>() }
+            .show()
     }
 
 }

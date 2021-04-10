@@ -8,14 +8,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.nhn.android.naverlogin.OAuthLogin
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.util.UtilMethod
+import com.seahahn.routinemaker.util.User
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import java.util.*
 
 
-class MypageActivity : UtilMethod() {
+class MypageActivity : User() {
 
     private val TAG = this::class.java.simpleName
 
@@ -48,14 +47,18 @@ class MypageActivity : UtilMethod() {
                 }
                 R.id.exit -> {
                     // 구글 연동 해제
-                    val googleUser = Firebase.auth.currentUser!!
-                    googleUser.delete().addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "User account deleted.")
+                    if(Firebase.auth.currentUser != null) {
+                        val googleUser = Firebase.auth.currentUser
+                        googleUser.delete().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d(TAG, "User account deleted.")
+                            }
                         }
                     }
 
+
                     // 네이버 연동 해제. 네트워크 사용으로 인해 다른 스레드로 작동시킴
+                    mOAuthLoginInstance = OAuthLogin.getInstance() // 네이버 로그인 인증 객체 가져오기
                     doAsync {
                         val isSuccessDeleteToken = mOAuthLoginInstance.logoutAndDeleteToken(this@MypageActivity)
                         Log.d(TAG, "네이버 로그아웃 : "+isSuccessDeleteToken)

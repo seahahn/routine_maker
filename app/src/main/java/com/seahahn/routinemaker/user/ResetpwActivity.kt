@@ -4,23 +4,21 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.User
 import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 import java.util.regex.Pattern
 
-class ResetpwActivity : AppCompatActivity() {
+class ResetpwActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var retrofit : Retrofit
     private lateinit var service : RetrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +26,7 @@ class ResetpwActivity : AppCompatActivity() {
         setContentView(R.layout.activity_resetpw)
 
         // 레트로핏 통신 연결
-        initRetrofit()
+        service = initRetrofit()
 
         // 이메일 값 및 비번, 비번 확인 입력값 가져오기
         val email = intent.getStringExtra("email")
@@ -44,7 +42,7 @@ class ResetpwActivity : AppCompatActivity() {
         }
 
         // 비밀번호 재설정 버튼
-        val resetpwBtn = findViewById<ImageView>(R.id.resetpwBtn)
+        val resetpwBtn = findViewById<AppCompatButton>(R.id.resetpwBtn)
         resetpwBtn.setOnClickListener {
             if(formCheck(pw.toString(), pwc.toString())) {
                 resetPwOk(service, email.toString(), pw.toString(), pwc.toString())
@@ -63,7 +61,7 @@ class ResetpwActivity : AppCompatActivity() {
                 Log.d(TAG, "비번 재설정 요청 성공")
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val msg = gson.get("msg").asString
-                var result = gson.get("result").asBoolean
+                val result = gson.get("result").asBoolean
                 when (result) {
                     true -> {
                         Toast.makeText(this@ResetpwActivity, msg, Toast.LENGTH_SHORT).show()
@@ -78,10 +76,10 @@ class ResetpwActivity : AppCompatActivity() {
     }
 
     // 레트로핏 객체 생성 및 API 연결
-    private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
-        service = retrofit.create(RetrofitService::class.java)
-    }
+//    private fun initRetrofit() {
+//        retrofit = RetrofitClient.getInstance()
+//        service = retrofit.create(RetrofitService::class.java)
+//    }
 
     // 비밀번호 입력칸 입력 여부 및 형식 검증
     private fun formCheck(pw: String, pwc: String): Boolean {
@@ -89,7 +87,7 @@ class ResetpwActivity : AppCompatActivity() {
             Toast.makeText(this@ResetpwActivity, "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false
         }
-        else if(!Pattern.matches("^((?=.*\\\\d)|(?=.*\\\\W)).{8,16}\$", pw)) {
+        else if(!Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@!%*?&])[A-Za-z\\d$@!%*?&]{8,16}", pw)) {
             Toast.makeText(this@ResetpwActivity, "비밀번호 형식을 맞춰주세요.", Toast.LENGTH_SHORT).show()
             return false
         }

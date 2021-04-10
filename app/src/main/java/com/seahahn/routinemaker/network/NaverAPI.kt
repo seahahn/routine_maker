@@ -1,8 +1,6 @@
 package com.seahahn.routinemaker.network
 
-import android.content.Context
 import com.google.gson.JsonObject
-import com.nhn.android.naverlogin.OAuthLogin
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,7 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Query
 
 interface NaverAPI {
     @GET("/v1/nid/me")
@@ -20,11 +17,9 @@ interface NaverAPI {
     ): Call<JsonObject>
 
     companion object {
-        const val BASE_URL = "https://openapi.naver.com/"
-        const val CLIENT_ID = "Eqnzx3WTgu0UF1OckiJC"
-        const val CLIENT_SECRET = "1yO6vhssgd"
-        const val NAVER_CLIENT_NAME = "루틴 메이커"
-        var signout : Boolean = false
+        private const val BASE_URL = "https://openapi.naver.com/"
+        private const val CLIENT_ID = "Eqnzx3WTgu0UF1OckiJC"
+        private const val CLIENT_SECRET = "1yO6vhssgd"
 
         fun create() : NaverAPI {
             val httpLoggingInterceptor = HttpLoggingInterceptor()

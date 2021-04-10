@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">루틴 메이커</string>
+<!--    <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>-->
     <string name="server_client_id">842164710617-j203js7pai1r7s31r8mggv340g4m4824.apps.googleusercontent.com</string>
+
     <string name="naver_client_id">Eqnzx3WTgu0UF1OckiJC</string>
     <string name="naver_client_secret">1yO6vhssgd</string>
     <string name="naver_client_name">루틴 메이커</string>
@@ -9,7 +11,7 @@
     <string name="emailph">이메일을 입력해주세요</string>
     <string name="pw">비밀번호</string>
     <string name="pwph">비밀번호를 입력해주세요</string>
-    <string name="pwguide">8–16자, 최소 1개의 숫자 또는 특수문자 포함</string>
+    <string name="pwguide">8–16자, 각 1개 이상의 영문 대소문자+숫자+특수문자</string>
     <string name="pwconfirm">비밀번호 확인</string>
     <string name="pwconfirmph">비밀번호를 한번 더 입력해주세요</string>
     <string name="nickname">닉네임</string>

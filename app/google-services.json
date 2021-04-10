@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "842164710617-rpkt3g6unat7m3ihj4qiqjuje6j0m8ms.apps.googleusercontent.com",
+          "client_id": "842164710617-e3ifj8i3tqi7c0ac5s1lgnlo9cjbonaa.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.seahahn.routinemaker",
-            "certificate_hash": "b23ed23ee5765ae68089cc725a9c88c6c04dc081"
+            "certificate_hash": "e42f5683468ef0c818ad69f106cdb22e332d63d3"
           }
         },
         {

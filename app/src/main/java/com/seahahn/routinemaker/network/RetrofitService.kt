@@ -55,6 +55,7 @@ interface RetrofitService {
 
     @GET("/api/users/resetpw_check.php")
     fun resetPwCheck(
+        @Query("email") email: String,
         @Query("hash") hash: String
     ) : Call<JsonObject>
 
@@ -66,14 +67,9 @@ interface RetrofitService {
         @Field("pwc") pwc: String
     ) : Call<JsonObject>
 
-    @GET("/api/users/resetpw_check.php")
-    fun naverlogin(
-        @Query("hash") hash: String
-    ) : Call<JsonObject>
-
     @FormUrlEncoded
     @POST("/api/users/sns_con.php")
-    fun sns_con(
+    fun snsCon(
         @Field("email") email: String,
         @Field("pw") pw: String,
         @Field("inway") inway: String

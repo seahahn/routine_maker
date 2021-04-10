@@ -1,15 +1,17 @@
 package com.seahahn.routinemaker.user
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -26,25 +28,20 @@ import com.google.gson.JsonObject
 import com.nhn.android.naverlogin.OAuthLogin
 import com.nhn.android.naverlogin.OAuthLoginHandler
 import com.nhn.android.naverlogin.ui.view.OAuthLoginButton
+import com.seahahn.routinemaker.MainActivity
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.NaverAPI
-import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.User
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import android.content.DialogInterface
-import androidx.appcompat.app.AlertDialog
-import com.seahahn.routinemaker.MainActivity
-import com.seahahn.routinemaker.TestActivity
-import org.jetbrains.anko.toast
 
 
-class LoginActivity : AppCompatActivity(), View.OnClickListener {
+class LoginActivity : User(), View.OnClickListener {
     private val TAG = this::class.java.simpleName
-    private lateinit var retrofit : Retrofit
     private lateinit var service : RetrofitService
     private lateinit var naverAPI : NaverAPI
 
@@ -55,21 +52,18 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         private const val RC_SIGN_IN = 9001
     }
 
-    // 네이버 로그인 API 변수
-    lateinit var mOAuthLoginInstance : OAuthLogin
-    val NAVERAPI_URL = "https://openapi.naver.com/v1/nid/me"
-    val naver_client_id = "Eqnzx3WTgu0UF1OckiJC"
-    val naver_client_secret = "1yO6vhssgd"
-    val naver_client_name = "루틴 메이커"
+    private val naver_client_id = "Eqnzx3WTgu0UF1OckiJC"
+    private val naver_client_secret = "1yO6vhssgd"
+    private val naver_client_name = "루틴 메이커"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         // 레트로핏 통신 연결
-        initRetrofit()
+        service = initRetrofit()
 
-        if(!AutoLogin.getUserId(this).isBlank() || !AutoLogin.getUserPass(this).isBlank()) {
+        if(AutoLogin.getUserId(this).isNotBlank() || AutoLogin.getUserPass(this).isNotBlank()) {
             val email = AutoLogin.getUserId(this)
             val pw = AutoLogin.getUserPass(this)
             login(service, email, pw)
@@ -96,12 +90,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         // 로그인 버튼
         val loginBtn = findViewById<Button>(R.id.loginBtn)
         loginBtn.setOnClickListener {
-            if(email!!.equals("")) {
-                Toast.makeText(this@LoginActivity, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
-            } else if(pw!!.equals("")) {
-                Toast.makeText(this@LoginActivity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-            } else {
-                login(service, email.toString(), pw.toString())
+            when {
+                email!!.equals("") -> {
+                    Toast.makeText(this@LoginActivity, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+                pw!!.equals("") -> {
+                    Toast.makeText(this@LoginActivity, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    login(service, email.toString(), pw.toString())
+                }
             }
         }
 
@@ -121,39 +119,35 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         auth = Firebase.auth
 
         // 네이버 로그인 버튼
-        val btn_naver_login = findViewById<OAuthLoginButton>(R.id.btn_naver_login)
-        mOAuthLoginInstance = OAuthLogin.getInstance()
-        mOAuthLoginInstance.init(this@LoginActivity, naver_client_id, naver_client_secret, naver_client_name)
-        btn_naver_login.setOAuthLoginHandler(mOAuthLoginHandler) // 버튼 누르면 이 코드 작동함
+        val btn_naver_login = findViewById<ImageButton>(R.id.btn_naver_login)
+        btn_naver_login.setOnClickListener {
+            mOAuthLoginInstance = OAuthLogin.getInstance()
+            mOAuthLoginInstance.init(this@LoginActivity, naver_client_id, naver_client_secret, naver_client_name)
+            mOAuthLoginInstance.startOauthLoginActivity(this@LoginActivity, mOAuthLoginHandler);
+        }
     }
 
     // 네이버 로그인 인증 핸들러
-    val mOAuthLoginHandler: OAuthLoginHandler = @SuppressLint("HandlerLeak")
+    private val mOAuthLoginHandler: OAuthLoginHandler = @SuppressLint("HandlerLeak")
     object : OAuthLoginHandler() {
         override fun run(success: Boolean) {
             if (success) {
                 val accessToken: String = mOAuthLoginInstance.getAccessToken(baseContext) // 성공하면 접근 토큰 가져옴
-//                val refreshToken: String = mOAuthLoginInstance.getRefreshToken(baseContext)
-//                val expiresAt: Long = mOAuthLoginInstance.getExpiresAt(baseContext)
-//                val tokenType: String = mOAuthLoginInstance.getTokenType(baseContext)
+                val refreshToken: String = mOAuthLoginInstance.getRefreshToken(baseContext)
+                val expiresAt: Long = mOAuthLoginInstance.getExpiresAt(baseContext)
+                val tokenType: String = mOAuthLoginInstance.getTokenType(baseContext)
 
-                Log.d(TAG, "네이버 accessToken 결과 : "+accessToken)
-                val token = "Bearer "+accessToken // 가져온 토큰을 헤더 형식에 맞춰서 바꿔줌
+                Log.d(TAG, "네이버 accessToken 결과 : $accessToken")
+                val token = "Bearer $accessToken" // 가져온 토큰을 헤더 형식에 맞춰서 바꿔줌
                 naverAPI = NaverAPI.create() // 네이버 로그인을 위해서 만든 별도의 NaverAPI 인터페이스 객체를 생성함
                 // 이 객체를 통해 메인 스레드가 아닌 스레드로 네트워크 통신을 함
                 getNaverUserInfo(naverAPI, token) // 네이버 API 객체와 접근 토큰을 이용하여 사용자 정보를 불러옴
             } else {
                 val errorCode: String = mOAuthLoginInstance.getLastErrorCode(this@LoginActivity).code
                 val errorDesc = mOAuthLoginInstance.getLastErrorDesc(this@LoginActivity)
-                Toast.makeText(baseContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show()
+                Toast.makeText(baseContext, "errorCode:$errorCode, errorDesc:$errorDesc", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    // 레트로핏 객체 생성 및 API 연결
-    fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
-        service = retrofit.create(RetrofitService::class.java)
     }
 
     // 네이버 로그인을 통해 얻은 접근 토큰으로 사용자의 네이버 아이디 정보를 가져옴
@@ -164,11 +158,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 Log.d(TAG, "네이버 로그인 응답 : "+response.body().toString())
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val message = gson.get("message").asString
-                Log.d(TAG, "네이버 message : "+message)
-                var res = gson.get("response")
-                Log.d(TAG, "네이버 res : "+res)
-                var gson2 = Gson().fromJson(res, JsonObject::class.java)
-                Log.d(TAG, "네이버 gson2 : "+gson2)
+                Log.d(TAG, "네이버 message : $message")
+                val res = gson.get("response")
+                Log.d(TAG, "네이버 res : $res")
+                val gson2 = Gson().fromJson(res, JsonObject::class.java)
+                Log.d(TAG, "네이버 gson2 : $gson2")
                 when (message) {
                     "success" -> {
                         Log.d(TAG, response.body().toString())
@@ -247,72 +241,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    // SNS 최초 로그인 시 uid와 SNS 닉네임, 가입 경로를 받기 위해 이 메소드를 사용함
-    private fun snslogin(service : RetrofitService, email : String, uid : String, nick : String, inway : String) {
-        Log.d(TAG, "email : "+email)
-        Log.d(TAG, "uid : "+uid)
-        Log.d(TAG, "nick : "+nick)
-        service.login(email, uid).enqueue(object : Callback<JsonObject> {
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "sns 로그인 실패 : {$t}")
-            }
-
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                val msg = gson.get("msg").asString
-                val result = gson.get("result").asBoolean
-                val status = gson.get("status").asInt
-                Log.d(TAG, "sns 로그인 요청 응답 수신 성공 : "+msg)
-                when (result) {
-                    true -> {
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                        Log.d(TAG, response.body().toString())
-                        val id = gson.get("id").asString
-                        val email = gson.get("email").asString
-                        val nick = gson.get("nick").asString
-                        val lv = gson.get("lv").asInt
-                        val title = gson.get("title").asString
-                        val cc = gson.get("cc").asInt
-                        val intro = gson.get("intro").asString
-                        val photo = gson.get("photo").asString
-                        val inway = gson.get("inway").asString
-                        val created_at = gson.get("created_at").asString
-                        startActivity<TestActivity>(
-                            "id" to id,
-                            "email" to email,
-                            "nick" to nick,
-                            "lv" to lv,
-                            "title" to title,
-                            "cc" to cc,
-                            "intro" to intro,
-                            "photo" to photo,
-                            "created_at" to created_at,
-                            "inway" to inway
-                        )
-
-                        AutoLogin.setUserId(this@LoginActivity, email)
-                        AutoLogin.setUserPass(this@LoginActivity, uid)
-                    }
-                    false -> {
-                        if(status == 0) {
-                            snssignup(service, email, uid, nick, inway)
-                        }
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
-    }
-
     // 구글 로그인 버튼 텍스트 변경 함수
     private fun setGoogleButtonText(loginButton: SignInButton, buttonText: String){
         var i = 0
         while (i < loginButton.childCount){
             val v = loginButton.getChildAt(i)
             if (v is TextView) {
-                val tv = v
-                tv.setText(buttonText)
-                tv.setGravity(Gravity.CENTER)
+                v.text = buttonText
+                v.gravity = Gravity.CENTER
                 return
             }
             i++
@@ -431,7 +367,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     // SNS 가입 시 기존에 가입된 이메일과 중복인 경우 해당 SNS에 연동할지 묻기 위한 메소드
     private fun checkEmail(service : RetrofitService, email : String, uid : String, nick : String, inway : String) {
         // 서버와 통신하여 이메일 중복 확인
-        Log.d(TAG, "이메일 체크 : " + email)
+        Log.d(TAG, "이메일 체크 : $email")
         service.checkEmail(email).enqueue(object : Callback<JsonObject>{
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "이메일 체크 실패 : {$t}")
@@ -439,11 +375,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "이메일 체크 성공 " + response.body().toString())
-                var gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                var msg = gson.get("msg").asString
-                var overlap = gson.get("overlap").asBoolean
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                val overlap = gson.get("overlap").asBoolean
                 Log.d(TAG, msg)
-                if(overlap) {
+                if(result && overlap) {
+                    // SNS로 가입되어 있는 경우 바로 로그인한다
+                    login(service, email, uid)
+                }
+                else if(overlap) {
                     // 기존에 가입된 이메일인 경우 기존 계정을 SNS와 연동할지 묻는다
                     snsConnect(service, email, uid, inway)
                 } else {
@@ -456,35 +397,33 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     // SNS 가입 시 이메일 중복인 경우 기존 계정과 해당 SNS 연결 여부를 묻는 다이얼로그 띄우기
     fun snsConnect(service : RetrofitService, email : String, uid : String, inway : String) {
-        var builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("기존 계정 SNS에 연동하기")
         builder.setMessage("기존에 동일한 이메일로 가입된 계정이 있습니다.\n선택하신 SNS와 연동할까요?")
 //        builder.setIcon(R.mipmap.ic_launcher)
 
         // 버튼 클릭시에 무슨 작업을 할 것인가!
-        var listener = object : DialogInterface.OnClickListener {
-            override fun onClick(p0: DialogInterface?, p1: Int) {
-                when (p1) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        service.sns_con(email, uid, inway).enqueue(object : Callback<JsonObject>{
-                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                Log.d(TAG, "SNS 연동 실패 : {$t}")
-                            }
+        val listener = DialogInterface.OnClickListener { p0, p1 ->
+            when (p1) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    service.snsCon(email, uid, inway).enqueue(object : Callback<JsonObject>{
+                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                            Log.d(TAG, "SNS 연동 실패 : {$t}")
+                        }
 
-                            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                                Log.d(TAG, "SNS 연동 성공 " + response.body().toString())
-                                var gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-                                var msg = gson.get("msg").asString
-                                var result = gson.get("result").asBoolean
-                                toast(msg)
-                                if(result) login(service, email, uid)
-                            }
-                        })
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        toast("SNS 연동 취소.\n기존 계정으로 로그인해주세요.")
-                        Log.d(TAG, "SNS 연동 취소")
-                    }
+                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                            Log.d(TAG, "SNS 연동 성공 " + response.body().toString())
+                            val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                            val msg = gson.get("msg").asString
+                            val result = gson.get("result").asBoolean
+                            toast(msg)
+                            if(result) login(service, email, uid)
+                        }
+                    })
+                }
+                DialogInterface.BUTTON_NEGATIVE -> {
+                    toast("SNS 연동 취소.\n기존 계정으로 로그인해주세요.")
+                    Log.d(TAG, "SNS 연동 취소")
                 }
             }
         }
