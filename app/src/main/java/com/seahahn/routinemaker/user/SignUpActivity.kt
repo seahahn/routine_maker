@@ -159,7 +159,7 @@ class SignUpActivity : User() {
         // 서버와 통신하여 닉네임 중복 확인
         Log.d(TAG, "닉네임 체크 : $nick")
         if(nick.isEmpty()) {
-            Toast.makeText(this@SignUpActivity, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@SignUpActivity, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return false // 이메일을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
         }
         service.checkNick(nick).enqueue(object : Callback<JsonObject>{

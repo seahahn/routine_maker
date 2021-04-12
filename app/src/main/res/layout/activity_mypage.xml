@@ -9,9 +9,6 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:orientation="vertical">
         <androidx.constraintlayout.widget.ConstraintLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".user.MypageActivity">
@@ -22,28 +19,40 @@
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp" android:layout_marginEnd="32dp">
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp" android:layout_marginTop="24dp">
                 <ImageView
                         android:id="@+id/photo"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginBottom="12dp"
                         android:foreground="@drawable/round_img"
-                        app:srcCompat="@mipmap/ic_launcher_round"/>
+                        app:srcCompat="@mipmap/ic_launcher_round"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                />
+                <ImageButton
+                        android:id="@+id/photoUpdate"
+                        style="@style/imgBtn"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:srcCompat="@drawable/camera"
+                        app:layout_constraintEnd_toEndOf="@+id/photo"
+                        app:layout_constraintBottom_toBottomOf="@+id/photo"/>
                 <View
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/bg"/>
-            </LinearLayout>
+                        android:background="@color/bg" app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/photo" android:layout_marginTop="12dp"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                     android:id="@+id/linear_layout2"
@@ -59,25 +68,32 @@
                         android:layout_width="42dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvnick"
-                        android:layout_gravity="start"
+                        android:layout_gravity="start|center_vertical"
                         android:layout_marginEnd="16dp"/>
-                <TextView
-                        android:text="@string/nickname"
+                <com.seahahn.routinemaker.util.ToggleEditTextView
+                        android:hint="@string/nickname"
                         style="@style/txt"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:maxLines="1"
                         android:id="@+id/nick"
-                        android:layout_gravity="start"/>
+                        android:layout_gravity="start"
+                        app:tetv_textViewColor="@color/fontDark"
+                        app:tetv_editTextViewColor="@color/fontDark"
+                        app:tetv_editTextBottomLineColor="@color/fontEdit"/>
                 <View
                         android:layout_width="0dp"
                         android:layout_height="0dp" android:id="@+id/view" android:layout_weight="1"/>
-                <TextView
+                <com.seahahn.routinemaker.util.ToggleEditButton
                         android:text="@string/update"
                         style="@style/txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:id="@+id/nickupdate"
-                        android:layout_gravity="end"/>
+                        android:layout_gravity="end|center_vertical"
+                        app:teb_animationOffset="100"
+                        app:teb_edit="false"
+                        app:teb_tint="@color/colorAccent"/>
             </LinearLayout>
 
             <LinearLayout
@@ -226,11 +242,11 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp" android:id="@+id/view4" android:layout_weight="1"/>
                 <TextView
-                        android:text="@string/payrecord"
+                        android:text="@string/mbsApply"
                         style="@style/txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/payrecord"
+                        android:id="@+id/mbsApply"
                         android:layout_gravity="end"/>
             </LinearLayout>
 

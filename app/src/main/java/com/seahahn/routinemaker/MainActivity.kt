@@ -15,6 +15,7 @@ import com.seahahn.routinemaker.user.MypageActivity
 import com.seahahn.routinemaker.util.Main
 import org.jetbrains.anko.email
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -28,6 +29,7 @@ class MainActivity : Main() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        toast("onCreate")
 
         // 좌측 Navigation Drawer 초기화
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -54,5 +56,11 @@ class MainActivity : Main() {
         title.setOnClickListener(DateClickListener())
         leftArrow.setOnClickListener(DateClickListener())
         rightArrow.setOnClickListener(DateClickListener())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
+
     }
 }

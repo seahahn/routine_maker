@@ -9,6 +9,7 @@
 
     <color name="fontLight">#ffffff</color>
     <color name="fontDark">#000000</color>
+    <color name="fontEdit">#0004D5</color>
 
     <color name="bg">#2699FB</color>
     <color name="btn">#2699FB</color>
