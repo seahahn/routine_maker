@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-routinemaker-dev-223609-authRole",
+      "UnauthRoleArn": "arn:aws:iam::384457514314:role/amplify-routinemaker-dev-223609-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::384457514314:role/amplify-routinemaker-dev-223609-authRole",
+      "Region": "ap-northeast-2",
+      "DeploymentBucketName": "amplify-routinemaker-dev-223609-deployment",
+      "UnauthRoleName": "amplify-routinemaker-dev-223609-unauthRole",
+      "StackName": "amplify-routinemaker-dev-223609",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:384457514314:stack/amplify-routinemaker-dev-223609/37d29010-9c5d-11eb-bc6f-06d1a5cc744e",
+      "AmplifyAppId": "dwgie6fveeplv"
+    }
+  }
+}

@@ -120,12 +120,12 @@ class ToggleEditTextView(context: Context, attrs: AttributeSet?, defStyleAttr: I
     fun getEditing(): Boolean = this.editing
 
     fun getText(): String {
-        d(TAG, "this.editing : "+this.editing)
+//        d(TAG, "this.editing : "+this.editing)
         if(this.editing) {
-            d(TAG, "editText.text.toString() : "+editText.text.toString())
+//            d(TAG, "editText.text.toString() : "+editText.text.toString())
             return editText.text.toString()
         } else {
-            d(TAG, "textView.getText().toString() : "+textView.text)
+//            d(TAG, "textView.getText().toString() : "+textView.text)
             return textView.text.toString()
         }
     }

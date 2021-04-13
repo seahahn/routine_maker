@@ -7,6 +7,8 @@
     <string name="naver_client_secret">1yO6vhssgd</string>
     <string name="naver_client_name">루틴 메이커</string>
 
+    <string name="s3_bucket_route">https://rtmaker.s3.ap-northeast-2.amazonaws.com/public/</string>
+
     <string name="qnaMail">seah.ahn.nt@gmail.com</string>
     <string name="qnaSubject">루틴 메이커 - 1:1 문의</string>
     <string name="qnaContent">
@@ -57,6 +59,11 @@
     <string name="toolbarTrash">삭제</string>
     <string name="toolbarUpdate">수정</string>
 
+    <string name="btmHome">메인</string>
+    <string name="btmStts">통계</string>
+    <string name="btmGroup">그룹</string>
+    <string name="btmNoti">알림</string>
+
     <string name="leftnavNick">닉네임</string>
     <string name="leftnavEmail">이메일 주소</string>
     <string name="leftnavMembership">현재 멤버십</string>
@@ -80,5 +87,8 @@
     <string name="pwchange">비밀번호 변경하기</string>
     <string name="logout">로그아웃</string>
     <string name="exit">회원 탈퇴</string>
+    <string name="takePhoto">사진 찍기</string>
+    <string name="bringPhoto">사진 가져오기</string>
+    <string name="deletePhoto">사진 지우기</string>
 
 </resources>

@@ -3,6 +3,8 @@ package com.seahahn.routinemaker
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.amplifyframework.AmplifyException
+import com.amplifyframework.core.Amplify
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.network.RetrofitService

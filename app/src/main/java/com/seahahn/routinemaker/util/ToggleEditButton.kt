@@ -91,6 +91,8 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     private fun resetButton(animate: Boolean) {
+        d(TAG, "resetButton animate : $animate")
+        d(TAG, "resetButton this.editing : "+this.editing)
         editToConfirmAnim?.stop()
         confirmToEditAnim?.stop()
 
@@ -105,22 +107,26 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     fun getEditing(): Boolean = this.editing
 
     fun setEditing(service: RetrofitService, text: String, editing: Boolean, animate: Boolean, isNick: Boolean) {
-        d(TAG, "setEditing")
+//        d(TAG, "setEditing")
+//        d(TAG, "setEditing this.editing : " + this.editing)
+//        d(TAG, "setEditing tetvArrayList : $tetvArrayList")
         // check_nick 한 후에 중복 아니면 바꾸고 중복이면 그대로 두고 중복이라는 토스트 띄우기
         if(isNick) {
-            d(TAG, "ret : $ret")
+//            d(TAG, "ret : $ret")
             if(ret) {
-                d(TAG, "닉네임 체크 완료")
+//                d(TAG, "닉네임 체크 완료")
                 this.editing = editing
                 if(animate) {
-                    d(TAG, "animate")
+//                    d(TAG, "setEditing ret animate")
+//                    d(TAG, "setEditing tetvArrayList : $tetvArrayList")
                     tetvArrayList.forEachIndexed { i, tetv ->
                         tetv.setEditTextEnabled(this.editing)
                         Handler().postDelayed({ tetv.setEditing(this.editing, animate, isNick) }, animationOffset*i)
                     }
+                    if(firstBind) unbindAll()
                     resetButton(animate)
                 } else {
-                    d(TAG, "!animate")
+//                    d(TAG, "setEditing ret !animate")
                     tetvArrayList.forEach { it.setEditing(this.editing, animate, isNick) }
                     resetButton(animate)
                 }
@@ -128,14 +134,14 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         } else {
             this.editing = editing
             if(animate) {
-                d(TAG, "animate")
+//                d(TAG, "setEditing !ret animate")
                 tetvArrayList.forEachIndexed { i, tetv ->
                     tetv.setEditTextEnabled(this.editing)
                     Handler().postDelayed({ tetv.setEditing(this.editing, animate, isNick) }, animationOffset*i)
                 }
                 resetButton(animate)
             } else {
-                d(TAG, "!animate")
+//                d(TAG, "setEditing !ret !animate")
                 tetvArrayList.forEach { it.setEditing(this.editing, animate, isNick) }
                 resetButton(animate)
             }
@@ -147,25 +153,34 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         confirmToEditAnim?.setTint(color)
     }
 
-    fun bind(text: String, vararg toggleEditTextView: ToggleEditTextView) {
-        d(TAG, "bind")
+    fun bind(text: String, toggleEditTextView: ToggleEditTextView) {
+//        d(TAG, "bind")
         textInput = text
-        d(TAG, "textInput : $textInput")
-        tetvArrayList.addAll(toggleEditTextView)
+//        d(TAG, "textInput : $textInput")
+//        d(TAG, "toggleEditTextView : $toggleEditTextView")
+
+        if(!tetvArrayList.contains(toggleEditTextView)) tetvArrayList.add(toggleEditTextView)
+//        d(TAG, "tetvArrayList : $tetvArrayList")
         tetvArrayList.forEach {
             if(it.id == R.id.nick) {
-                d(TAG, "isNick")
+//                d(TAG, "bind isNick")
                 isNick = true
                 it.setEditing(this.editing, false, isNick)
             } else {
-                d(TAG, "!isNick")
+//                d(TAG, "bind !isNick")
                 isNick = false
                 it.setEditing(this.editing, false, isNick)
-                setEditing(service, textInput, !editing, true, isNick)
+                if(firstBind) {
+                    setEditing(service, textInput, !editing, true, isNick)
+//                    d(TAG, "this.editing : "+this.editing)
+                    if(!this.editing) changeInfo(service, "intro", text)
+                }
             }
         }
-        d(TAG, "firstBind : $firstBind")
-        if(firstBind && isNick) checkNick(service, textInput)
+//        d(TAG, "firstBind : $firstBind")
+        if(firstBind && isNick) {
+            checkNick(service, textInput)
+        }
         firstBind = true
     }
 
@@ -212,11 +227,11 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     private fun checkNick(service : RetrofitService, nick : String) : Boolean {
-        d(TAG, "checkNick")
+//        d(TAG, "checkNick")
         // 서버와 통신하여 닉네임 중복 확인
-        d(TAG, "닉네임 체크 : $nick")
+//        d(TAG, "닉네임 체크 : $nick")
         val oriNick = UserInfo.getUserNick(context)
-        d(TAG, "oriNick : $oriNick")
+//        d(TAG, "oriNick : $oriNick")
         if(nick.isEmpty()) {
             d(TAG, "nick empty")
             Toast.makeText(context, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -224,7 +239,7 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
             setEditing(service, textInput, !editing, true, isNick)
             return false
         } else if(nick == oriNick) {
-            d(TAG, "nick ori")
+//            d(TAG, "nick ori")
             // 닉네임 수정 안하고 그대로 둔 경우
             ret = true
             setEditing(service, textInput, !editing, true, isNick)
@@ -240,10 +255,10 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val msg = gson.get("msg").asString
                 val result = gson.get("result").asBoolean
-                d(TAG, msg)
+//                d(TAG, msg)
 //                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 ret = result
-                d(TAG, "check ret : $ret")
+//                d(TAG, "check ret : $ret")
                 setEditing(service, textInput, !editing, true, isNick)
                 if(result) {
                     changeInfo(service, "nick", nick)
