@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.util.Log.d
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
@@ -32,16 +31,21 @@ import retrofit2.Retrofit
 class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int): AppCompatImageButton(context, attrs, defStyleAttr) {
 
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+    private var service : RetrofitService
     private lateinit var retrofit : Retrofit
 
     private val tetvArrayList = arrayListOf<ToggleEditTextView>()
-    private val editToConfirmAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.edit_to_confirm_anim)
-    private val confirmToEditAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.confirm_to_edit_anim)
+//    private val editToConfirmAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.edit_to_confirm_anim)
+//    private val confirmToEditAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.confirm_to_edit_anim)
+
+    private val editToConfirmAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.edit_to_confirm)
+    private val confirmToEditAnim = AnimatedVectorDrawableCompat.create(context, R.drawable.confirm_to_edit)
+    private val initBtn = AnimatedVectorDrawableCompat.create(context, R.drawable.init_edit)
 
     private var onClickListener: OnClickListener? = null
 
     private var editing = false
+
     private var animationOffset = 100L
 
     private var isNick = false
@@ -84,6 +88,7 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         setTint(tint)
 
         val editing = styled.getBoolean(R.styleable.ToggleEditButton_teb_edit, false)
+        d(TAG, "initAttributes editing : $editing")
         setEditing(service, textInput, editing, false, isNick)
 
         val offset = styled.getInteger(R.styleable.ToggleEditButton_teb_animationOffset, 100).toLong()
@@ -97,28 +102,30 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         confirmToEditAnim?.stop()
 
         if(animate) {
+            d(TAG, "animate")
             setImageDrawable(if (this.editing) editToConfirmAnim else confirmToEditAnim)
             if (this.editing) editToConfirmAnim?.start() else confirmToEditAnim?.start()
         } else {
-            setImageDrawable(if (this.editing) confirmToEditAnim else editToConfirmAnim)
+            d(TAG, "!animate")
+            setImageDrawable(initBtn)
         }
     }
 
     fun getEditing(): Boolean = this.editing
 
     fun setEditing(service: RetrofitService, text: String, editing: Boolean, animate: Boolean, isNick: Boolean) {
-//        d(TAG, "setEditing")
-//        d(TAG, "setEditing this.editing : " + this.editing)
-//        d(TAG, "setEditing tetvArrayList : $tetvArrayList")
-        // check_nick 한 후에 중복 아니면 바꾸고 중복이면 그대로 두고 중복이라는 토스트 띄우기
+        d(TAG, "setEditing")
+        d(TAG, "setEditing this.editing : " + this.editing)
+        d(TAG, "setEditing tetvArrayList : $tetvArrayList")
+
         if(isNick) {
-//            d(TAG, "ret : $ret")
+            d(TAG, "ret : $ret")
             if(ret) {
-//                d(TAG, "닉네임 체크 완료")
+                d(TAG, "닉네임 체크 완료")
                 this.editing = editing
                 if(animate) {
-//                    d(TAG, "setEditing ret animate")
-//                    d(TAG, "setEditing tetvArrayList : $tetvArrayList")
+                    d(TAG, "setEditing ret animate")
+                    d(TAG, "setEditing tetvArrayList : $tetvArrayList")
                     tetvArrayList.forEachIndexed { i, tetv ->
                         tetv.setEditTextEnabled(this.editing)
                         Handler().postDelayed({ tetv.setEditing(this.editing, animate, isNick) }, animationOffset*i)
@@ -126,7 +133,7 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
                     if(firstBind) unbindAll()
                     resetButton(animate)
                 } else {
-//                    d(TAG, "setEditing ret !animate")
+                    d(TAG, "setEditing ret !animate")
                     tetvArrayList.forEach { it.setEditing(this.editing, animate, isNick) }
                     resetButton(animate)
                 }
@@ -134,14 +141,15 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         } else {
             this.editing = editing
             if(animate) {
-//                d(TAG, "setEditing !ret animate")
+                d(TAG, "setEditing !ret animate")
                 tetvArrayList.forEachIndexed { i, tetv ->
                     tetv.setEditTextEnabled(this.editing)
                     Handler().postDelayed({ tetv.setEditing(this.editing, animate, isNick) }, animationOffset*i)
                 }
+                if(firstBind) unbindAll()
                 resetButton(animate)
             } else {
-//                d(TAG, "setEditing !ret !animate")
+                d(TAG, "setEditing !ret !animate")
                 tetvArrayList.forEach { it.setEditing(this.editing, animate, isNick) }
                 resetButton(animate)
             }
@@ -151,33 +159,34 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     fun setTint(color: Int) {
         editToConfirmAnim?.setTint(color)
         confirmToEditAnim?.setTint(color)
+        initBtn?.setTint(color)
     }
 
     fun bind(text: String, toggleEditTextView: ToggleEditTextView) {
-//        d(TAG, "bind")
+        d(TAG, "bind")
         textInput = text
-//        d(TAG, "textInput : $textInput")
-//        d(TAG, "toggleEditTextView : $toggleEditTextView")
+        d(TAG, "textInput : $textInput")
+        d(TAG, "toggleEditTextView : $toggleEditTextView")
 
         if(!tetvArrayList.contains(toggleEditTextView)) tetvArrayList.add(toggleEditTextView)
-//        d(TAG, "tetvArrayList : $tetvArrayList")
+        d(TAG, "tetvArrayList : $tetvArrayList")
         tetvArrayList.forEach {
             if(it.id == R.id.nick) {
-//                d(TAG, "bind isNick")
+                d(TAG, "bind isNick")
                 isNick = true
                 it.setEditing(this.editing, false, isNick)
             } else {
-//                d(TAG, "bind !isNick")
+                d(TAG, "bind !isNick")
                 isNick = false
                 it.setEditing(this.editing, false, isNick)
                 if(firstBind) {
                     setEditing(service, textInput, !editing, true, isNick)
-//                    d(TAG, "this.editing : "+this.editing)
+                    d(TAG, "this.editing : "+this.editing)
                     if(!this.editing) changeInfo(service, "intro", text)
                 }
             }
         }
-//        d(TAG, "firstBind : $firstBind")
+        d(TAG, "firstBind : $firstBind")
         if(firstBind && isNick) {
             checkNick(service, textInput)
         }
@@ -203,6 +212,8 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     override fun onSaveInstanceState(): Parcelable {
+        d(TAG, "onSaveInstanceState")
+        d(TAG, "onSaveInstanceState getEditing() : "+getEditing())
         val bundle = Bundle()
         bundle.putParcelable(SUPER_STATE_KEY, super.onSaveInstanceState())
         bundle.putBoolean(EDIT_KEY, getEditing())
@@ -210,9 +221,11 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
+        d(TAG, "onRestoreInstanceState")
         var superState = state
         if (state is Bundle) {
             superState = state.getParcelable(SUPER_STATE_KEY)!!
+            d(TAG, "state.getBoolean(EDIT_KEY) : "+state.getBoolean(EDIT_KEY))
             setEditing(service, textInput, state.getBoolean(EDIT_KEY),false, isNick)
         }
         super.onRestoreInstanceState(superState)
@@ -227,11 +240,11 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
     }
 
     private fun checkNick(service : RetrofitService, nick : String) : Boolean {
-//        d(TAG, "checkNick")
+        d(TAG, "checkNick")
         // 서버와 통신하여 닉네임 중복 확인
-//        d(TAG, "닉네임 체크 : $nick")
+        d(TAG, "닉네임 체크 : $nick")
         val oriNick = UserInfo.getUserNick(context)
-//        d(TAG, "oriNick : $oriNick")
+        d(TAG, "oriNick : $oriNick")
         if(nick.isEmpty()) {
             d(TAG, "nick empty")
             Toast.makeText(context, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -239,7 +252,7 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
             setEditing(service, textInput, !editing, true, isNick)
             return false
         } else if(nick == oriNick) {
-//            d(TAG, "nick ori")
+            d(TAG, "nick ori")
             // 닉네임 수정 안하고 그대로 둔 경우
             ret = true
             setEditing(service, textInput, !editing, true, isNick)
@@ -255,10 +268,10 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val msg = gson.get("msg").asString
                 val result = gson.get("result").asBoolean
-//                d(TAG, msg)
+                d(TAG, msg)
 //                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 ret = result
-//                d(TAG, "check ret : $ret")
+                d(TAG, "check ret : $ret")
                 setEditing(service, textInput, !editing, true, isNick)
                 if(result) {
                     changeInfo(service, "nick", nick)

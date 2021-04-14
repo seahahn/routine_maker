@@ -21,12 +21,16 @@ class ResetpwActivity : User() {
     private val TAG = this::class.java.simpleName
     private lateinit var service : RetrofitService
 
+    private lateinit var from : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resetpw)
 
         // 레트로핏 통신 연결
         service = initRetrofit()
+
+        from = intent.getStringExtra("from")!!
 
         // 이메일 값 및 비번, 비번 확인 입력값 가져오기
         val email = intent.getStringExtra("email")
@@ -38,7 +42,10 @@ class ResetpwActivity : User() {
         // 화면 상단 화살표. 로그인 화면으로 되돌아감
         val goback = findViewById<ImageView>(R.id.goback)
         goback.setOnClickListener {
-            startActivity<LoginActivity>()
+            when(from) {
+                "Login" -> startActivity<LoginActivity>()
+                "Mypage" -> finish()
+            }
         }
 
         // 비밀번호 재설정 버튼
@@ -65,7 +72,10 @@ class ResetpwActivity : User() {
                 when (result) {
                     true -> {
                         Toast.makeText(this@ResetpwActivity, msg, Toast.LENGTH_SHORT).show()
-                        startActivity<LoginActivity>()
+                        when(from) {
+                            "Login" -> startActivity<LoginActivity>()
+                            "Mypage" -> finish()
+                        }
                     }
                     else -> {
                         Toast.makeText(this@ResetpwActivity, "에러 : 비밀번호 변경 실패", Toast.LENGTH_SHORT).show()
@@ -74,12 +84,6 @@ class ResetpwActivity : User() {
             }
         })
     }
-
-    // 레트로핏 객체 생성 및 API 연결
-//    private fun initRetrofit() {
-//        retrofit = RetrofitClient.getInstance()
-//        service = retrofit.create(RetrofitService::class.java)
-//    }
 
     // 비밀번호 입력칸 입력 여부 및 형식 검증
     private fun formCheck(pw: String, pwc: String): Boolean {

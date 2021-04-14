@@ -53,7 +53,10 @@ class FindpwActivity : User() {
             // 인증 성공 시 비밀번호 재설정 화면으로 이동
             if(resetPwCheck(service, email.toString(), verifynum.toString())) {
                 countDownTimer.cancel()
-                startActivity<ResetpwActivity>("email" to email.toString())
+                startActivity<ResetpwActivity>(
+                    "from" to "Login",
+                    "email" to email.toString()
+                )
             }
         }
 

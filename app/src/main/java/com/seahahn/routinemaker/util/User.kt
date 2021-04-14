@@ -38,7 +38,7 @@ open class User  : Util() {
                 val result = gson.get("result").asBoolean
                 when (result) {
                     true -> {
-                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                        toast(msg)
                         Log.d(TAG, response.body().toString())
                         val id = gson.get("id").asInt
                         val email = gson.get("email").asString
@@ -68,12 +68,12 @@ open class User  : Util() {
                         UserInfo.setUserMbs(applicationContext, mbs)
                         UserInfo.setUserPhoto(applicationContext, photo)
                         UserInfo.setUserPass(applicationContext, pw)
+                        UserInfo.setUserInway(applicationContext, inway)
                     }
                     false -> {
-//                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
-                        when(applicationContext) {
-                            SplashActivity() -> startActivity<LoginActivity>()
-                            LoginActivity() -> toast(msg)
+                        when(TAG) {
+                            "SplashActivity" -> startActivity<LoginActivity>()
+                            "LoginActivity" -> toast(msg)
                         }
                     }
                 }
@@ -82,19 +82,19 @@ open class User  : Util() {
     }
 
     // 툴바 버튼 클릭 시 작동할 기능
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "onOptionsItemSelected")
-        when(item.itemId){
-            android.R.id.home->{ // 툴바 좌측 버튼
-                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
-//                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
-                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
-                    Log.d(TAG, "뒤로 가기")
-                    finish() // 액티비티 종료하기
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        Log.d(TAG, "onOptionsItemSelected")
+//        when(item.itemId){
+//            android.R.id.home->{ // 툴바 좌측 버튼
+//                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
+////                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
+//                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
+//                    Log.d(TAG, "뒤로 가기")
+//                    finish() // 액티비티 종료하기
+//                }
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
 }

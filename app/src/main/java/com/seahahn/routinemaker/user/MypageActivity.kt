@@ -10,10 +10,12 @@ import android.util.Log
 import android.util.Log.d
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.isVisible
 import com.amplifyframework.core.Amplify
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
@@ -27,7 +29,9 @@ import com.seahahn.routinemaker.util.ToggleEditButton
 import com.seahahn.routinemaker.util.ToggleEditTextView
 import com.seahahn.routinemaker.util.User
 import com.seahahn.routinemaker.util.UserInfo
+import com.seahahn.routinemaker.util.UserInfo.getUserEmail
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserInfo.getUserInway
 import com.seahahn.routinemaker.util.UserInfo.setUserPhoto
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
@@ -84,12 +88,15 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         introupdate = findViewById(R.id.introupdate) // 사용자 자기소개글
         introupdate.setOnClickListener(BtnOnClickListener())
 
-        val mbsApply = findViewById<TextView>(R.id.mbsApply) // 사용자 멤버십
+        val mbsApply = findViewById<TextView>(R.id.mbsApply) // 사용자 멤버십 신청하기 or 결제 내역
         val photoUpdate = findViewById<ImageView>(R.id.photoUpdate) // 사용자 프로필 사진
         photoUpdate.setOnClickListener(BtnOnClickListener())
 
+        val pwchange = findViewById<TextView>(R.id.pwchange) // 비밀번호 변경하기 텍스트 버튼
+        if(getUserInway(applicationContext) != "etc") pwchange.visibility = GONE
         val logout = findViewById<TextView>(R.id.logout) // 로그아웃 텍스트 버튼
         val exit = findViewById<TextView>(R.id.exit) // 회원 탈퇴 텍스트 버튼
+        pwchange.setOnClickListener(BtnOnClickListener())
         logout.setOnClickListener(BtnOnClickListener())
         exit.setOnClickListener(BtnOnClickListener())
     }
@@ -137,17 +144,25 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         override fun onClick(v: View?) {
             when(v?.id) {
                 R.id.nickupdate -> {
-//                    d(TAG, "nick.getText() : "+nick.getText())
                     nickupdate.bind(nick.getText(), nick)
                 }
+
                 R.id.titleupdate -> {}
+
                 R.id.introupdate -> {
-//                    d(TAG, "intro.getText() : "+intro.getText())
                     introupdate.bind(intro.getText(), intro)
                 }
+
                 R.id.mbsApply -> {}
+
                 R.id.photoUpdate -> {
                     photo(v)
+                }
+                R.id.pwchange -> {
+                    startActivity<ResetpwActivity>(
+                        "from" to "Mypage",
+                        "email" to getUserEmail(applicationContext)
+                    )
                 }
                 R.id.logout -> {
                     Firebase.auth.signOut() // 구글 로그아웃
@@ -186,6 +201,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
+    // 프로필 사진 변경 아이콘 눌렀을 때 팝업 메뉴를 띄워줌
     fun photo(v: View) {
         PopupMenu(this, v).apply {
             // MainActivity implements OnMenuItemClickListener
@@ -195,6 +211,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
+    // 프로필 사진 변경 아이콘의 팝업 메뉴 항목별 동작할 내용
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.takePhoto -> {
@@ -218,26 +235,17 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
     val REQUEST_IMAGE_CAPTURE = 1
     lateinit var locationForPhotos: Uri
 
+    // 프로필 사진 촬영하기
     fun capturePhoto() {
-        d(TAG, "capturePhoto 1")
+        d(TAG, "capturePhoto")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//        if (intent.resolveActivity(packageManager) != null) {
-//            d(TAG, "capturePhoto 2")
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
-//        }
-
-//        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-//            d(TAG, "capturePhoto 2")
-//            takePictureIntent.resolveActivity(packageManager)?.also {
-//                d(TAG, "capturePhoto 3")
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-//            }
-//        }
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        // 사진 촬영한 경우의 결과 받아오기
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
 
@@ -256,13 +264,10 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
                 },
                 { error -> d(TAG, "Upload failed", error) }
             )
-
-//            val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
-//            changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
-
         }
     }
 
+    // 사용자 정보 변경 요청하기
     private fun changeInfo(service : RetrofitService, subject : String, content: String) {
         val id = getUserId(applicationContext)
         service.changeInfo(id, subject, content).enqueue(object : Callback<JsonObject> {
@@ -292,6 +297,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         })
     }
 
+    // 사진 촬영 후 저장된 사진 비트맵을 임시 디렉토리에 이미지 파일로 저장하는 메소드
     fun saveBitmapToJpg(bitmap: Bitmap, name: String): String {
         /**
          * 캐시 디렉토리에 비트맵을 이미지파일로 저장하는 코드입니다.

@@ -31,7 +31,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
 
     private val TAG = this::class.java.simpleName
 
-    open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
+//    open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     open lateinit var leftnav : NavigationView // 좌측 내비게이션 메뉴
     lateinit var hd_photo : ImageView // 좌측 내비게이션 메뉴 헤더 이미지
     lateinit var hd_email : TextView // 좌측 내비게이션 메뉴 헤더 이메일
@@ -168,20 +168,20 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
     }
 
     // 툴바 버튼 클릭 시 작동할 기능
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "onOptionsItemSelected")
-        when(item.itemId){
-            android.R.id.home->{ // 툴바 좌측 버튼
-                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
-                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
-                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
-                    Log.d(TAG, "뒤로 가기")
-                    finish() // 액티비티 종료하기
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        Log.d(TAG, "onOptionsItemSelected")
+//        when(item.itemId){
+//            android.R.id.home->{ // 툴바 좌측 버튼
+//                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
+//                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
+//                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
+//                    Log.d(TAG, "뒤로 가기")
+//                    finish() // 액티비티 종료하기
+//                }
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     // 좌측 내비 메뉴 클릭 시 작동할 기능
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

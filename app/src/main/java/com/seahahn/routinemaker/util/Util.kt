@@ -1,9 +1,13 @@
 package com.seahahn.routinemaker.util
 
 import android.content.DialogInterface
+import android.util.Log
+import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
@@ -15,6 +19,7 @@ open class Util  : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var service : RetrofitService
 
+    open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
 
     // 레트로핏 객체 생성 및 API 연결
@@ -50,6 +55,22 @@ open class Util  : AppCompatActivity() {
             homeBtn = R.drawable.backward_arrow
         }
         title.text = titleText // 제목 설정
+    }
+
+    // 툴바 버튼 클릭 시 작동할 기능
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "onOptionsItemSelected")
+        when(item.itemId){
+            android.R.id.home->{ // 툴바 좌측 버튼
+                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
+                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
+                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
+                    Log.d(TAG, "뒤로 가기")
+                    finish() // 액티비티 종료하기
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

@@ -1,28 +1,8 @@
 package com.seahahn.routinemaker
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import com.amplifyframework.core.Amplify
-import com.seahahn.routinemaker.notice.NoticeActivity
-import com.seahahn.routinemaker.user.MypageActivity
 import com.seahahn.routinemaker.util.Main
-import org.jetbrains.anko.email
-import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
-import java.io.File
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class MainActivity : Main() {
 

@@ -79,6 +79,18 @@ object UserInfo {
         return prefs.getString("MY_PASS", "").toString()
     }
 
+    fun setUserInway(context: Context, input: String) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putString("MY_INWAY", input)
+        editor.commit()
+    }
+
+    fun getUserInway(context: Context): String {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getString("MY_INWAY", "").toString()
+    }
+
     fun clearUser(context: Context) {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
