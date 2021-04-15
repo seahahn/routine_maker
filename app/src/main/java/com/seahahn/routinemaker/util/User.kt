@@ -1,16 +1,10 @@
 package com.seahahn.routinemaker.util
 
 import android.util.Log
-import android.view.MenuItem
-import android.widget.TextView
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.nhn.android.idp.common.logger.Logger.d
 import com.nhn.android.naverlogin.OAuthLogin
-import com.seahahn.routinemaker.MainActivity
-import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.SplashActivity
+import com.seahahn.routinemaker.main.MainActivity
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.user.LoginActivity
 import org.jetbrains.anko.startActivity

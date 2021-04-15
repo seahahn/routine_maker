@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -11,15 +12,22 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.main.MainActivity
+import com.seahahn.routinemaker.main.MainRoutineFragment
 import com.seahahn.routinemaker.notice.NoticeActivity
+import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -27,7 +35,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
+open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener{
 
     private val TAG = this::class.java.simpleName
 
@@ -37,6 +45,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
     lateinit var hd_email : TextView // 좌측 내비게이션 메뉴 헤더 이메일
     lateinit var hd_nick : TextView // 좌측 내비게이션 메뉴 헤더 닉네임
     lateinit var hd_mbs : TextView // 좌측 내비게이션 메뉴 헤더 멤버십
+
+    // BottomNavigationView 초기화하기
+    lateinit var btmnav : BottomNavigationView
 
     // 사용자가 선택한 날짜에 따라 툴바 제목도 그에 맞는 날짜로 변경함
     // 초기값은 오늘 날짜
@@ -50,39 +61,23 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
     lateinit var title : TextView
 
     // 메인 액티비티에서는 오늘 날짜를 툴바 제목으로 씀
-    private val current = LocalDate.now()
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault())
-    val formatted: String = current.format(formatter)
+    private val current = LocalDate.now() // 오늘 날짜 데이터
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식
+    val formatted: String = current.format(formatter) // 툴바 제목에 들어가는 문자열
 
+    // 상단 툴바에 날짜 나올 경우 양쪽에 좌우 화살표 초기화함. 좌는 하루 전, 우는 하루 뒤로 이동시킴
     lateinit var leftArrow : ImageButton
     lateinit var rightArrow : ImageButton
 
-
-    // 상단 툴바를 초기화하기 위한 메소드
-//    fun initToolbar(title: TextView, titleText: String, leftIcon: Int) {
-//
-//        setSupportActionBar(findViewById(R.id.toolbar)) // 커스텀 툴바 설정
-//
-//        supportActionBar!!.setDisplayShowTitleEnabled(false) //기본 제목을 없애줍니다
-//        supportActionBar!!.setDisplayHomeAsUpEnabled(true) // 좌측 화살표 누르면 이전 액티비티로 가도록 함
-//
-//        // 툴바 좌측 아이콘 설정. 0이면 햄버거 메뉴 아이콘, 1이면 좌향 화살표 아이콘.
-//        if(leftIcon == 0) {
-//            supportActionBar!!.setHomeAsUpIndicator(R.drawable.hbgmenu) // 왼쪽 버튼 이미지 설정 - 좌측 햄버거 메뉴
-//            homeBtn = R.drawable.hbgmenu
-//        } else if(leftIcon == 1){
-//            supportActionBar!!.setHomeAsUpIndicator(R.drawable.backward_arrow) // 왼쪽 버튼 이미지 설정 - 좌향 화살표
-//            homeBtn = R.drawable.backward_arrow
-//        }
-//        title.text = titleText // 제목 설정
-//    }
+    // 프래그먼트에 날짜 데이터 전달하기 위한 뷰모델
+    private val viewModel by viewModels<DateViewModel>()
 
     fun initLeftNav(hd_email: TextView, hd_nick: TextView, hd_mbs: TextView, hd_photo: ImageView) {
 
         hd_email.text = UserInfo.getUserEmail(applicationContext)
         hd_nick.text = UserInfo.getUserNick(applicationContext)
 
-        d(TAG, "mbs : " + UserInfo.getUserMbs(applicationContext))
+//        d(TAG, "mbs : " + UserInfo.getUserMbs(applicationContext))
         val mbs = UserInfo.getUserMbs(applicationContext)
         if(mbs == 0) {
             hd_mbs.text = getString(R.string.mbsBasic)
@@ -99,49 +94,60 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
 
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
     fun showDatePicker(title: TextView, c: Calendar, dd: Calendar ,y: Int, m: Int, d: Int) {
-        Log.d(TAG, "input : $m $d")
+//        Log.d(TAG, "input : $m $d")
         DatePickerDialog(this,
-            {
-                    _, year, month, day->
+            { _, year, month, day->
                 val cal = Calendar.getInstance()
                 cal.set(year, month, day) // 선택한 날짜를 Calendar 형식으로 가져옴
-                val date = cal.time
-                Log.d(TAG, "date : $date")
+                val date = cal.time // Calendar를 Fri Apr 16 08:11:10 GMT 2021 의 형식으로 변환
+//                Log.d(TAG, "date : $date")
 
-                val formatter: DateFormat = SimpleDateFormat("M월 d일 EEE", Locale.getDefault()) // 툴바에 세팅하기 위한 형식
+                val formatter: DateFormat = SimpleDateFormat("M월 d일 EEE", Locale.getDefault()) // 툴바 제목에 세팅하기 위한 형식
                 val formatted: String = formatter.format(date)
-                Log.d(TAG, "formatedDate : $formatted")
+//                Log.d(TAG, "formatedDate : $formatted")
 
                 c.set(year, month, day) // 사용자의 선택에 따라 툴바에 출력되는 날짜를 변경하기 위함
                 dd.set(year, month, day) // 이는 yyyy-MM-dd 형식으로 DB에서 데이터를 가져오기 위함
-                title.text = formatted
+                title.text = formatted // 툴바 제목에 사용자가 선택한 날짜 집어넣기
+
+                onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
             },
-            y, m, d)
+            y, m, d) // DatePicker가 열리면 보여줄 날짜 초기값
             .show()
     }
 
     // 현재 날짜의 하루 전으로 이동하는 메소드
     fun onedayMove(title: TextView, c: Calendar, dd: Calendar ,y: Int, m: Int, d: Int, updown: Int) {
-        Log.d(TAG, "input : $m $d")
+//        Log.d(TAG, "input : $m $d")
         val cal = Calendar.getInstance()
         val day = d + updown
         cal.set(y, m, day) // 선택한 날짜를 Calendar 형식으로 가져옴
         val date = cal.time
-        Log.d(TAG, "date : $date")
+//        Log.d(TAG, "date : $date")
 
         val formatter: DateFormat = SimpleDateFormat("M월 d일 EEE", Locale.getDefault()) // 툴바에 세팅하기 위한 형식
         val formatted: String = formatter.format(date)
-        Log.d(TAG, "formatedDate : $formatted")
+//        Log.d(TAG, "formatedDate : $formatted")
         c.set(y, m, day)
         dd.set(y, m, day)
         title.text = formatted
+
+        onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
+    }
+
+    // 뷰모델에 날짜 데이터 저장하기
+    fun onDateSelected(date : String) {
+        viewModel.selectDate(date)
     }
 
     fun showTimePicker() {
         val cal = Calendar.getInstance()
-        TimePickerDialog(this, {
-                _, h, m -> Toast.makeText(this, "$h:$m",
-            Toast.LENGTH_SHORT).show() }, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), true)
+        TimePickerDialog(this,
+            {
+                _, h, m -> Toast.makeText(this, "$h:$m", Toast.LENGTH_SHORT).show()
+           },
+            cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE),
+            true)
             .show()
     }
 
@@ -163,25 +169,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
                     onedayMove(title, cal, dateData, y, m, d, 1)
                 }
             }
-            Log.d(TAG, "dateDataFormatted : $dateDataFormatted")
+//            Log.d(TAG, "dateDataFormatted : $dateDataFormatted")
         }
     }
-
-    // 툴바 버튼 클릭 시 작동할 기능
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        Log.d(TAG, "onOptionsItemSelected")
-//        when(item.itemId){
-//            android.R.id.home->{ // 툴바 좌측 버튼
-//                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
-//                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
-//                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
-//                    Log.d(TAG, "뒤로 가기")
-//                    finish() // 액티비티 종료하기
-//                }
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
 
     // 좌측 내비 메뉴 클릭 시 작동할 기능
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -203,6 +193,17 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener{
                 startActivity(email)
             }
             R.id.writeReview-> Toast.makeText(this,"writeReview clicked",Toast.LENGTH_SHORT).show()
+
+            R.id.home -> {
+                startActivity<MainActivity>()
+                overridePendingTransition(0, 0)
+            }
+            R.id.stts -> {
+                startActivity<SttsActivity>()
+                overridePendingTransition(0, 0)
+            }
+            R.id.group -> toast("group")
+            R.id.notibtm -> toast("noti")
         }
         return false
     }

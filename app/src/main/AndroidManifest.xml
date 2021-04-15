@@ -3,9 +3,11 @@
           package="com.seahahn.routinemaker">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera"
-                  android:required="false" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+            android:name="android.hardware.camera"
+            android:required="false"/>
 
     <application
             android:name=".MyAmplifyApp"
@@ -16,6 +18,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".stts.SttsActivity">
+        </activity>
         <activity android:name=".notice.NoticeActivity">
         </activity>
         <activity android:name=".user.MembershipPayActivity">
@@ -50,7 +54,7 @@
         </activity>
         <activity android:name=".TestActivity">
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".main.MainActivity">
         </activity>
     </application>
 

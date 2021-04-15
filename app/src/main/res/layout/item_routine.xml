@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/list_bg">
+    <CheckBox
+            android:text="루틴 제목"
+            style="@style/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rt_title"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp"/>
+    <ImageButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/more_dark"
+            android:id="@+id/more_btn"
+            style="@style/imgBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp" android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"/>
+    <TextView
+            android:text="05:00"
+            style="@style/txt_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rt_time"
+            app:layout_constraintTop_toBottomOf="@+id/rt_title" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="48dp" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"/>
+    <TextView
+            android:text="매일"
+            style="@style/txt_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rt_days"
+            android:layout_marginStart="30dp" app:layout_constraintStart_toEndOf="@+id/rt_time"
+            app:layout_constraintBaseline_toBaselineOf="@+id/rt_time"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

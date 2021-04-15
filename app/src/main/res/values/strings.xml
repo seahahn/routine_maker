@@ -48,7 +48,6 @@
     <string name="resetpwtext1">비밀번호 재설정</string>
     <string name="resetpwtext2">비밀번호를 재설정해주세요.</string>
 
-
     <string name="googleLogin">구글 아이디로 로그인</string>
 
     <string name="toolbarTitle">앱바 타이틀</string>
@@ -59,10 +58,18 @@
     <string name="toolbarTrash">삭제</string>
     <string name="toolbarUpdate">수정</string>
 
+    <string name="popupMenuUpdate">수정</string>
+    <string name="popupMenuDelete">삭제</string>
+
     <string name="btmHome">메인</string>
     <string name="btmStts">통계</string>
     <string name="btmGroup">그룹</string>
     <string name="btmNoti">알림</string>
+
+    <string name="homeRoutine">루틴</string>
+    <string name="homeReview">회고</string>
+    <string name="sttsGraph">그래프</string>
+    <string name="sttsCount">통계</string>
 
     <string name="leftnavNick">닉네임</string>
     <string name="leftnavEmail">이메일 주소</string>
@@ -90,5 +97,12 @@
     <string name="takePhoto">사진 찍기</string>
     <string name="bringPhoto">사진 가져오기</string>
     <string name="deletePhoto">사진 지우기</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="todayReview">오늘의 회고</string>
+    <string name="todayReviewHint">오늘 하루에 대해서 기록해보세요.</string>
+    <string name="todayReviewOnFeed">공개 여부</string>
+    <string name="save">저장하기</string>
 
 </resources>

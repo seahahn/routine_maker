@@ -64,7 +64,7 @@
 
                 <TextView
                         android:text="@string/nickname"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="42dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvnick"
@@ -72,7 +72,7 @@
                         android:layout_marginEnd="16dp"/>
                 <com.seahahn.routinemaker.util.ToggleEditTextView
                         android:hint="@string/nickname"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:maxLines="1"
@@ -86,7 +86,7 @@
                         android:layout_height="0dp" android:id="@+id/view" android:layout_weight="1"/>
                 <com.seahahn.routinemaker.util.ToggleEditButton
                         android:text="@string/update"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:id="@+id/nickupdate"
@@ -105,7 +105,7 @@
                     app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp" android:layout_marginEnd="32dp">
                 <TextView
                         android:text="@string/level"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="42dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvlv"
@@ -113,7 +113,7 @@
                         android:layout_marginEnd="16dp"/>
                 <TextView
                         android:text="@string/level"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/level"
@@ -131,7 +131,7 @@
 
                 <TextView
                         android:text="@string/title"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="42dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvtitle"
@@ -139,7 +139,7 @@
                         android:layout_marginEnd="16dp"/>
                 <TextView
                         android:text="@string/title"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/title"
@@ -149,7 +149,7 @@
                         android:layout_height="0dp" android:id="@+id/view2" android:layout_weight="1"/>
                 <TextView
                         android:text="@string/update"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/titleupdate"
@@ -166,7 +166,7 @@
 
                 <TextView
                         android:text="@string/intro"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="56dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvintro"
@@ -177,7 +177,7 @@
                         android:layout_height="0dp" android:id="@+id/view3" android:layout_weight="1"/>
                 <com.seahahn.routinemaker.util.ToggleEditButton
                         android:text="@string/update"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:id="@+id/introupdate"
@@ -201,7 +201,7 @@
                               android:orientation="vertical">
                     <com.seahahn.routinemaker.util.ToggleEditTextView
                             android:hint="자기소개"
-                            style="@style/txt"
+                            style="@style/txt_m"
                             android:inputType="textMultiLine"
                             android:maxLines="9999999"
                             android:layout_width="match_parent"
@@ -233,7 +233,7 @@
 
                 <TextView
                         android:text="@string/membership"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="42dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/tvmembership"
@@ -241,7 +241,7 @@
                         android:layout_marginEnd="16dp"/>
                 <TextView
                         android:text="@string/membership"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/membership"
@@ -251,7 +251,7 @@
                         android:layout_height="0dp" android:id="@+id/view4" android:layout_weight="1"/>
                 <TextView
                         android:text="@string/mbsApply"
-                        style="@style/txt"
+                        style="@style/txt_m"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/mbsApply"

@@ -6,9 +6,9 @@
             android:icon="@drawable/home"
             android:title="@string/btmHome"/>
     <item
-            android:id="@+id/statistics"
+            android:id="@+id/stts"
             android:enabled="true"
-            android:icon="@drawable/statistics"
+            android:icon="@drawable/stts"
             android:title="@string/btmStts"/>
     <item
             android:id="@+id/group"

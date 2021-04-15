@@ -39,6 +39,7 @@ open class Util  : AppCompatActivity() {
             .show()
     }
 
+    // 상단 툴바 초기화
     fun initToolbar(title: TextView, titleText: String, leftIcon: Int) {
 
         setSupportActionBar(findViewById(R.id.toolbar)) // 커스텀 툴바 설정
@@ -72,5 +73,18 @@ open class Util  : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    // 파일 업로드 예시
+//        val exampleFile = File(applicationContext.filesDir, "ExampleKey")
+//
+//        exampleFile.writeText("Example file contents")
+//
+//        Amplify.Storage.uploadFile(
+//            "test/test.txt", // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
+//            exampleFile, // 실제 저장될 파일
+//            { result -> Log.d("MyAmplifyApp", "Successfully uploaded: " + result) },
+//            { error -> Log.d("MyAmplifyApp", "Upload failed", error) }
+//        )
 
 }
