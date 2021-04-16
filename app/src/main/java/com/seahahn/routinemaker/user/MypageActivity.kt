@@ -1,5 +1,6 @@
 package com.seahahn.routinemaker.user
 
+import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -15,7 +16,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.view.isVisible
 import com.amplifyframework.core.Amplify
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
@@ -215,24 +215,28 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.takePhoto -> {
-                toast("takePhoto")
                 capturePhoto()
                 true
             }
             R.id.bringPhoto -> {
-                toast("bringPhoto")
-
+                bringPhoto()
                 true
             }
             R.id.deletePhoto -> {
-                toast("deletePhoto")
+                deletePhoto()
                 true
             }
             else -> false
         }
     }
 
+    fun deletePhoto() {
+        val defaultPhotoUrl = "https://rtmaker.s3.ap-northeast-2.amazonaws.com/img_admin/profile_default.png"
+        changeInfo(service, "photo", defaultPhotoUrl) // DB 내 사용자의 프로필 사진 경로 정보 변경하기
+    }
+
     val REQUEST_IMAGE_CAPTURE = 1
+    val REQUEST_IMAGE_BRING = 2
     lateinit var locationForPhotos: Uri
 
     // 프로필 사진 촬영하기
@@ -242,12 +246,41 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
     }
 
+    fun bringPhoto() {
+        d(TAG, "bringPhoto")
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        startActivityForResult(intent, REQUEST_IMAGE_BRING)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // 사진 촬영한 경우의 결과 받아오기
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
+
+            val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString()) // 사진 비트맵이 저장된 파일 경로 가져오기
+            val imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
+            val imgPath = "photo/"+System.currentTimeMillis().toString()+".jpg" // S3에 저장될 경로 설정
+
+            // s3에 저장하기
+            Amplify.Storage.uploadFile(
+                imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
+                imgFile, // 실제 저장될 파일
+                { result ->
+                    d(TAG, "Successfully uploaded: " + result)
+                    val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
+                    changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
+                },
+                { error -> d(TAG, "Upload failed", error) }
+            )
+        } else if(requestCode == REQUEST_IMAGE_BRING && resultCode == Activity.RESULT_OK) {
+            val imgUri : Uri? = data?.data
+
+            val thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imgUri)
+
+//            val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
 
             val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString()) // 사진 비트맵이 저장된 파일 경로 가져오기
             val imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기

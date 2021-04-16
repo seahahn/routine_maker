@@ -49,9 +49,9 @@ class MainRoutineFragment : Fragment() {
         rtAdapter = RtAdapter()
         rtList.adapter = rtAdapter
 
-        for(i in 1..9) {
+        for(i in 1..999) {
             d(TAG, "rt list data $i")
-            mDatas.add(RtData(i, "test $i", listOf("월", "수", "금"), "05:0$i"))
+            mDatas.add(RtData(i, "test $i", listOf("월", "수", "금"), "05:00"))
         }
 
         rtAdapter.replaceList(mDatas)
