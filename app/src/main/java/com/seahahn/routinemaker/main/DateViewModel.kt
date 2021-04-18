@@ -1,4 +1,4 @@
-package com.seahahn.routinemaker.util
+package com.seahahn.routinemaker.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -105,4 +105,41 @@
     <string name="todayReviewOnFeed">공개 여부</string>
     <string name="save">저장하기</string>
 
+    <string name="makeRt">루틴 만들기</string>
+    <string name="updateRt">루틴 수정하기</string>
+    <string name="makeTodo">할 일 만들기</string>
+    <string name="updateTodo">할 일 수정하기</string>
+    <string name="makeAction">행동 추가하기</string>
+    <string name="updateAction">행동 수정하기</string>
+
+    <!-- 루틴, 할 일 만들기에서의 mType 값   -->
+    <string name="rt">rt</string>
+    <string name="todo">todo</string>
+
+    <string name="rtTitle">루틴 이름</string>
+    <string name="rtTitlePh">루틴의 이름을 입력해주세요</string>
+    <string name="todoTitle">할 일 제목</string>
+    <string name="todoTitlePh">할 일의 제목을 입력해주세요</string>
+    <string name="actionTitle">행동 이름</string>
+    <string name="actionTitlePh">수행할 행동의 이름을 입력해주세요</string>
+    <string name="activateAlarm">시작 알람 활성화</string>
+    <string name="activateTodoAlarm">알람 활성화</string>
+    <string name="activateAlarmGuide">기기 알림이 비활성화 되어 있어 알람을 사용하실 수 없습니다.
+        <u>설정하기</u>
+    </string>
+    <string name="repeat">반복 여부</string>
+    <string name="startTime">수행 예정 시각</string>
+    <string name="costTime">예상 소요 시간</string>
+    <string name="actionColor">표시 색상</string>
+    <string name="rtOnFeed">그룹 피드에 공개하기</string>
+    <string name="memo">메모</string>
+
+    <string name="sunday">일</string>
+    <string name="monday">월</string>
+    <string name="tuesday">화</string>
+    <string name="wednesday">수</string>
+    <string name="thursday">목</string>
+    <string name="friday">금</string>
+    <string name="saturday">토</string>
+
 </resources>

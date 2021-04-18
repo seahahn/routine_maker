@@ -21,7 +21,7 @@ import java.util.regex.Pattern
 
 class SignUpActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+//    private lateinit var service : RetrofitService
 
     companion object {
         var emailchecked = false

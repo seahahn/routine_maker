@@ -41,7 +41,7 @@ import retrofit2.Response
 
 class LoginActivity : User(), View.OnClickListener {
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+//    private lateinit var service : RetrofitService
     private lateinit var naverAPI : NaverAPI
 
     // 구글 로그인 API 변수
@@ -61,12 +61,6 @@ class LoginActivity : User(), View.OnClickListener {
 
         // 레트로핏 통신 연결
         service = initRetrofit()
-
-        if(UserInfo.getUserEmail(this).isNotBlank() || UserInfo.getUserPass(this).isNotBlank()) {
-            val email = UserInfo.getUserEmail(this)
-            val pw = UserInfo.getUserPass(this)
-            login(service, email, pw)
-        }
 
         // 이메일, 비밀번호 입력값 가져오기
         val emailInput = findViewById<TextInputEditText>(R.id.emailInput)

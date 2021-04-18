@@ -18,7 +18,7 @@ import retrofit2.Response
 
 class SplashActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+//    private lateinit var service : RetrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class SplashActivity : User() {
         service = initRetrofit()
 
         // 사용자 정보 저장되어 있으면 자동 로그인하여 바로 메인으로, 아니라면 로그인 창으로 이동
-        if(!UserInfo.getUserEmail(this).isBlank() || !UserInfo.getUserPass(this).isBlank()) {
+        if(UserInfo.getUserEmail(this).isNotBlank() || UserInfo.getUserPass(this).isNotBlank()) {
             val email = UserInfo.getUserEmail(this)
             val pw = UserInfo.getUserPass(this)
             login(service, email, pw)

@@ -48,7 +48,6 @@ import java.io.IOException
 class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
 
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
 
     lateinit var nick : ToggleEditTextView
     lateinit var nickupdate : ToggleEditButton

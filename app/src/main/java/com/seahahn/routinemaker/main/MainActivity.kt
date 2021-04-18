@@ -1,22 +1,26 @@
 package com.seahahn.routinemaker.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
-import org.jetbrains.anko.toast
+import com.seahahn.routinemaker.util.UserInfo.getUserId
+import org.jetbrains.anko.startActivity
 
-class MainActivity : Main(), PopupMenu.OnMenuItemClickListener {
+class MainActivity : Main() {
 
     private val TAG = this::class.java.simpleName
 
+    // 메인 액티비티 상단 툴바 바로 아래의 탭 레이아웃 및 각각의 탭에 해당하는 프래그먼트 초기화
     private lateinit var tabLayout: TabLayout
     private lateinit var mainRoutineFragment: MainRoutineFragment
     private lateinit var mainReviewFragment: MainReviewFragment
@@ -24,6 +28,9 @@ class MainActivity : Main(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 레트로핏 통신 연결
+        service = initRetrofit()
 
         // 좌측 Navigation Drawer 초기화
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -74,13 +81,21 @@ class MainActivity : Main(), PopupMenu.OnMenuItemClickListener {
             setReorderingAllowed(true)
             addToBackStack(null) // name can be null
         }
+
+        // 우측 하단의 FloatingActionButton 초기화
+        // 버튼을 누르면 루틴 또는 할 일을 만들 수 있는 액티비티로 이동함
+        initFAB()
+
+        // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
+        getRts(service, getUserId(this))
     }
 
     override fun onResume() {
         super.onResume()
 
-        // 정보 변경된 경우 좌측 내비의 헤더 부분에 바뀐 정보를 적용하기 위해서 다시 초기화해줌
+        // 정보 변경된 경우 바뀐 정보를 적용하기 위해서 다시 초기화해줌
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
+        getRts(service, getUserId(this))
     }
 
     inner class OnTabSelectedListener : TabLayout.OnTabSelectedListener {
@@ -88,10 +103,16 @@ class MainActivity : Main(), PopupMenu.OnMenuItemClickListener {
             val position = tabLayout.selectedTabPosition
             var selected : Fragment = mainRoutineFragment
             when(position) {
-                0 -> selected = mainRoutineFragment
-                1 -> selected = mainReviewFragment
+                0 -> {
+                    selected = mainRoutineFragment
+                    fabtn.visibility = View.VISIBLE
+                }
+                1 -> {
+                    selected = mainReviewFragment
+                    fabtn.visibility = View.GONE
+                }
             }
-            supportFragmentManager.beginTransaction() .replace(R.id.container, selected) .commit()
+            supportFragmentManager.beginTransaction().replace(R.id.container, selected) .commit()
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -103,18 +124,5 @@ class MainActivity : Main(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    // 루틴 목록의 아이템 더보기 아이콘의 팝업 메뉴 항목별 동작할 내용
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.rtUpdate -> { // 루틴 수정
-                d(TAG, "rtUpdate")
-                true
-            }
-            R.id.rtDelete -> { // 루틴 삭제
-                d(TAG, "rtUpdate")
-                true
-            }
-            else -> false
-        }
-    }
+
 }

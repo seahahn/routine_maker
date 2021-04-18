@@ -23,7 +23,7 @@ import retrofit2.Response
 
 class FindpwActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+//    private lateinit var service : RetrofitService
 
     private lateinit var countDownTimer: CountDownTimer
     private val MILLISINFUTURE = 300 * 1000 //총 시간 (300초 = 5분)

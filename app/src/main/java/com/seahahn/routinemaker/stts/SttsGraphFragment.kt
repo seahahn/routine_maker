@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.util.DateViewModel
+import com.seahahn.routinemaker.main.DateViewModel
 
 class SttsGraphFragment : Fragment() {
 

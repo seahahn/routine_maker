@@ -1,8 +1,15 @@
 package com.seahahn.routinemaker.util
 
+import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Rect
 import android.util.Log
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +24,7 @@ open class Util  : AppCompatActivity() {
 
     private val TAG = this::class.java.simpleName
     private lateinit var retrofit : Retrofit
-    private lateinit var service : RetrofitService
+    lateinit var service : RetrofitService
 
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
@@ -73,6 +80,45 @@ open class Util  : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    // 액티비티 하단에 꽉 차는 버튼 있는 경우에 해당 버튼의 텍스트 설정하기
+    fun setFullBtmBtnText(btn: Button) {
+        when(btn.id) {
+            R.id.resetpwBtn -> btn.text = getString(R.string.resetpwtext1)
+            R.id.makeRt -> btn.text = getString(R.string.makeRt)
+            R.id.updateRt -> btn.text = getString(R.string.updateRt)
+            R.id.makeTodo -> btn.text = getString(R.string.makeTodo)
+            R.id.updateTodo -> btn.text = getString(R.string.updateTodo)
+//            R.id.makeAction -> btn.text = getString(R.string.makeAction)
+//            R.id.updateAction -> btn.text = getString(R.string.updateAction)
+        }
+    }
+
+    // EditText에 있던 포커스를 다른 곳 클릭하면 해제해주는 메소드
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val v: View? = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+
+
+
+
+
+
+
 
 
     // 파일 업로드 예시

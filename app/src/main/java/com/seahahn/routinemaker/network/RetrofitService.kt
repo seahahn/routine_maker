@@ -1,6 +1,8 @@
 package com.seahahn.routinemaker.network
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.seahahn.routinemaker.main.RtData
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.GET
@@ -74,6 +76,42 @@ interface RetrofitService {
         @Field("id") id: Int,
         @Field("subject") subject: String,
         @Field("content") content: String
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/make_rt.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
+    fun makeRt(
+        @Field("m_type") mType: String,
+        @Field("title") title: String,
+        @Field("m_days") mDays: String,
+        @Field("alarm") alarm: Boolean,
+        @Field("m_time") time: String,
+        @Field("on_feed") onFeed: Boolean,
+        @Field("memo") memo: String,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/update_rt.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
+    fun updateRt(
+        @Field("id") id: Int,
+        @Field("title") title: String,
+        @Field("m_days") mDays: String,
+        @Field("alarm") alarm: Boolean,
+        @Field("m_time") time: String,
+        @Field("on_feed") onFeed: Boolean,
+        @Field("memo") memo: String
+//        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/main/get_rts.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    fun getRts(
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<RtData>>
+
+    @GET("/api/main/get_rt.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    fun getRt(
+        @Query("id") rtId: Int
     ) : Call<JsonObject>
 
 }

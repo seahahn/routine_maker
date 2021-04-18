@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 
 class ResetpwActivity : User() {
     private val TAG = this::class.java.simpleName
-    private lateinit var service : RetrofitService
+//    private lateinit var service : RetrofitService
 
     private lateinit var from : String
 
@@ -50,6 +50,7 @@ class ResetpwActivity : User() {
 
         // 비밀번호 재설정 버튼
         val resetpwBtn = findViewById<AppCompatButton>(R.id.resetpwBtn)
+        setFullBtmBtnText(resetpwBtn) // 버튼 텍스트 세팅하기("비밀번호 재설정")
         resetpwBtn.setOnClickListener {
             if(formCheck(pw.toString(), pwc.toString())) {
                 resetPwOk(service, email.toString(), pw.toString(), pwc.toString())

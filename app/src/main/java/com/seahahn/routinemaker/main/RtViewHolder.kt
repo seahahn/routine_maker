@@ -1,18 +1,22 @@
 package com.seahahn.routinemaker.main
+
+import android.content.Intent
 import android.util.Log.d
 import android.view.MenuItem
 import android.widget.Toast
-
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
-import org.jetbrains.anko.toast
+import com.seahahn.routinemaker.util.Main
+import org.jetbrains.anko.startActivity
+import java.lang.Integer.parseInt
 
-class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView){
+class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     private val TAG = this::class.java.simpleName
 
@@ -38,17 +42,46 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView){
         time.text = rtData.time // 루틴 시작 예정 시각
 
         // 요일 데이터는 리스트로 저장했기 때문에 이를 하나의 문자열로 바꿔줌
-        val showDays = rtData.days.joinToString(separator = " ")
-        days.text = showDays // 루틴 반복 요일
+//        val showDays = rtData.mDays.joinToString(separator = " ")
+        days.text = rtData.mDays // 루틴 반복 요일
     }
 
     inner class MoreBtnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             PopupMenu(v!!.context, v).apply {
                 // MainActivity implements OnMenuItemClickListener
-                setOnMenuItemClickListener(MainActivity())
+                setOnMenuItemClickListener(RtPopupMenuListener(v))
                 inflate(R.menu.menu_rt_more)
                 show()
+            }
+        }
+    }
+
+    // 루틴 목록의 아이템 더보기 아이콘의 팝업 메뉴 항목별 동작할 내용
+    inner class RtPopupMenuListener(v: View) : Main(), PopupMenu.OnMenuItemClickListener {
+
+        private val TAG = this::class.java.simpleName
+
+        // 루틴 수정 또는 삭제 시 해당 루틴의 DB 내 고유 번호 전달하기
+        private val rtItem = v // 더보기 버튼에 지정해둔 태그를 통해 해당 루틴 데이터를 갖고 오기 위함
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.rtUpdate -> { // 루틴 수정
+                    d(TAG, "rtUpdate : "+rtItem.tag)
+                    val id = parseInt(rtItem.tag.toString())
+                    val context = rtItem.context
+//                    startActivity<RtUpdateActivity>("id" to id)
+                    val it = Intent(context, RtUpdateActivity::class.java)
+                    it.putExtra("id", id)
+                    context.startActivity(it)
+//                    rtItem.tag
+                    true
+                }
+                R.id.rtDelete -> { // 루틴 삭제
+                    d(TAG, "rtDelete")
+                    true
+                }
+                else -> false
             }
         }
     }

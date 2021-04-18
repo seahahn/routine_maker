@@ -18,6 +18,18 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".main.ActionUpdateActivity">
+        </activity>
+        <activity android:name=".main.ActionMakeActivity">
+        </activity>
+        <activity android:name=".main.TodoUpdateActivity">
+        </activity>
+        <activity android:name=".main.TodoMakeActivity">
+        </activity>
+        <activity android:name=".main.RtUpdateActivity">
+        </activity>
+        <activity android:name=".main.RtMakeActivity">
+        </activity>
         <activity android:name=".stts.SttsActivity">
         </activity>
         <activity android:name=".notice.NoticeActivity">
