@@ -4,14 +4,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="wrap_content" android:layout_width="wrap_content">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabMain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_plus_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/fabTodo"
                 android:layout_width="wrap_content"
@@ -33,5 +25,14 @@
                 android:layout_marginBottom="12dp"
                 app:layout_constraintBottom_toTopOf="@+id/fabTodo"
                 app:layout_constraintEnd_toEndOf="@+id/fabTodo"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_plus_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

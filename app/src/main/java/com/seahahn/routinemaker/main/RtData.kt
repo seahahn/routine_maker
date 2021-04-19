@@ -18,6 +18,7 @@ data class RtData(
     val rtTitle : String,
     val mDays : String,
     val alarm : Boolean,
+    val date : String,
     val time : String,
     val onFeed : Boolean,
     val memo : String,

@@ -26,6 +26,7 @@ class MainActivity : Main() {
     private lateinit var mainReviewFragment: MainReviewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

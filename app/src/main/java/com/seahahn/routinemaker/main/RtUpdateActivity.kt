@@ -1,19 +1,11 @@
 package com.seahahn.routinemaker.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.EditText
-import android.widget.TextView
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputEditText
-import com.nex3z.togglebuttongroup.MultiSelectToggleGroup
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
 
-class RtUpdateActivity : Main(), MultiSelectToggleGroup.OnCheckedStateChangeListener, CompoundButton.OnCheckedChangeListener {
+class RtUpdateActivity : Main() {
 
     private val TAG = this::class.java.simpleName
 
@@ -28,26 +20,11 @@ class RtUpdateActivity : Main(), MultiSelectToggleGroup.OnCheckedStateChangeList
         val titleText = getString(R.string.updateRt) // 툴바 제목에 들어갈 텍스트
         initToolbar(title, titleText, 1) // 툴바 세팅하기
 
-        initRtTodoActivity(R.id.updateRt)
+        initRtTodoActivity(R.id.updateRt) // 액티비티 구성 요소 초기화하기
 
-        rtId = intent.getIntExtra("id", 0)
-
-        getRt(service, rtId)
+        rtId = intent.getIntExtra("id", 0) // DB 내 루틴의 고유 번호 받기
+        getRt(service, rtId) // 고유 번호에 해당하는 데이터 가져와서 세팅하기
     }
-
-//    // 선택된 반복 요일 값 가져오기
-//    override fun onCheckedStateChanged(group: MultiSelectToggleGroup?, checkedId: Int, isChecked: Boolean) {
-//        val checked = group?.checkedIds
-//        Log.d(TAG, "checked : $checked")
-//    }
-//
-//    // 시작 알람 활성화 여부 및 그룹 피드 공개 여부 값 가져오기
-//    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-//        when(buttonView?.id) {
-//            R.id.activateAlarm -> Log.d(TAG, "activateAlarm : $isChecked")
-//            R.id.rtOnFeed -> Log.d(TAG, "rtOnFeed : $isChecked")
-//        }
-//    }
 
     // 툴바 우측 메뉴 버튼 설정
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

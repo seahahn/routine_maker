@@ -65,7 +65,7 @@ open class Util  : AppCompatActivity() {
         title.text = titleText // 제목 설정
     }
 
-    // 툴바 버튼 클릭 시 작동할 기능
+    // 툴바 좌측 버튼 클릭 시 작동할 기능
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(TAG, "onOptionsItemSelected")
         when(item.itemId){

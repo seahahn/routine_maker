@@ -24,10 +24,6 @@ class MainRoutineFragment : Fragment() {
     private lateinit var rtList: RecyclerView
     var mDatas = mutableListOf<RtData>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,25 +41,15 @@ class MainRoutineFragment : Fragment() {
         })
 
         rtTodoViewModel.gottenRtData.observe(this, Observer { rtDatas ->
-            d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")
-            mDatas = rtDatas
+//            d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")
+            mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
 
-            rtList = view.findViewById(R.id.rtList)
-            rtAdapter = RtAdapter()
-            rtList.adapter = rtAdapter
+            rtList = view.findViewById(R.id.rtList) // 리사이클러뷰 초기화
+            rtAdapter = RtAdapter() // 어댑터 초기화
+            rtList.adapter = rtAdapter // 어댑터 연결
 
-            d(TAG, "루틴 프래그먼트 mDatas : $mDatas")
-            rtAdapter.replaceList(mDatas)
+//            d(TAG, "루틴 프래그먼트 mDatas : $mDatas")
+            rtAdapter.replaceList(mDatas) // 어댑터에 가져온 데이터 연결하여 출력하기
         })
-
-
-
-//        for(i in 1..999) {
-////            d(TAG, "rt list data $i")
-//            mDatas.add(RtData(i, "rt", "test $i",
-//                listOf("월", "수", "금"), true, "05:00", true,
-//                "테스트 메모", 30, "2021-04-18 16:07:31"))
-//        }
-
     }
 }

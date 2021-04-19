@@ -1,8 +1,12 @@
 package com.seahahn.routinemaker.util
 
+import android.widget.Toast
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.util.Log.d
@@ -12,6 +16,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
@@ -42,7 +47,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-
 open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, MultiSelectToggleGroup.OnCheckedStateChangeListener, CompoundButton.OnCheckedChangeListener{
 
     private val TAG = this::class.java.simpleName
@@ -72,8 +76,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     private val current = LocalDate.now() // 오늘 날짜 데이터
     private val currentHM = LocalTime.now() // 현재 시각 데이터
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일)
+    private val formatterNonDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
     private val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) // 문자열 형식(시 분)
     val formatted: String = current.format(formatter) // 툴바 제목에 들어가는 문자열
+    val formattedNonDay: String = current.format(formatterNonDay) // 할 일 수행예정일에 들어가는 문자열
     val formattedHM: String = currentHM.format(formatterHM) // 툴바 제목에 들어가는 문자열
 
     // 상단 툴바에 날짜 나올 경우 양쪽에 좌우 화살표 초기화함. 좌는 하루 전, 우는 하루 뒤로 이동시킴
@@ -89,16 +95,21 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     lateinit var mainTitleInput : TextInputEditText
     lateinit var mainTitle : Editable
     lateinit var mainDays : MultiSelectToggleGroup
-    lateinit var mainDaysResult : MutableList<String>
+    var mainDaysResult : MutableList<String> = mutableListOf()
     lateinit var activateAlarm : SwitchMaterial
     var activateAlarmResult : Boolean = true
-    lateinit var startTime : TextView
+    lateinit var startTime : TextView // 루틴, 할 일의 수행 예정 시각
     lateinit var startTimeResult : String
+    lateinit var startDate : TextView // '할 일'의 수행 예정일
+    lateinit var startDateResult : String
+    lateinit var startDateResultParsed : LocalDate
     lateinit var memo : EditText
     lateinit var memotxt : Editable
     lateinit var btmBtn : Button
     lateinit var rtOnFeed : SwitchMaterial
     var rtOnFeedResult : Boolean = true
+    lateinit var repeat : SwitchMaterial
+    var repeatResult : Boolean = true
 
     // FAB가 필요한 액티비티인 경우 초기화하기
     lateinit var fabtn : ConstraintLayout // 여러 개의 FAB 포함한 레이아웃
@@ -139,7 +150,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
-    fun showDatePicker(title: TextView, c: Calendar, dd: Calendar ,y: Int, m: Int, d: Int) {
+    fun setToolbarDate(title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int) {
 //        Log.d(TAG, "input : $m $d")
         DatePickerDialog(this,
             { _, year, month, day->
@@ -159,6 +170,21 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
             },
             y, m, d) // DatePicker가 열리면 보여줄 날짜 초기값
+            .show()
+    }
+
+    // 할 일 만들기, 수정하기의 수행 예정일 선택을 받기 위한 메소드
+    fun setStartDate() {
+        DatePickerDialog(this,
+            { _, year, month, day->
+                val date = LocalDate.of(year, month+1, day)
+                val formatted: String = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                val formattedForShow: String = date.format(formatterNonDay)
+
+                startDate.text = formattedForShow // 수행 예정일에 사용자가 선택한 날짜 집어넣기
+                startDateResult = formatted
+            },
+            startDateResultParsed.year, startDateResultParsed.monthValue-1, startDateResultParsed.dayOfMonth) // DatePicker가 열리면 보여줄 날짜 초기값
             .show()
     }
 
@@ -210,7 +236,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             dateDataFormatted = dateformatter.format(dateData.time)
             when(v?.id) {
                 R.id.toolbarTitle -> { // 제목 클릭한 경우에는 날짜 선택 가능하게 달력(DatePickerDialog)을 띄움
-                    showDatePicker(title, cal, dateData, y, m, d)
+                    setToolbarDate(title, cal, dateData, y, m, d)
                 }
                 R.id.left -> { // 좌측 화살표 누르면 하루 전으로
                     onedayMove(title, cal, dateData, y, m, d, -1)
@@ -225,7 +251,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 내비(좌측, 하단) 메뉴 클릭 시 작동할 기능
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "onNavigationItemSelected")
+        d(TAG, "onNavigationItemSelected")
         when(item.itemId){
             R.id.mypage-> startActivity<MypageActivity>()
             R.id.notice-> startActivity<NoticeActivity>("url" to "https://www.notion.so/e37b0494d08549a2984c58a7962b7a72") // 노션에 만들어둔 공지사항 페이지로 이동
@@ -260,7 +286,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
     override fun onBackPressed() { //뒤로가기 처리
-        Log.d(TAG, "onBackPressed")
+        d(TAG, "onBackPressed")
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawers()
             // 테스트를 위해 뒤로가기 버튼시 Toast 메시지
@@ -290,8 +316,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         startTimeResult = formattedHM
         startTime.setOnClickListener(BtnClickListener())
 
-        // 그룹 피드 공개 여부 가져오기
+        // 액티비티별로 별개인 요소 초기화하기
         when(TAG) {
+            // 루틴 만들기, 수정하기 액티비티는 그룹 피드 공개 여부 초기화하기
             "RtMakeActivity" -> {
                 rtOnFeed = findViewById(R.id.rtOnFeed)
                 rtOnFeed.setOnCheckedChangeListener(this)
@@ -299,6 +326,28 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             "RtUpdateActivity" -> {
                 rtOnFeed = findViewById(R.id.rtOnFeed)
                 rtOnFeed.setOnCheckedChangeListener(this)
+            }
+
+            // 할 일 만들기, 수정하기 액티비티는 반복 여부 및 수행 예정일 초기화하기
+            "TodoMakeActivity" -> {
+                repeat = findViewById(R.id.repeat) // 반복 여부 스위치 초기화하기
+                repeat.setOnCheckedChangeListener(this)
+
+                startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
+                startDate.setOnClickListener(BtnClickListener())
+                startDate.text = formattedNonDay
+                startDateResult = formattedNonDay
+                repeat.setOnCheckedChangeListener(this)
+            }
+            "TodoUpdateActivity" -> {
+                repeat = findViewById(R.id.repeat) // 반복 여부 스위치 초기화하기
+                repeat.setOnCheckedChangeListener(this)
+
+                startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
+                startDate.setOnClickListener(BtnClickListener())
+                startDate.text = formattedNonDay
+                startDateResult = formattedNonDay
+                repeat.setOnCheckedChangeListener(this)
             }
         }
 
@@ -329,8 +378,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // fabMain 클릭 시 작동할 기능 초기화
     private fun onFABMainClick() {
-        setVisibility(fabClosed)
         setAnimation(fabClosed)
+        setVisibility(fabClosed)
         fabClosed = !fabClosed
     }
 
@@ -352,11 +401,15 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     private fun setVisibility(closed:Boolean) {
         if(!closed)
         {
-            fabTodo.visibility = View.VISIBLE
-            fabRt.visibility = View.VISIBLE
+//            fabTodo.visibility = View.VISIBLE
+//            fabRt.visibility = View.VISIBLE
+            fabTodo.show()
+            fabRt.show()
         }else{
-            fabTodo.visibility = View.INVISIBLE
-            fabRt.visibility = View.INVISIBLE
+//            fabTodo.visibility = View.INVISIBLE
+//            fabRt.visibility = View.INVISIBLE
+            fabTodo.hide()
+            fabRt.hide()
         }
     }
 
@@ -372,51 +425,100 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 // 하단에 가로로 꽉 차는 버튼인 경우
                 R.id.makeRt -> {
                     val type = getString(R.string.rt) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
-                    makeRt(service, type, mainTitle.toString(), mainDaysResult,
-                        activateAlarmResult, startTimeResult, rtOnFeedResult,
+                    if(inputCheck()) makeRt(service, type, mainTitle.toString(), mainDaysResult,
+                        activateAlarmResult, "", startTimeResult, rtOnFeedResult,
                         memotxt.toString(), UserInfo.getUserId(applicationContext))
                 }
                 R.id.updateRt -> {
                     mainTitle = mainTitleInput.text!!
                     memotxt = memo.text
-                    updateRt(service, rtId, mainTitle.toString(), mainDaysResult,
-                        activateAlarmResult, startTimeResult, rtOnFeedResult,
-                        memotxt.toString())
+                    if(inputCheck()) updateRt(service, rtId, mainTitle.toString(), mainDaysResult,
+                        activateAlarmResult, "", startTimeResult, rtOnFeedResult, memotxt.toString())
                 }
-                R.id.makeTodo -> toast("makeTodo")
-                R.id.updateTodo -> toast("updateTodo")
+                R.id.makeTodo -> {
+                    val type = getString(R.string.todo) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
+                    if(inputCheck()) makeRt(service, type, mainTitle.toString(), mainDaysResult,
+                        activateAlarmResult, startDateResult, startTimeResult, repeatResult,
+                        memotxt.toString(), UserInfo.getUserId(applicationContext))
+                }
+                R.id.updateTodo -> {
+                    mainTitle = mainTitleInput.text!!
+                    memotxt = memo.text
+                    if(inputCheck()) updateRt(service, rtId, mainTitle.toString(), mainDaysResult,
+                        activateAlarmResult, startDateResult, startTimeResult, repeatResult, memotxt.toString())
+                }
 
-                // 루틴, 할 일 만들기 or 수정에서 "수행 예정 시각" 받아오기
+                // 루틴, 할 일 만들기 or 수정에서 "수행 예정 시각" 또는 "수행 예정일" 받아오기
                 R.id.startTime -> showTimePicker()
+                R.id.startDate -> setStartDate()
             }
         }
+    }
+
+    // 툴바 우측 버튼 눌렀을 때의 동작 구현
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        d(TAG, "onOptionsItemSelected Main")
+        when(item.itemId){
+            R.id.toolbarTrash -> showAlert("삭제하기", "정말 삭제하시겠어요?", "확인", "취소")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    // 루틴 또는 할 일 삭제 시 재확인 받는 다이얼로그 띄우기
+    override fun showAlert(title: String, msg: String, pos: String, neg: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(msg)
+            .setPositiveButton(pos) { _: DialogInterface, _: Int ->
+                deleteRt(service, rtId, this)
+                finish()
+            }
+            .setNegativeButton(neg) { _: DialogInterface, _: Int -> }
+            .show()
+    }
+
+    // 루틴, 할 일, 루틴 내 행동의 제목을 입력하지 않은 경우 입력하도록 안내하기
+    // 반복 요일 설정해야 하는데 안 헀을 경우 최소한 1개 요일 입력하도록 안내하기
+    fun inputCheck(): Boolean {
+        d(TAG, "mainDaysResult.size : "+mainDaysResult.size)
+        if(mainTitle.isBlank()) {
+            // 루틴, 할 일, 루틴 내 행동의 제목을 입력하지 않은 경우 입력하도록 안내하기
+            toast(getString(R.string.titleEmpty))
+            return false
+        }
+        else if(((TAG == "RtMakeActivity" || TAG == "RtUpdateActivity") || ((TAG == "TodoMakeActivity" || TAG == "TodoUpdateActivity") && repeatResult))
+            && mainDaysResult.size == 0) {
+            // 반복 요일 설정해야 하는데 안 헀을 경우 최소한 1개 요일 입력하도록 안내하기
+            toast(getString(R.string.daysEmpty))
+            return false
+        }
+        return true
     }
 
     // 루틴, 할 일, 루틴 내 행동 만들기 및 수정하기 액티비티에서 선택된 반복 요일 값 가져오기
     override fun onCheckedStateChanged(group: MultiSelectToggleGroup?, checkedId: Int, isChecked: Boolean) {
         val checkedIds = group?.checkedIds // 선택된 요일들의 id값 가져오기
         val array = checkedIds?.toIntArray() // 가져온 id값을 Array로 변환
+        d(TAG, "checkedIds : $checkedIds")
+        d(TAG, "array : "+array.toString())
+        d(TAG, "checkedId : "+ resources.getResourceEntryName(checkedId))
 
         val days: MutableList<String> = mutableListOf() // 선택된 요일들을 문자열로 바꿔서 담을 리스트
         for (i in 0 until array!!.size) {
-            var checkedDay = ""
-            when(array[i]) {
-                2131231309 -> checkedDay = getString(R.string.sunday)
-                2131231103 -> checkedDay = getString(R.string.monday)
-                2131231380 -> checkedDay = getString(R.string.tuesday)
-                2131231432 -> checkedDay = getString(R.string.wednesday)
-                2131231347 -> checkedDay = getString(R.string.thursday)
-                2131230985 -> checkedDay = getString(R.string.friday)
-                2131231231 -> checkedDay = getString(R.string.saturday)
+            var checkedDay = resources.getResourceEntryName(array[i])
+            when(checkedDay) {
+                "sun" -> checkedDay = getString(R.string.sunday)
+                "mon" -> checkedDay = getString(R.string.monday)
+                "tue" -> checkedDay = getString(R.string.tuesday)
+                "wed" -> checkedDay = getString(R.string.wednesday)
+                "thu" -> checkedDay = getString(R.string.thursday)
+                "fri" -> checkedDay = getString(R.string.friday)
+                "sat" -> checkedDay = getString(R.string.saturday)
             }
             days.add(checkedDay)
         }
-
         mainDaysResult = days // 일, 월, ... , 토 의 순서대로 정렬한 결과를 액티비티에서 사용할 변수에 담아줌
-        /* 일 월 화 수 목 금 토
-        * 2131231309 2131231103 2131231380 2131231432 2131231347 2131230985 2131231231
-        */
-        Log.d(TAG, "mainDaysResult : $mainDaysResult")
+        d(TAG, "mainDaysResult : $mainDaysResult")
     }
 
     // 루틴, 할 일, 루틴 내 행동 만들기 및 수정하기 액티비티에서 시작 알람 활성화 여부 및 그룹 피드 공개 여부 값 가져오기
@@ -424,11 +526,20 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         when(buttonView?.id) {
             R.id.activateAlarm -> {
                 activateAlarmResult = isChecked
-                d(TAG, "체크 여부 : $activateAlarmResult, $rtOnFeedResult")
             }
             R.id.rtOnFeed -> {
                 rtOnFeedResult = isChecked
-                d(TAG, "체크 여부 : $activateAlarmResult, $rtOnFeedResult")
+            }
+            R.id.repeat -> {
+                repeatResult = isChecked
+                if(!repeatResult) {
+                    mainDays.isEnabled = repeatResult
+                    mainDays.clearCheck()
+                    mainDays.visibility = View.GONE
+                } else {
+                    mainDays.isEnabled = repeatResult
+                    mainDays.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -438,16 +549,16 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         service : RetrofitService,
         mType : String,
         title : String,
-        mDays : List<String>,
+        mDays : MutableList<String>,
         alarm : Boolean,
+        date : String,
         time : String,
         onFeed : Boolean,
         memo : String,
         userId : Int) {
         d(TAG, "변수들 : $mType, $title, $mDays, $alarm, $time, $onFeed, $memo, $userId")
-        val days = mDays.joinToString(separator = " ") // 리스트를 문자열로 바꿔서 보내기 위함
-        d(TAG, "days : $days")
-        service.makeRt(mType, title, days, alarm, time, onFeed, memo, userId).enqueue(object : Callback<JsonObject> {
+        val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
+        service.makeRt(mType, title, days, alarm, date, time, onFeed, memo, userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴(할 일) 저장하기 실패 : {$t}")
             }
@@ -474,15 +585,15 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         service : RetrofitService,
         id : Int,
         title : String,
-        mDays : List<String>,
+        mDays : MutableList<String>,
         alarm : Boolean,
+        date : String,
         time : String,
         onFeed : Boolean,
         memo : String) {
         d(TAG, "변수들 : $id, $title, $mDays, $alarm, $time, $onFeed, $memo")
-        val days = mDays.joinToString(separator = " ") // 리스트를 문자열로 바꿔서 보내기 위함
-        d(TAG, "days : $days")
-        service.updateRt(id, title, days, alarm, time, onFeed, memo).enqueue(object : Callback<JsonObject> {
+        val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
+        service.updateRt(id, title, days, alarm, date, time, onFeed, memo).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴(할 일) 수정하기 실패 : {$t}")
             }
@@ -504,7 +615,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         })
     }
 
-    // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
+    // 메인 액티비티 '루틴' 탭에서 루틴 및 할 일 목록 불러오기
     fun getRts(service: RetrofitService, userId : Int) {
         d(TAG, "변수들 : $userId")
         service.getRts(userId).enqueue(object : Callback<MutableList<RtData>> {
@@ -514,14 +625,14 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
             override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
                 d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
-                d(TAG, "getRt : "+response.body().toString())
+                d(TAG, "getRts : "+response.body().toString())
                 val rtdatas = response.body()
                 rtTodoViewModel.setList(rtdatas!!)
             }
         })
     }
 
-    // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
+    // '루틴 수정하기' 또는 '할 일 수정하기' 액티비티에 루틴 또는 할 일의 데이터 세팅하기
     fun getRt(service: RetrofitService, rtId : Int) {
         d(TAG, "변수들 : $rtId")
         service.getRt(rtId).enqueue(object : Callback<JsonObject> {
@@ -535,11 +646,63 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
 
                 mainTitleInput.setText(gson.get("rtTitle").asString)
-//                mainDays mDays
+                val days = gson.get("mDays").asString.replace(" ", "").toMutableList()
+                d(TAG, "days : $days")
+//                if(days.size > 0) {
+                    for(i in 0 until days.size) {
+                        var day = ""
+                        d(TAG, "days[i] : "+days[i])
+                        when(days[i].toString()) {
+                            getString(R.string.sunday) -> day = "sun"
+                            getString(R.string.monday) -> day = "mon"
+                            getString(R.string.tuesday) -> day = "tue"
+                            getString(R.string.wednesday) -> day = "wed"
+                            getString(R.string.thursday) -> day = "thu"
+                            getString(R.string.friday) -> day = "fri"
+                            getString(R.string.saturday) -> day = "sat"
+                        }
+                        mainDays.check(resources.getIdentifier(day, "id", packageName))
+                    }
+//                }
                 activateAlarm.isChecked = gson.get("alarm").asInt == 1
                 startTime.text = gson.get("time").asString
-                rtOnFeed.isChecked = gson.get("onFeed").asInt == 1
+                startTimeResult = gson.get("time").asString
+
+                if(TAG == "RtMakeActivity" || TAG == "RtUpdateActivity") {
+                    rtOnFeed.isChecked = gson.get("onFeed").asInt == 1
+                } else if(TAG == "TodoMakeActivity" || TAG == "TodoUpdateActivity") {
+                    repeat.isChecked = gson.get("onFeed").asInt == 1
+
+                    val formattedForShow: String = LocalDate.parse(gson.get("date").asString).format(formatterNonDay)
+                    startDate.text = formattedForShow
+                    startDateResult = gson.get("date").asString
+                    startDateResultParsed = LocalDate.parse(startDateResult)
+                }
                 memo.setText(gson.get("memo").asString)
+            }
+        })
+    }
+
+    // 루틴(할 일) 삭제하기
+    fun deleteRt(service: RetrofitService, rtId : Int, context : Context) {
+        d(TAG, "변수들 : $rtId")
+        service.deleteRt(rtId).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "루틴(할 일) 데이터 삭제 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "루틴(할 일) 데이터 삭제 요청 응답 수신 성공")
+                d(TAG, "getRt : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when(result) {
+                    true -> {
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    }
+                    false -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }

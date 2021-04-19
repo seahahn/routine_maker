@@ -85,6 +85,7 @@ interface RetrofitService {
         @Field("title") title: String,
         @Field("m_days") mDays: String,
         @Field("alarm") alarm: Boolean,
+        @Field("m_date") date: String,
         @Field("m_time") time: String,
         @Field("on_feed") onFeed: Boolean,
         @Field("memo") memo: String,
@@ -98,6 +99,7 @@ interface RetrofitService {
         @Field("title") title: String,
         @Field("m_days") mDays: String,
         @Field("alarm") alarm: Boolean,
+        @Field("m_date") date: String,
         @Field("m_time") time: String,
         @Field("on_feed") onFeed: Boolean,
         @Field("memo") memo: String
@@ -111,6 +113,11 @@ interface RetrofitService {
 
     @GET("/api/main/get_rt.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
     fun getRt(
+        @Query("id") rtId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/main/delete_rt.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    fun deleteRt(
         @Query("id") rtId: Int
     ) : Call<JsonObject>
 

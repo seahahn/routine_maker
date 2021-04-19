@@ -19,7 +19,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RtMakeActivity : Main(), MultiSelectToggleGroup.OnCheckedStateChangeListener, CompoundButton.OnCheckedChangeListener {
+class RtMakeActivity : Main() {
 
     private val TAG = this::class.java.simpleName
 
@@ -36,18 +36,4 @@ class RtMakeActivity : Main(), MultiSelectToggleGroup.OnCheckedStateChangeListen
 
         initRtTodoActivity(R.id.makeRt) // 액티비티 구성 요소 초기화하기
     }
-
-//    // 선택된 반복 요일 값 가져오기
-//    override fun onCheckedStateChanged(group: MultiSelectToggleGroup?, checkedId: Int, isChecked: Boolean) {
-//        val checked = group?.checkedIds
-//        d(TAG, "checked : $checked")
-//    }
-//
-//    // 시작 알람 활성화 여부 및 그룹 피드 공개 여부 값 가져오기
-//    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-//        when(buttonView?.id) {
-//            R.id.activateAlarm -> d(TAG, "activateAlarm : $isChecked")
-//            R.id.rtOnFeed -> d(TAG, "rtOnFeed : $isChecked")
-//        }
-//    }
 }
