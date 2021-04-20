@@ -116,6 +116,7 @@
     <string name="rt">rt</string>
     <string name="todo">todo</string>
 
+    <string name="showAll">전체 목록 보기</string>
     <string name="rtTitle">루틴 제목</string>
     <string name="rtTitlePh">루틴의 제목을 입력해주세요</string>
     <string name="todoTitle">할 일 제목</string>

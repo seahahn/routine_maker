@@ -18,6 +18,10 @@ import com.seahahn.routinemaker.user.MypageActivity
 import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.startActivity
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.HashMap
 
 class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
@@ -27,6 +31,9 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     private val moreBtn : ImageButton = itemView.findViewById(R.id.more_btn)
     private val time : TextView = itemView.findViewById(R.id.rt_time)
     private val days : TextView = itemView.findViewById(R.id.rt_days)
+
+    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일)
+
 
     init {
         itemView.setOnClickListener {
@@ -42,7 +49,10 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         moreBtn.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType)
         moreBtn.setOnClickListener(MoreBtnClickListener())
 
-        time.text = rtData.time // 루틴 시작 예정 시각
+        when(rtData.mType) {
+            "rt" -> time.text = rtData.time // 루틴 시작 예정 시각
+            "todo" -> (LocalDate.parse(rtData.date).format(formatter).toString() + " " +rtData.time).also { time.text = it } // 할 일 수행 예정일 및 예정 시각
+        }
 
         days.text = rtData.mDays // 루틴 반복 요일
     }

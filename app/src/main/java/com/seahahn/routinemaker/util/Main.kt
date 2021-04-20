@@ -99,10 +99,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     lateinit var activateAlarm : SwitchMaterial
     var activateAlarmResult : Boolean = true
     lateinit var startTime : TextView // 루틴, 할 일의 수행 예정 시각
-    lateinit var startTimeResult : String
-    lateinit var startDate : TextView // '할 일'의 수행 예정일
-    lateinit var startDateResult : String
-    lateinit var startDateResultParsed : LocalDate
+    lateinit var startTimeResult : String // DB에 저장될 수행 예정 시각 값
+    var startTimeResultParsed : LocalTime = LocalTime.now() // TimePicker에 보여주기 위해서 LocalTime 형식으로 바꾼 수행 예정 시각 값
+    lateinit var startDate : TextView // 할 일의 수행 예정일
+    lateinit var startDateResult : String // DB에 저장될 수행 예정일 값
+    var startDateResultParsed : LocalDate = LocalDate.now() // DatePicker에 보여주기 위해서 LocalTime 형식으로 바꾼 수행 예정 시각 값
     lateinit var memo : EditText
     lateinit var memotxt : Editable
     lateinit var btmBtn : Button
@@ -214,7 +215,6 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 루틴 또는 할 일 만들거나 수정할 경우에 '수행 예정 시각' 선택을 받기 위해서 사용되는 메소드
     fun showTimePicker() {
-        val cal = Calendar.getInstance()
         TimePickerDialog(this,
             {
                 _, h, m ->
@@ -222,7 +222,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 startTime.text = startTimeResult // 사용자가 선택한 시각에 맞게 화면의 '수행 예정 시각'도 변경시킴
                 d(TAG, "startTimeResult : $startTimeResult")
            },
-            cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), // timepicker 출력 시의 시각으로 초기값 설정함
+            startTimeResultParsed.hour, startTimeResultParsed.minute, // timepicker 출력 시의 시각으로 초기값 설정함
             true)
             .show()
     }
@@ -545,17 +545,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
-    fun makeRt(
-        service : RetrofitService,
-        mType : String,
-        title : String,
-        mDays : MutableList<String>,
-        alarm : Boolean,
-        date : String,
-        time : String,
-        onFeed : Boolean,
-        memo : String,
-        userId : Int) {
+    fun makeRt(service : RetrofitService, mType : String, title : String, mDays : MutableList<String>, alarm : Boolean,
+        date : String, time : String, onFeed : Boolean, memo : String, userId : Int) {
         d(TAG, "변수들 : $mType, $title, $mDays, $alarm, $time, $onFeed, $memo, $userId")
         val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
         service.makeRt(mType, title, days, alarm, date, time, onFeed, memo, userId).enqueue(object : Callback<JsonObject> {
@@ -581,16 +572,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
-    fun updateRt(
-        service : RetrofitService,
-        id : Int,
-        title : String,
-        mDays : MutableList<String>,
-        alarm : Boolean,
-        date : String,
-        time : String,
-        onFeed : Boolean,
-        memo : String) {
+    fun updateRt(service : RetrofitService, id : Int, title : String, mDays : MutableList<String>, alarm : Boolean,
+        date : String, time : String, onFeed : Boolean, memo : String) {
         d(TAG, "변수들 : $id, $title, $mDays, $alarm, $time, $onFeed, $memo")
         val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
         service.updateRt(id, title, days, alarm, date, time, onFeed, memo).enqueue(object : Callback<JsonObject> {
@@ -667,6 +650,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 activateAlarm.isChecked = gson.get("alarm").asInt == 1
                 startTime.text = gson.get("time").asString
                 startTimeResult = gson.get("time").asString
+                startTimeResultParsed = LocalTime.parse(startTimeResult)
 
                 if(TAG == "RtMakeActivity" || TAG == "RtUpdateActivity") {
                     rtOnFeed.isChecked = gson.get("onFeed").asInt == 1
