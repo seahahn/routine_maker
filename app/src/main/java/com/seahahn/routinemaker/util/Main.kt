@@ -6,9 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.util.Log.d
 import android.view.MenuItem
 import android.view.View
@@ -35,6 +33,7 @@ import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
+import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -75,11 +74,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // 메인 액티비티에서는 오늘 날짜를 툴바 제목으로 씀
     private val current = LocalDate.now() // 오늘 날짜 데이터
     private val currentHM = LocalTime.now() // 현재 시각 데이터
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일)
-    private val formatterNonDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
+    private val formatterMDDoW: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일 요일)
+    private val formatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
+    private val formatterymd : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) // 문자열 형식(시 분)
-    val formatted: String = current.format(formatter) // 툴바 제목에 들어가는 문자열
-    val formattedNonDay: String = current.format(formatterNonDay) // 할 일 수행예정일에 들어가는 문자열
+    val formattedMDDoW: String = current.format(formatterMDDoW) // 툴바 제목에 들어가는 문자열
+    val formattedMonthDay: String = current.format(formatterMonthDay) // 할 일 수행예정일에 들어가는 문자열(월 일)
+    val formattedymd: String = current.format(formatterymd) // 할 일 수행예정일에 해당하는 날짜 데이터 값(yyyy-MM-dd)
     val formattedHM: String = currentHM.format(formatterHM) // 툴바 제목에 들어가는 문자열
 
     // 상단 툴바에 날짜 나올 경우 양쪽에 좌우 화살표 초기화함. 좌는 하루 전, 우는 하루 뒤로 이동시킴
@@ -180,9 +181,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             { _, year, month, day->
                 val date = LocalDate.of(year, month+1, day)
                 val formatted: String = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                val formattedForShow: String = date.format(formatterNonDay)
 
-                startDate.text = formattedForShow // 수행 예정일에 사용자가 선택한 날짜 집어넣기
+                startDate.text = date.format(formatterMonthDay) // 수행 예정일에 사용자가 선택한 날짜 집어넣기
                 startDateResult = formatted
             },
             startDateResultParsed.year, startDateResultParsed.monthValue-1, startDateResultParsed.dayOfMonth) // DatePicker가 열리면 보여줄 날짜 초기값
@@ -335,8 +335,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
                 startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
                 startDate.setOnClickListener(BtnClickListener())
-                startDate.text = formattedNonDay
-                startDateResult = formattedNonDay
+                startDate.text = formattedMonthDay
+                startDateResult = formattedymd
                 repeat.setOnCheckedChangeListener(this)
             }
             "TodoUpdateActivity" -> {
@@ -345,8 +345,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
                 startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
                 startDate.setOnClickListener(BtnClickListener())
-                startDate.text = formattedNonDay
-                startDateResult = formattedNonDay
+                startDate.text = formattedMonthDay
+                startDateResult = formattedymd
                 repeat.setOnCheckedChangeListener(this)
             }
         }
@@ -426,14 +426,14 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 R.id.makeRt -> {
                     val type = getString(R.string.rt) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
                     if(inputCheck()) makeRt(service, type, mainTitle.toString(), mainDaysResult,
-                        activateAlarmResult, "", startTimeResult, rtOnFeedResult,
+                        activateAlarmResult, getMDate(mainDaysResult.joinToString(separator = " "), "", 0), startTimeResult, rtOnFeedResult,
                         memotxt.toString(), UserInfo.getUserId(applicationContext))
                 }
                 R.id.updateRt -> {
                     mainTitle = mainTitleInput.text!!
                     memotxt = memo.text
                     if(inputCheck()) updateRt(service, rtId, mainTitle.toString(), mainDaysResult,
-                        activateAlarmResult, "", startTimeResult, rtOnFeedResult, memotxt.toString())
+                        activateAlarmResult, getMDate(mainDaysResult.joinToString(separator = " "), "", 0), startTimeResult, rtOnFeedResult, memotxt.toString())
                 }
                 R.id.makeTodo -> {
                     val type = getString(R.string.todo) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
@@ -453,6 +453,42 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 R.id.startDate -> setStartDate()
             }
         }
+    }
+
+    // 루틴 만들거나 수정할 경우 사용자가 선택한 수행 요일에 맞춰서 가장 빠른 날짜를 구하기 위한 메소드
+    fun getMDate(mDays: String, mDateInput : String, daysToAdd : Long): String {
+        // 루틴 또는 할 일을 수행한 날
+        val doneDay : LocalDate = if(mDateInput != "") {
+            LocalDate.parse(mDateInput)
+        } else {
+            LocalDate.now()
+        }
+        var mDate = doneDay.plusDays(daysToAdd) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+        var dayOfWeek = getDayOfWeek(mDate) // 요일 이름을 넣어둘 변수
+
+        while (!mDays.contains(dayOfWeek)) { // 루틴 또는 반복하는 할 일인 경우 다음 수행 요일에 맞는 날짜값 찾기
+            mDate = mDate.plusDays(1)
+            dayOfWeek = getDayOfWeek(mDate)
+
+//            d(TAG, "day : $mDate")
+//            d(TAG, "dayOfWeek : $dayOfWeek")
+        }
+        return mDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    }
+
+    // getMDate 메소드에서 사용자가 선택한 요일의 문자열값을 얻기 위한 메소드
+    fun getDayOfWeek(day : LocalDate): String {
+        var result = ""
+        when (day.dayOfWeek.toString()) {
+            "SUNDAY" -> result = "일"
+            "MONDAY" -> result = "월"
+            "TUESDAY" -> result = "화"
+            "WEDNESDAY" -> result = "수"
+            "THURSDAY" -> result = "목"
+            "FRIDAY" -> result = "금"
+            "SATURDAY" -> result = "토"
+        }
+        return result
     }
 
     // 툴바 우측 버튼 눌렀을 때의 동작 구현
@@ -547,7 +583,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
     fun makeRt(service : RetrofitService, mType : String, title : String, mDays : MutableList<String>, alarm : Boolean,
         date : String, time : String, onFeed : Boolean, memo : String, userId : Int) {
-        d(TAG, "변수들 : $mType, $title, $mDays, $alarm, $time, $onFeed, $memo, $userId")
+        d(TAG, "makeRt 변수들 : $mType, $title, $mDays, $alarm, $time, $onFeed, $memo, $userId")
         val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
         service.makeRt(mType, title, days, alarm, date, time, onFeed, memo, userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -574,7 +610,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
     fun updateRt(service : RetrofitService, id : Int, title : String, mDays : MutableList<String>, alarm : Boolean,
         date : String, time : String, onFeed : Boolean, memo : String) {
-        d(TAG, "변수들 : $id, $title, $mDays, $alarm, $time, $onFeed, $memo")
+        d(TAG, "updateRt 변수들 : $id, $title, $mDays, $alarm, $time, $onFeed, $memo")
         val days = mDays.joinToString(separator = " ") // MutableList를 요일 이름만 남긴 하나의 문자열로 바꿔줌
         service.updateRt(id, title, days, alarm, date, time, onFeed, memo).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -600,7 +636,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 메인 액티비티 '루틴' 탭에서 루틴 및 할 일 목록 불러오기
     fun getRts(service: RetrofitService, userId : Int) {
-        d(TAG, "변수들 : $userId")
+        d(TAG, "getRts 변수들 : $userId")
         service.getRts(userId).enqueue(object : Callback<MutableList<RtData>> {
             override fun onFailure(call: Call<MutableList<RtData>>, t: Throwable) {
                 d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
@@ -608,16 +644,20 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
             override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
                 d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
-                d(TAG, "getRts : "+response.body().toString())
+//                d(TAG, "getRts : "+response.body().toString())
                 val rtdatas = response.body()
-                rtTodoViewModel.setList(rtdatas!!)
+                try {
+                    rtTodoViewModel.setList(rtdatas!!)
+                } catch (e: IllegalStateException) {
+                    d(TAG, "error : $e")
+                }
             }
         })
     }
 
     // '루틴 수정하기' 또는 '할 일 수정하기' 액티비티에 루틴 또는 할 일의 데이터 세팅하기
     fun getRt(service: RetrofitService, rtId : Int) {
-        d(TAG, "변수들 : $rtId")
+        d(TAG, "getRt 변수들 : $rtId")
         service.getRt(rtId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴(할 일) 데이터 가져오기 실패 : {$t}")
@@ -657,7 +697,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 } else if(TAG == "TodoMakeActivity" || TAG == "TodoUpdateActivity") {
                     repeat.isChecked = gson.get("onFeed").asInt == 1
 
-                    val formattedForShow: String = LocalDate.parse(gson.get("date").asString).format(formatterNonDay)
+                    val formattedForShow: String = LocalDate.parse(gson.get("date").asString).format(formatterMonthDay)
                     startDate.text = formattedForShow
                     startDateResult = gson.get("date").asString
                     startDateResultParsed = LocalDate.parse(startDateResult)
@@ -669,7 +709,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 루틴(할 일) 삭제하기
     fun deleteRt(service: RetrofitService, rtId : Int, context : Context) {
-        d(TAG, "변수들 : $rtId")
+        d(TAG, "deleteRt 변수들 : $rtId")
         service.deleteRt(rtId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴(할 일) 데이터 삭제 실패 : {$t}")
@@ -684,9 +724,78 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 when(result) {
                     true -> {
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        getRts(service, UserInfo.getUserId(context))
                     }
                     false -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
+            }
+        })
+    }
+
+    // 루틴(할 일) 완료 처리하기
+    fun doneRt(context : Context, service: RetrofitService, rtId : Int, done : Int, mDays : String, mDateInput : String) {
+        d(TAG, "doneRt 변수들 : $rtId, $done, $mDays")
+        val mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+
+        service.doneRt(rtId, done, mDate).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "루틴(할 일) 수행 처리 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "루틴(할 일) 수행 처리 요청 응답 수신 성공")
+                d(TAG, "doneRt : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                getRts(service, UserInfo.getUserId(context))
+            }
+        })
+    }
+
+    // 메인 액티비티 회고 작성 내용 저장하기
+    fun setReview(service: RetrofitService, content: String, onPublic: Boolean, mDate: String) {
+        d(TAG, "setReview 변수들 : $content, $onPublic, $mDate")
+        service.setReview(content, onPublic, mDate, getUserId(applicationContext)).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "회고 저장 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "회고 저장 요청 응답 수신 성공")
+                d(TAG, "setReview : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when(result) {
+                    true -> {
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                    }
+                    false -> Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
+
+    // 메인 액티비티 회고 작성 내용 불러오기
+    fun getReview(service: RetrofitService, mDate: String, review: EditText, onPublicSwitch: SwitchMaterial) {
+        d(TAG, "getReview 변수들 : $mDate")
+        service.getReview(mDate, getUserId(applicationContext)).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "회고 불러오기 실패 : {$t}")
+                review.setText("")
+                onPublicSwitch.isChecked = true
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "회고 불러오기 요청 응답 수신 성공")
+                d(TAG, "getReview : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val content = gson.get("content").asString // 회고 내용
+                val onPublic = gson.get("on_public").asBoolean // 회고 공개 여부
+
+                review.setText(content)
+                onPublicSwitch.isChecked = onPublic
             }
         })
     }

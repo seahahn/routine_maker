@@ -207,7 +207,7 @@
                             android:maxLines="9999999"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/intro"
+                            android:id="@+id/review"
                             app:tetv_textViewColor="@color/fontDark"
                             app:tetv_editTextViewColor="@color/fontDark"
                             app:tetv_editTextBottomLineColor="@color/fontEdit"/>

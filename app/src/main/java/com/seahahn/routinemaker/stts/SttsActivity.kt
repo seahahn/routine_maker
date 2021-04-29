@@ -1,14 +1,11 @@
 package com.seahahn.routinemaker.stts
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.MainReviewFragment
-import com.seahahn.routinemaker.main.MainRoutineFragment
 import com.seahahn.routinemaker.util.Main
 
 class SttsActivity : Main() {
@@ -30,7 +27,7 @@ class SttsActivity : Main() {
         val leftnav_header = leftnav.getHeaderView(0)
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formatted, 0) // 툴바 세팅하기
+        initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)

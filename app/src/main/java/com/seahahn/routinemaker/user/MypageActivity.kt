@@ -1,6 +1,5 @@
 package com.seahahn.routinemaker.user
 
-import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -73,7 +72,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         nick = findViewById(R.id.nick) // 사용자 닉네임
         val level = findViewById<TextView>(R.id.level) // 사용자 레벨
         val title = findViewById<TextView>(R.id.title) // 사용자의 칭호(타이틀)
-        intro = findViewById(R.id.intro) // 사용자 자기소개글
+        intro = findViewById(R.id.review) // 사용자 자기소개글
         val membership = findViewById<TextView>(R.id.membership) // 사용자 멤버십
         photo = findViewById(R.id.photo) // 사용자 프로필 사진
         mypageInfo(service, id, nick, level, title, intro, membership, photo) // 사용자 정보 불러오기

@@ -1,29 +1,30 @@
 package com.seahahn.routinemaker.main
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.PopupMenu
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import org.jetbrains.anko.startActivity
 
 class MainActivity : Main() {
 
     private val TAG = this::class.java.simpleName
+    private val rfServiceViewModel by viewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
 
     // 메인 액티비티 상단 툴바 바로 아래의 탭 레이아웃 및 각각의 탭에 해당하는 프래그먼트 초기화
     private lateinit var tabLayout: TabLayout
     private lateinit var mainRoutineFragment: MainRoutineFragment
     private lateinit var mainReviewFragment: MainReviewFragment
+
+    private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
 
     override fun onCreate(savedInstanceState: Bundle?) {
         d(TAG, "onCreate")
@@ -40,7 +41,7 @@ class MainActivity : Main() {
         val leftnav_header = leftnav.getHeaderView(0)
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formatted, 0) // 툴바 세팅하기
+        initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)
@@ -88,7 +89,9 @@ class MainActivity : Main() {
         initFAB()
 
         // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
-        getRts(service, getUserId(this))
+//        dateViewModel.selectedDate.observe(this) { date ->
+            getRts(service, getUserId(this))
+//        }
     }
 
     override fun onResume() {

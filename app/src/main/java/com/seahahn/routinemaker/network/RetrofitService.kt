@@ -111,14 +111,36 @@ interface RetrofitService {
         @Query("user_id") userId: Int
     ) : Call<MutableList<RtData>>
 
-    @GET("/api/main/get_rt.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    @GET("/api/main/get_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일의 정보 가져오기
     fun getRt(
         @Query("id") rtId: Int
     ) : Call<JsonObject>
 
-    @GET("/api/main/delete_rt.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    @GET("/api/main/delete_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
     fun deleteRt(
         @Query("id") rtId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/main/done_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여
+    fun doneRt(
+        @Query("id") rtId: Int,
+        @Query("done") done: Int, // 완료 후 설정할 상태에 대한 값
+        @Query("m_date") mDate: String
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/set_review.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
+    fun setReview(
+        @Field("content") content: String,
+        @Field("on_public") onPublic: Boolean,
+        @Field("m_date") mDate: String,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/main/get_review.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
+    fun getReview(
+        @Query("m_date") mDate: String,
+        @Query("user_id") userId: Int
     ) : Call<JsonObject>
 
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Rect
 import android.util.Log
+import android.util.Log.d
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -11,13 +12,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import retrofit2.Retrofit
 
 open class Util  : AppCompatActivity() {
@@ -25,14 +29,18 @@ open class Util  : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
     private lateinit var retrofit : Retrofit
     lateinit var service : RetrofitService
+    private val rfServiceViewModel by viewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
 
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
 
     // 레트로핏 객체 생성 및 API 연결
     fun initRetrofit(): RetrofitService {
+        d(TAG, "initRetrofit")
         retrofit = RetrofitClient.getInstance()
         service = retrofit.create(RetrofitService::class.java)
+
+        rfServiceViewModel.setService(service) // 뷰모델에 레트로핏 서비스 객체 저장하기
 
         return service
     }
@@ -89,8 +97,8 @@ open class Util  : AppCompatActivity() {
             R.id.updateRt -> btn.text = getString(R.string.updateRt)
             R.id.makeTodo -> btn.text = getString(R.string.makeTodo)
             R.id.updateTodo -> btn.text = getString(R.string.updateTodo)
-//            R.id.makeAction -> btn.text = getString(R.string.makeAction)
-//            R.id.updateAction -> btn.text = getString(R.string.updateAction)
+            R.id.makeAction -> btn.text = getString(R.string.makeAction)
+            R.id.updateAction -> btn.text = getString(R.string.updateAction)
         }
     }
 
