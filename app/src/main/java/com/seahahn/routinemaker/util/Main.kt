@@ -734,8 +734,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 루틴(할 일) 완료 처리하기
     fun doneRt(context : Context, service: RetrofitService, rtId : Int, done : Int, mDays : String, mDateInput : String) {
-        d(TAG, "doneRt 변수들 : $rtId, $done, $mDays")
-        val mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+        d(TAG, "doneRt 변수들 : $rtId, $done, $mDays, $mDateInput")
+        var mDate = ""
+        if(mDays.isNotBlank()) {
+            mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+        }
 
         service.doneRt(rtId, done, mDate).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
