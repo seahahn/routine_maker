@@ -6,7 +6,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:background="@drawable/list_bg">
+        android:background="@drawable/list_bg"
+        android:id="@+id/item">
     <CheckBox
             android:text="루틴 제목"
             style="@style/txt_title"

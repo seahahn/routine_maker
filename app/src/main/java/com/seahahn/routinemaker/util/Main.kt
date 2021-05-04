@@ -90,9 +90,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // MainActivity의 프래그먼트들에 데이터 전달하기 위한 뷰모델
     private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
     private val rtTodoViewModel by viewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
+    private val actionViewModel by viewModels<ActionViewModel>() // 루틴, 할 일 목록 데이터
 
     // 루틴과 할 일, 루틴 내 행동 만들기 및 수정에 관한 액티비티에 포함된 요소들 초기화하기
     var rtId : Int = 0// DB내 루틴 또는 할 일 고유 번호. 루틴 또는 할 일 수정 시에 필요
+    var actionId : Int = 0// DB내 루틴 내 행동 고유 번호. 루틴 내 행동 수정 시에 필요
     lateinit var mainTitleInput : TextInputEditText
     lateinit var mainTitle : Editable
     lateinit var mainDays : MultiSelectToggleGroup
@@ -105,6 +107,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     lateinit var startDate : TextView // 할 일의 수행 예정일
     lateinit var startDateResult : String // DB에 저장될 수행 예정일 값
     var startDateResultParsed : LocalDate = LocalDate.now() // DatePicker에 보여주기 위해서 LocalTime 형식으로 바꾼 수행 예정 시각 값
+    lateinit var timecost : EditText // 루틴 내 행동의 예상 소요 시간
+    lateinit var timecostResult : Editable // DB에 저장될 예상 소요 시간 값
     lateinit var memo : EditText
     lateinit var memotxt : Editable
     lateinit var btmBtn : Button
@@ -298,11 +302,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 루틴, 할 일 만들기 및 수정 액티비티 내의 공통 요소들 초기화하기
     fun initRtTodoActivity(btmBtnId : Int) {
-        // 할 일 이름 입력값 가져오기
+        // 루틴 또는 할 일 제목 입력값 가져오기
         mainTitleInput = findViewById(R.id.mainTitleInput)
         mainTitle = mainTitleInput.text!!
 
-        // 할 일 반복 요일 선택값 가져오기
+        // 루틴 또는 할 일 반복 요일 선택값 가져오기
         mainDays = findViewById(R.id.mainDays)
         mainDays.setOnCheckedChangeListener(this)
 
@@ -355,7 +359,27 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         memo = findViewById(R.id.memo)
         memotxt = memo.text
 
-        // 하단 '할 일 만들기' 버튼 초기화
+        // 하단 버튼 초기화
+        btmBtn = findViewById(btmBtnId)
+        setFullBtmBtnText(btmBtn)
+        btmBtn.setOnClickListener(BtnClickListener())
+    }
+
+    // 루틴 내 행동 만들기 및 수정 액티비티 내의 공통 요소들 초기화하기
+    fun initActionActivity(btmBtnId : Int) {
+        // 루틴 내 행동 이름 입력값 가져오기
+        mainTitleInput = findViewById(R.id.mainTitleInput)
+        mainTitle = mainTitleInput.text!!
+
+        // 예상 소요 시간 값 가져오기
+        timecost = findViewById(R.id.timecost)
+        timecostResult = timecost.text
+
+        // 메모 값 가져오기
+        memo = findViewById(R.id.memo)
+        memotxt = memo.text
+
+        // 하단 버튼 초기화
         btmBtn = findViewById(btmBtnId)
         setFullBtmBtnText(btmBtn)
         btmBtn.setOnClickListener(BtnClickListener())
@@ -372,6 +396,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 fabMain.setOnClickListener(BtnClickListener())
                 fabRt.setOnClickListener(BtnClickListener())
                 fabTodo.setOnClickListener(BtnClickListener())
+            }
+            "ActionListActivity" -> {
+                fabtn = findViewById(R.id.fabtn)
+                fabMain = findViewById(R.id.fabMain)
+                fabMain.setOnClickListener {
+                    startActivity<ActionMakeActivity>("id" to rtId) // '행동 추가' 액티비티로 이동
+                }
             }
         }
     }
@@ -427,7 +458,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     val type = getString(R.string.rt) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
                     if(inputCheck()) makeRt(service, type, mainTitle.toString(), mainDaysResult,
                         activateAlarmResult, getMDate(mainDaysResult.joinToString(separator = " "), "", 0), startTimeResult, rtOnFeedResult,
-                        memotxt.toString(), UserInfo.getUserId(applicationContext))
+                        memotxt.toString(), getUserId(applicationContext))
                 }
                 R.id.updateRt -> {
                     mainTitle = mainTitleInput.text!!
@@ -439,13 +470,22 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     val type = getString(R.string.todo) // 루틴 만들기 액티비티이므로 루틴("rt")로 설정함
                     if(inputCheck()) makeRt(service, type, mainTitle.toString(), mainDaysResult,
                         activateAlarmResult, startDateResult, startTimeResult, repeatResult,
-                        memotxt.toString(), UserInfo.getUserId(applicationContext))
+                        memotxt.toString(), getUserId(applicationContext))
                 }
                 R.id.updateTodo -> {
                     mainTitle = mainTitleInput.text!!
                     memotxt = memo.text
                     if(inputCheck()) updateRt(service, rtId, mainTitle.toString(), mainDaysResult,
                         activateAlarmResult, startDateResult, startTimeResult, repeatResult, memotxt.toString())
+                }
+                R.id.makeAction -> {
+                    if(inputCheck()) makeAction(service, mainTitle.toString(), timecostResult.toString(), memotxt.toString(), rtId)
+                }
+                R.id.updateAction -> {
+                    mainTitle = mainTitleInput.text!!
+                    timecostResult = timecost.text
+                    memotxt = memo.text
+                    if(inputCheck()) updateAction(service, actionId, mainTitle.toString(), timecostResult.toString(), memotxt.toString())
                 }
 
                 // 루틴, 할 일 만들기 or 수정에서 "수행 예정 시각" 또는 "수행 예정일" 받아오기
@@ -496,6 +536,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         d(TAG, "onOptionsItemSelected Main")
         when(item.itemId){
             R.id.toolbarTrash -> showAlert("삭제하기", "정말 삭제하시겠어요?", "확인", "취소")
+            R.id.toolbarUpdate -> {
+                when(TAG) {
+                    "ActionListActivity" -> startActivity<RtUpdateActivity>("id" to rtId) // '루틴 수정하기' 액티비티로 이동
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -506,8 +551,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             .setTitle(title)
             .setMessage(msg)
             .setPositiveButton(pos) { _: DialogInterface, _: Int ->
-                deleteRt(service, rtId, this)
-                finish()
+                if(TAG == "ActionUpdateActivity") {
+                    deleteAction(service, actionId, rtId, this)
+                    finish()
+                } else {
+                    deleteRt(service, rtId, this)
+                    finish()
+                }
             }
             .setNegativeButton(neg) { _: DialogInterface, _: Int -> }
             .show()
@@ -526,6 +576,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             && mainDaysResult.size == 0) {
             // 반복 요일 설정해야 하는데 안 헀을 경우 최소한 1개 요일 입력하도록 안내하기
             toast(getString(R.string.daysEmpty))
+            return false
+        }
+        else if((TAG == "ActionMakeActivity" || TAG == "ActionUpdateActivity") && (timecostResult.isBlank() || timecostResult.equals(0))) {
+            // 루틴 내 행동의 예상 소요 시간 입력하지 않았거나 0인 경우
+            toast(getString(R.string.timecostEmpty))
             return false
         }
         return true
@@ -724,7 +779,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 when(result) {
                     true -> {
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                        getRts(service, UserInfo.getUserId(context))
+                        getRts(service, getUserId(context))
                     }
                     false -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
@@ -736,8 +791,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     fun doneRt(context : Context, service: RetrofitService, rtId : Int, done : Int, mDays : String, mDateInput : String) {
         d(TAG, "doneRt 변수들 : $rtId, $done, $mDays, $mDateInput")
         var mDate = ""
-        if(mDays.isNotBlank()) {
+        if(mDays.isNotBlank() && done == 1) {
             mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+        } else if(done == 0) {
+            mDate = LocalDate.now().toString()
         }
 
         service.doneRt(rtId, done, mDate).enqueue(object : Callback<JsonObject> {
@@ -751,7 +808,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val msg = gson.get("msg").asString
                 val result = gson.get("result").asBoolean
-                getRts(service, UserInfo.getUserId(context))
+                getRts(service, getUserId(context))
             }
         })
     }
@@ -799,6 +856,122 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
                 review.setText(content)
                 onPublicSwitch.isChecked = onPublic
+            }
+        })
+    }
+
+    // '행동 추가하기' 액티비티의 하단 버튼 눌렀을 때의 동작(행동 추가하기)
+    fun makeAction(service : RetrofitService, title : String, time : String, memo : String, rtId : Int) {
+        d(TAG, "makeAction 변수들 : $title, $time, $memo, $rtId")
+        service.makeAction(title, time, memo, rtId, getUserId(this)).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "행동 추가하기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "행동 추가하기 요청 응답 수신 성공")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                d(TAG, response.body().toString())
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when(result) {
+                    true -> {
+                        toast(msg)
+                        finish()
+                    }
+                    false -> toast(msg)
+                }
+            }
+        })
+    }
+
+    // '행동 수정하기' 액티비티의 하단 버튼 눌렀을 때의 동작(행동 수정하기)
+    fun updateAction(service : RetrofitService, id : Int, title : String, time : String, memo : String) {
+        d(TAG, "updateAction 변수들 : $title, $time, $memo")
+        service.updateAction(id, title, time, memo).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "행동 수정하기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "행동 수정하기 요청 응답 수신 성공")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                d(TAG, response.body().toString())
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when(result) {
+                    true -> {
+                        toast(msg)
+                        finish()
+                    }
+                    false -> toast(msg)
+                }
+            }
+        })
+    }
+
+    // 메인에서 루틴 선택 시 해당 루틴 내 행동 목록 불러오기
+    fun getActions(service: RetrofitService, rtId : Int, userId : Int) {
+        d(TAG, "getActions 변수들 : $rtId, $userId")
+        service.getActions(rtId, userId).enqueue(object : Callback<MutableList<ActionData>> {
+            override fun onFailure(call: Call<MutableList<ActionData>>, t: Throwable) {
+                d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<ActionData>>, response: Response<MutableList<ActionData>>) {
+                d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
+//                d(TAG, "getRts : "+response.body().toString())
+                val actionDatas = response.body()
+                try {
+                    actionViewModel.setList(actionDatas!!)
+                } catch (e: IllegalStateException) {
+                    d(TAG, "error : $e")
+                }
+            }
+        })
+    }
+
+    // 루틴 내 행동의 데이터 불러오기
+    fun getAction(service: RetrofitService, actionId : Int) {
+        d(TAG, "getAction 변수들 : $actionId")
+        service.getAction(actionId).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "루틴 내 행동 데이터 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "루틴 내 행동 데이터 가져오기 요청 응답 수신 성공")
+                d(TAG, "getAction : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+
+                mainTitleInput.setText(gson.get("title").asString)
+                timecost.setText(gson.get("time").asString)
+                memo.setText(gson.get("memo").asString)
+            }
+        })
+    }
+
+    // 루틴(할 일) 삭제하기
+    fun deleteAction(service: RetrofitService, actionId : Int, rtId : Int, context : Context) {
+        d(TAG, "deleteAction 변수들 : $actionId, $rtId")
+        service.deleteAction(actionId).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "루틴 내 행동 삭제 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "루틴 내 행동 삭제 요청 응답 수신 성공")
+                d(TAG, "getRt : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                when(result) {
+                    true -> {
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        getActions(service, rtId, getUserId(context))
+                    }
+                    false -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }

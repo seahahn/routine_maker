@@ -9,8 +9,8 @@ object RetrofitClient {
     private var instance: Retrofit? = null
     private val gson = GsonBuilder().setLenient().create()
     // 서버 주소
-    private const val BASE_URL = "http://15.165.168.238/"
-//    private const val BASE_URL = "http://10.0.2.2/"
+//    private const val BASE_URL = "http://15.165.168.238/" // AWS 서버(본진)
+    private const val BASE_URL = "http://10.0.2.2/" // 로컬 서버
 
     // SingleTon
     fun getInstance(): Retrofit {

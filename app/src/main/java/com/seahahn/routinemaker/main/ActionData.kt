@@ -8,5 +8,6 @@ data class ActionData(
     val color : String,
     val rtId : Int,
     val userId : Int,
-    val createdAt : String,
+    val done : Int,
+    val createdAt : String
 )

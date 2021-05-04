@@ -19,7 +19,9 @@ import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.UserSetting.getRtListMode
 import com.seahahn.routinemaker.util.UserSetting.setRtListMode
+import java.sql.Timestamp
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -41,7 +43,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
     var showDatas = mutableListOf<RtData>()
     lateinit var it_mDatas : Iterator<RtData>
 
-    val today = LocalDate.now()
+    val today = LocalDateTime.now()
     lateinit var parsedDate : LocalDate
     lateinit var dayOfWeek : String
 
@@ -105,7 +107,11 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
                     val it_mData = it_mDatas.next()
 //                    d(TAG, "it_mData : $it_mData")
                     // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
-                    if (it_mData.mType == "rt" && dayOfWeek in it_mData.mDays && it_mData.date == parsedDate.toString()) { // && it_mData.date == today.toString()
+                    val timestamp = it_mData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
+                    if (it_mData.mType == "rt" &&
+                        dayOfWeek in it_mData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
+                        (parsedDate.isAfter(LocalDateTime.parse(timestamp).toLocalDate()) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
+                                || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate()))) {
                         showDatas.add(it_mData)
                     } else if (it_mData.mType == "todo" && it_mData.date == parsedDate.toString()) {
                         showDatas.add(it_mData)

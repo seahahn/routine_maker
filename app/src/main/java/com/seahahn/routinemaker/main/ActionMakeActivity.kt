@@ -14,16 +14,15 @@ class ActionMakeActivity : Main() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_make)
 
+        // 레트로핏 통신 연결
+        service = initRetrofit()
+
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.makeAction) // 툴바 제목에 들어갈 텍스트
         initToolbar(title, titleText, 1) // 툴바 세팅하기
 
-        initRtTodoActivity(R.id.makeAction)
-    }
+        initActionActivity(R.id.makeAction)
 
-    // 툴바 우측 메뉴 버튼 설정
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_trash, menu)       // main_menu 메뉴를 toolbar 메뉴 버튼으로 설정
-        return true
+        rtId = intent.getIntExtra("id", 0) // 행동을 추가하려는 루틴의 DB내 고유 번호 받기
     }
 }

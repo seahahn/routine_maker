@@ -89,9 +89,8 @@ class MainActivity : Main() {
         initFAB()
 
         // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
-//        dateViewModel.selectedDate.observe(this) { date ->
-            getRts(service, getUserId(this))
-//        }
+        getRts(service, getUserId(this))
+
     }
 
     override fun onResume() {
@@ -102,6 +101,7 @@ class MainActivity : Main() {
         getRts(service, getUserId(this))
     }
 
+    // 상단 툴바 바로 아래의 '루틴' 탭과 '회고' 탭 클릭 시 작동할 기능
     inner class OnTabSelectedListener : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             val position = tabLayout.selectedTabPosition

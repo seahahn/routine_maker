@@ -2,6 +2,7 @@ package com.seahahn.routinemaker.network
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
 import retrofit2.Call
 import retrofit2.http.*
@@ -141,6 +142,41 @@ interface RetrofitService {
     fun getReview(
         @Query("m_date") mDate: String,
         @Query("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/make_action.php") // 루틴 내 행동 추가하기 액티비티에서 데이터 보내 DB에 저장하기
+    fun makeAction(
+        @Field("title") title: String,
+        @Field("m_time") time: String,
+        @Field("memo") memo: String,
+        @Field("rt_id") rtId: Int,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/update_action.php") // 루틴 내 행동 추가하기 액티비티에서 데이터 보내 DB에 저장하기
+    fun updateAction(
+        @Field("id") id: Int,
+        @Field("title") title: String,
+        @Field("m_time") time: String,
+        @Field("memo") memo: String
+    ) : Call<JsonObject>
+
+    @GET("/api/main/get_actions.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    fun getActions(
+        @Query("rt_id") rtId: Int,
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<ActionData>>
+
+    @GET("/api/main/get_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일의 정보 가져오기
+    fun getAction(
+        @Query("id") actionId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/main/delete_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
+    fun deleteAction(
+        @Query("id") actionId: Int
     ) : Call<JsonObject>
 
 }
