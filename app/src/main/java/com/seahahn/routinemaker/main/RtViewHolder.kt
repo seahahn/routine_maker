@@ -33,6 +33,13 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일)
 
+    // 사용자가 선택한 날짜가 오늘 날짜이면서 루틴을 수행할 요일인지 아닌지 여부를 저장할 변수
+    // 이를 ActionViewHolder에 전달하여 아이템의 체크박스를 활성화 혹은 비활성화 시킴
+    private var isActionEnabled = false
+
+    // 사용자가 루틴을 클릭할 경우, 해당 루틴의 체크(완료) 여부를 루틴 내 행동 쪽에 전달하기 위한 변수
+    private var isRtChecked = false
+
     init {
 //        d(TAG, "RtViewHolder init")
         item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
@@ -43,7 +50,7 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     fun onBind(rtData : RtData, dateInput : String, dayOfWeekInput : String){
 
         // 아이템 태그에 루틴(할 일)의 고유 번호, 루틴인지 할 일인지 구분과 함께 반복 요일, 수행 예정일, 반복 여부(할 일인 경우)를 담아둠(메소드에서 활용)
-        item.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "title" to rtData.rtTitle)
+        item.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "title" to rtData.rtTitle, "mDays" to rtData.mDays, "mDate" to rtData.mDate)
 
         // 루틴 제목 표시하기
         rtTitle.text = rtData.rtTitle
@@ -57,6 +64,7 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 && date == LocalDate.now() // 사용자가 선택한 날짜가 오늘 날짜와 동일하지 않으면 비활성화
                 ) // 사용자가 선택한 날짜가 루틴의 수행 예정일이 아니면 비활성화 && date == LocalDate.parse(rtData.date)
                 || rtData.mType == "todo"
+        isActionEnabled = rtTitle.isEnabled
 
         if(!rtTitle.isEnabled) {
             rtTitle.alpha = 0.4f // 비활성화인 경우 흐리게 만들기
@@ -65,16 +73,16 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         }
 
         // 완료 여부에 따라 체크 여부 설정하기
-        if(rtData.done == 0) { // || !rtTitle.isEnabled
+        if(rtData.done == 0 || date.isAfter(LocalDate.now())) { // || !rtTitle.isEnabled
             rtTitle.isChecked = false
             rtTitle.paintFlags = 0
-        } else {
+        } else if(rtData.done == 1) {
             rtTitle.isChecked = true
             rtTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         // 체크박스 태그에 루틴(할 일)의 고유 번호, 루틴인지 할 일인지 구분과 함께 반복 요일, 수행 예정일, 반복 여부(할 일인 경우)를 담아둠(메소드에서 활용)
-        rtTitle.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "mDays" to rtData.mDays, "mDate" to rtData.date, "repeat" to rtData.onFeed)
+        rtTitle.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "mDays" to rtData.mDays, "mDate" to rtData.mDate, "repeat" to rtData.onFeed)
 
         // 루틴 수정 or 삭제 메뉴 팝업 나오는 버튼.
         // 수정 또는 삭제 시 루틴의 고유 번호(id)와 구분(type)값을 넘겨서 이에 맞는 액티비티를 열고 데이터를 받아옴
@@ -82,9 +90,9 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 루틴(할 일) 수행 예정일 및 예정 시각 표시하기
         if(rtData.mType == "rt") {
-            time.text = rtData.time // hh:mm
+            time.text = rtData.mTime // hh:mm
         } else {
-            (LocalDate.parse(rtData.date).format(formatter).toString() + " " +rtData.time).also { time.text = it } // (~월 ~일 ~요일 hh:mm)
+            (LocalDate.parse(rtData.mDate).format(formatter).toString() + " " +rtData.mTime).also { time.text = it } // (~월 ~일 ~요일 hh:mm)
         }
 
         // 루틴 반복 요일 표시하기
@@ -97,7 +105,6 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         }
     }
 
-
     // 레트로핏 서비스 객체 가져오기(doneRt에서 사용)
     fun getService(serviceInput : RetrofitService) {
         serviceInViewHolder = serviceInput
@@ -109,12 +116,19 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()
             val type = ((v.tag as HashMap<*, *>)["type"]).toString()
             val title = ((v.tag as HashMap<*, *>)["title"]).toString()
+            val mDays = ((v.tag as HashMap<*, *>)["mDays"]).toString()
+            val mDate = ((v.tag as HashMap<*, *>)["mDate"]).toString()
 
             when(type) {
                 "rt" -> { // 루틴인 경우 루틴 내 행동 목록으로 이동
                     val it = Intent(context, ActionListActivity::class.java)
                     it.putExtra("id", id)
                     it.putExtra("title", title)
+                    it.putExtra("mDays", mDays)
+                    it.putExtra("mDate", mDate)
+                    it.putExtra("isActionEnabled", isActionEnabled) // 루틴의 체크박스 활성화 여부에 따라 루틴에 속한 행동들의 체크박스 활성화 여부를 결정
+                    isRtChecked = rtTitle.isChecked
+                    it.putExtra("isRtChecked", isRtChecked)
                     context.startActivity(it)
                 }
                 "todo" -> { // 할 일인 경우 할 일 수정하기 액티비티로 이동
@@ -137,7 +151,6 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             val type = ((checkbox.tag as HashMap<*, *>)["type"]).toString()
             val mDays = ((checkbox.tag as HashMap<*, *>)["mDays"]).toString()
             val mDate = ((checkbox.tag as HashMap<*, *>)["mDate"]).toString()
-            val repeat = ((checkbox.tag as HashMap<*, *>)["repeat"]).toString()
             if(checkbox.isChecked) {
                 checkbox.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 context.doneRt(context, serviceInViewHolder, id, 1, mDays, mDate)

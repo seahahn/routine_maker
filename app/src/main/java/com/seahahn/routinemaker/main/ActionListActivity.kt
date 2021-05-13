@@ -2,11 +2,14 @@ package com.seahahn.routinemaker.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log.d
 import android.view.Menu
 import androidx.activity.viewModels
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.util.ItemMoveCallback
 import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
@@ -14,7 +17,8 @@ class ActionListActivity : Main() {
 
     private val TAG = this::class.java.simpleName
 
-    private val actionViewModel by viewModels<ActionViewModel>() // 루틴, 할 일 목록 데이터
+    private val actionViewModel by viewModels<ActionViewModel>() // 루틴 내 행동 목록 데이터
+    private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
 
     private lateinit var actionAdapter: ActionAdapter
     private lateinit var actionList: RecyclerView
@@ -48,8 +52,29 @@ class ActionListActivity : Main() {
         actionList.adapter = actionAdapter // 어댑터 연결
         actionAdapter.getService(service) // 어댑터에 레트로핏 통신 객체 보내기
 
+        // 어댑터에 사용자가 선택한 루틴의 수행 요일, 수행 예정일, 체크박스 활성화 및 체크 여부를 전달함
+        // 이는 뷰홀더까지 전달되어 각 아이템의 완료 처리 및 체크박스 활성화와 체크 여부를 결정할 것임
+        val mDays = intent.getStringExtra("mDays")
+        val mDate = intent.getStringExtra("mDate")
+        val isActionEnabled = intent.getBooleanExtra("isActionEnabled", false)
+        actionAdapter.getRtInfo(mDays!!, mDate!!, isActionEnabled)
+
+        // 행동의 순서를 변경하기 위한 헬퍼
+        val callback = ItemMoveCallback(actionAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(actionList)    //리사이클러뷰를 넣어준다
+
+        dateViewModel.selectedDate.observe(this) { date ->
+//            d(TAG, "루틴 프래그먼트 date : $date")
+            // 사용자가 선택한 날짜를 루틴, 할 일 목록에 보내기
+            // 선택한 날짜가 오늘 날짜면 루틴 체크박스 활성화, 다른 날짜면 비활성화
+            actionAdapter.replaceDate(date)
+        }
+
         actionViewModel.gottenActionData.observe(this) { actionDatas ->
+            d(TAG, "actionDatas : $actionDatas")
             mDatas = actionDatas // 뷰모델에 저장해둔 루틴 내 행동 목록 데이터 가져오기
+            d(TAG, "mDatas : $mDatas")
             actionAdapter.replaceList(mDatas) // 목록 데이터 출력하기
         }
     }

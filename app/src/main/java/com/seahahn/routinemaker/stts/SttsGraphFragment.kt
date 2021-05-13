@@ -8,30 +8,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.islandparadise14.mintable.MinTimeTableView
+import com.islandparadise14.mintable.model.ScheduleDay
+import com.islandparadise14.mintable.model.ScheduleDayOption
+import com.islandparadise14.mintable.model.ScheduleEntity
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.DateViewModel
+import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 
 class SttsGraphFragment : Fragment() {
 
     private val TAG = this::class.java.simpleName
+    private val rfServiceViewModel by activityViewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
+    lateinit var service : RetrofitService
 
     // 액티비티로부터 날짜 데이터를 가져오는 뷰모델
-    private val viewModel by activityViewModels<DateViewModel>()
+    private val dateViewModel by activityViewModels<DateViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_stts_graph, container, false)
+    }
 
-        viewModel.selectedDate.observe(this, Observer { date ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        dateViewModel.selectedDate.observe(this, Observer { date ->
             Log.d(TAG, "그래프 프래그먼트 date : $date")
         })
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stts_graph, container, false)
-    }
 
 }

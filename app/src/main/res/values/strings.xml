@@ -153,5 +153,16 @@
     <string name="daysEmpty">반복 요일을 최소 1개 선택해주세요</string>
     <string name="timecostEmpty">예상 소요 시간을 1분 이상으로 입력해주세요</string>
 
+    <string-array name="timetable_header">
+        <item></item>
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+    </string-array>
+
 
 </resources>

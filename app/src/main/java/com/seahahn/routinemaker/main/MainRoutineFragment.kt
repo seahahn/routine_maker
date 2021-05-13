@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
+import com.seahahn.routinemaker.util.AppVar.getDatePast
 import com.seahahn.routinemaker.util.UserSetting.getRtListMode
 import com.seahahn.routinemaker.util.UserSetting.setRtListMode
-import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -41,7 +41,10 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
     private lateinit var rtList: RecyclerView
     var mDatas = mutableListOf<RtData>()
     var showDatas = mutableListOf<RtData>()
+    var pastDatas = mutableListOf<RtData>()
+    var pastShowDatas = mutableListOf<RtData>()
     lateinit var it_mDatas : Iterator<RtData>
+    lateinit var it_pastDatas : Iterator<RtData>
 
     val today = LocalDateTime.now()
     lateinit var parsedDate : LocalDate
@@ -76,7 +79,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
         }
 
         dateViewModel.selectedDate.observe(this) { date ->
-//            d(TAG, "루틴 프래그먼트 date : $date")
+            d(TAG, "루틴 프래그먼트 date : $date")
             // 사용자가 선택한 날짜를 루틴, 할 일 목록에 보내기
             // 선택한 날짜가 오늘 날짜면 루틴 체크박스 활성화, 다른 날짜면 비활성화
             rtAdapter.replaceDate(date)
@@ -95,49 +98,94 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
                 "SATURDAY" -> dayOfWeek = "토"
             }
 
-            // 루틴, 할 일 전체 목록 데이터 가져오기
-            rtTodoViewModel.gottenRtData.observe(this) { rtDatas ->
-//                d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")
-                mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+            if(!getDatePast(this.requireContext())) {
+                // 루틴, 할 일 목록 데이터 가져오기
+                rtTodoViewModel.gottenRtData.observe(this) { rtDatas ->
+                    d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")
+                    d(TAG, "과거 여부 : " + getDatePast(this.requireContext()))
+                    mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
 
-                // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
-                showDatas.clear()
-                it_mDatas = mDatas.iterator()
-                while (it_mDatas.hasNext()) {
-                    val it_mData = it_mDatas.next()
-//                    d(TAG, "it_mData : $it_mData")
-                    // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
-                    val timestamp = it_mData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
-                    if (it_mData.mType == "rt" &&
-                        dayOfWeek in it_mData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
-                        (parsedDate.isAfter(LocalDateTime.parse(timestamp).toLocalDate()) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
-                                || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate()))) {
-                        showDatas.add(it_mData)
-                    } else if (it_mData.mType == "todo" && it_mData.date == parsedDate.toString()) {
-                        showDatas.add(it_mData)
+                    // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
+                    showDatas.clear()
+                    it_mDatas = mDatas.iterator()
+                    while (it_mDatas.hasNext()) {
+                        val it_mData = it_mDatas.next()
+    //                    d(TAG, "it_mData : $it_mData")
+                        // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
+                        val timestamp = it_mData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
+                        if (it_mData.mType == "rt" &&
+                            dayOfWeek in it_mData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
+                            (parsedDate.isAfter(LocalDateTime.parse(timestamp).toLocalDate()) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
+                                    || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate()))) {
+                            showDatas.add(it_mData)
+                        } else if (it_mData.mType == "todo" && it_mData.mDate == parsedDate.toString()) {
+                            showDatas.add(it_mData)
+                        }
+                        // 할 일에 반복 여부 있는 경우에는 해당 할 일을 수행하고 나면 그 다음에 반복해야 할 요일의 날짜를 date에 집어넣어 수정한다
                     }
-                    // 할 일에 반복 여부 있는 경우에는 해당 할 일을 수행하고 나면 그 다음에 반복해야 할 요일의 날짜를 date에 집어넣어 수정한다
-                }
 
-                // 어댑터에 가져온 데이터 연결하여 출력하기
-                // '전체 목록 보기' 여부에 따라 전체를 보여줄지, 해당 요일 데이터만 보여줄지 결정함
-                if (showAll.isChecked) {
-                    rtAdapter.replaceList(mDatas)
-                    rtAdapter.setDayOfWeek(dayOfWeek)
-                } else {
-                    rtAdapter.replaceList(showDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
-                    rtAdapter.setDayOfWeek(dayOfWeek)
+                    // 어댑터에 가져온 데이터 연결하여 출력하기
+                    // '전체 목록 보기' 여부에 따라 전체를 보여줄지, 해당 요일 데이터만 보여줄지 결정함
+                    if (showAll.isChecked) {
+                        rtAdapter.replaceList(mDatas)
+                        rtAdapter.setDayOfWeek(dayOfWeek)
+                    } else {
+                        rtAdapter.replaceList(showDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
+                        rtAdapter.setDayOfWeek(dayOfWeek)
+                    }
+                }
+            } else {
+                // 루틴(과거 내역), 할 일 목록 데이터 가져오기
+                rtTodoViewModel.gottenRtDataPast.observe(this) { rtDatas ->
+                    d(TAG, "루틴 프래그먼트 과거 : $rtDatas")
+                    d(TAG, "과거 여부 : " + getDatePast(this.requireContext()))
+                    pastDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+
+                    // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
+                    pastShowDatas.clear()
+                    it_pastDatas = pastDatas.iterator()
+                    while (it_pastDatas.hasNext()) {
+                        val it_pastData = it_pastDatas.next()
+    //                    d(TAG, "it_mData : $it_mData")
+                        // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
+//                        val timestamp = it_pastData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
+                        if (it_pastData.mType == "rt" &&
+                            dayOfWeek in it_pastData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
+                            (parsedDate.isEqual(LocalDate.parse(it_pastData.mDate)) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
+//                                    || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate())))
+                                    )){
+                            pastShowDatas.add(it_pastData)
+                        } else if (it_pastData.mType == "todo" && it_pastData.mDate == parsedDate.toString()) {
+                            pastShowDatas.add(it_pastData)
+                        }
+                        // 할 일에 반복 여부 있는 경우에는 해당 할 일을 수행하고 나면 그 다음에 반복해야 할 요일의 날짜를 date에 집어넣어 수정한다
+                    }
+
+                    // 어댑터에 가져온 데이터 연결하여 출력하기
+                    // '전체 목록 보기' 여부에 따라 전체를 보여줄지, 해당 요일 데이터만 보여줄지 결정함
+                    if (showAll.isChecked) {
+                        rtAdapter.replaceList(mDatas)
+                        rtAdapter.setDayOfWeek(dayOfWeek)
+                    } else {
+                        rtAdapter.replaceList(pastShowDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
+                        rtAdapter.setDayOfWeek(dayOfWeek)
+                    }
                 }
             }
         }
     }
 
+    // 전체 목록 보기 체크 여부에 따른 목록 출력 방식 정하기
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        if(isChecked) {
+        if(isChecked) { // 모든 루틴과 할 일을 보여줌
             rtAdapter.replaceList(mDatas)
             setRtListMode(buttonView!!.context, isChecked)
-        } else {
-            rtAdapter.replaceList(showDatas)
+        } else { // 선택한 날짜의 루틴과 할 일을 보여줌
+            if(!getDatePast(this.requireContext())) {
+                rtAdapter.replaceList(showDatas)
+            } else {
+                rtAdapter.replaceList(pastShowDatas)
+            }
             setRtListMode(buttonView!!.context, isChecked)
         }
     }
@@ -161,7 +209,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
                 val items = itemList.iterator()
                 while (items.hasNext()) {
                     val item = items.next()
-                    if (item.done == 1) {
+                    if (item.mType == "todo" && item.done == 1) { // 완료한 할 일만 삭제함
                         context.deleteRt(service, item.id, context)
                     }
                 }

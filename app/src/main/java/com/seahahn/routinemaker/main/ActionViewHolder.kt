@@ -14,7 +14,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.AppVar.getSelectedDate
 import com.seahahn.routinemaker.util.Main
+import java.time.LocalDate
 import java.util.*
 
 class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
@@ -30,6 +32,10 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     private val time : TextView = itemView.findViewById(R.id.rt_time)
     private val days : TextView = itemView.findViewById(R.id.rt_days)
 
+    private var mDays = ""
+    private var mDate = ""
+    private var isActionEnabled = false
+
     init {
 //        d(TAG, "RtViewHolder init")
         item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
@@ -40,13 +46,13 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     fun onBind(actionData : ActionData) {
 
         // 아이템 태그에 루틴(할 일)의 고유 번호를 담아둠(메소드에서 활용)
-        item.tag = hashMapOf("id" to actionData.id, "rtId" to actionData.rtId)
+        item.tag = hashMapOf("id" to actionData.id, "rtId" to actionData.rtId, "pos" to actionData.pos)
 
         // 행동 제목 표시하기
         actionTitle.text = actionData.actionTitle
 
         // 선택한 루틴이 활성화되어 있으면 활성화, 아니면 비활성화
-        actionTitle.isEnabled
+        actionTitle.isEnabled = isActionEnabled
 
         if(!actionTitle.isEnabled) {
             actionTitle.alpha = 0.4f // 비활성화인 경우 흐리게 만들기
@@ -55,13 +61,18 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         }
 
         // 완료 여부에 따라 체크 여부 설정하기
-        if(actionData.done == 0 || !actionTitle.isEnabled) {
+        val date = LocalDate.parse(getSelectedDate(context)) // 사용자가 선택한 날짜가 오늘 날짜인 경우 체크박스 활성화, 오늘 이후 날짜(미래)인 경우 비활성화하기
+        if(actionData.done == 0 || date.isAfter(LocalDate.now())) {
+            d(TAG, "행동 번호 " + actionData.id + "미완료 : " + actionData.done)
             actionTitle.isChecked = false
             actionTitle.paintFlags = 0
-        } else {
+        } else if(actionData.done == 1) {
+            d(TAG, "행동 번호 " + actionData.id + "완료 : " + actionData.done)
             actionTitle.isChecked = true
             actionTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
+
+
 
         // 체크박스 태그에 행동의 고유 번호를 담아둠(메소드에서 활용)
         actionTitle.tag = hashMapOf("id" to actionData.id)
@@ -77,6 +88,12 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         typeText.visibility = View.GONE
         // 루틴이나 할 일의 반복 요일 표시하던 글자 없애기
         days.visibility = View.GONE
+    }
+
+    fun getRtInfo(days : String, date : String, actionEnabled : Boolean) {
+        mDays = days
+        mDate = date
+        isActionEnabled = actionEnabled
     }
 
     // 레트로핏 서비스 객체 가져오기(doneRt에서 사용)
@@ -95,7 +112,7 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         }
     }
 
-    // 루틴 목록의 체크박스 체크 시 동작할 내용
+    // 행동 목록의 체크박스 체크 시 동작할 내용
     inner class ActionClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             val context : ActionListActivity = v!!.context as ActionListActivity
@@ -105,15 +122,15 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             val id = ((checkbox.tag as HashMap<*, *>)["id"]).toString().toInt()
             if(checkbox.isChecked) {
                 checkbox.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-//                context.doneRt(context, serviceInViewHolder, id, 1, mDays, mDate)
+                context.doneAction(context, serviceInViewHolder, id, 1, mDays, mDate)
             } else {
                 checkbox.paintFlags = 0
-//                context.doneRt(context, serviceInViewHolder, id, 0, mDays, mDate)
+                context.doneAction(context, serviceInViewHolder, id, 0, mDays, mDate)
             }
         }
     }
 
-    // 루틴 목록의 아이템 내 더보기 버튼 누를 시 동작할 내용
+    // 행동 목록의 아이템 내 더보기 버튼 누를 시 동작할 내용
     inner class MoreBtnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             PopupMenu(v!!.context, v).apply {

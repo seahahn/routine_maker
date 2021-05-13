@@ -33,6 +33,10 @@ import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
+import com.seahahn.routinemaker.util.AppVar.getDatePast
+import com.seahahn.routinemaker.util.AppVar.getSelectedDate
+import com.seahahn.routinemaker.util.AppVar.setDatePast
+import com.seahahn.routinemaker.util.AppVar.setSelectedDate
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -42,6 +46,7 @@ import retrofit2.Response
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -214,6 +219,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 뷰모델에 날짜 데이터 저장하기
     fun onDateSelected(date : String) {
+        setSelectedDate(this, date)
+        setDatePast(this, LocalDate.parse(date).isBefore(current))
+        d(TAG, "setDatePast : " + getDatePast(this))
         dateViewModel.selectDate(date)
     }
 
@@ -692,7 +700,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // 메인 액티비티 '루틴' 탭에서 루틴 및 할 일 목록 불러오기
     fun getRts(service: RetrofitService, userId : Int) {
         d(TAG, "getRts 변수들 : $userId")
-        service.getRts(userId).enqueue(object : Callback<MutableList<RtData>> {
+        // 현재, 미래 목록 가져오기
+        service.getRts(userId, false).enqueue(object : Callback<MutableList<RtData>> {
             override fun onFailure(call: Call<MutableList<RtData>>, t: Throwable) {
                 d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
             }
@@ -703,6 +712,24 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val rtdatas = response.body()
                 try {
                     rtTodoViewModel.setList(rtdatas!!)
+                } catch (e: IllegalStateException) {
+                    d(TAG, "error : $e")
+                }
+            }
+        })
+
+        // 과거 목록 가져오기(수행 가능한 할 일 포함)
+        service.getRts(userId, true).enqueue(object : Callback<MutableList<RtData>> {
+            override fun onFailure(call: Call<MutableList<RtData>>, t: Throwable) {
+                d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
+                d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
+//                d(TAG, "getRts : "+response.body().toString())
+                val rtdatas = response.body()
+                try {
+                    rtTodoViewModel.setPastList(rtdatas!!)
                 } catch (e: IllegalStateException) {
                     d(TAG, "error : $e")
                 }
@@ -743,8 +770,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     }
 //                }
                 activateAlarm.isChecked = gson.get("alarm").asInt == 1
-                startTime.text = gson.get("time").asString
-                startTimeResult = gson.get("time").asString
+                startTime.text = gson.get("mTime").asString
+                startTimeResult = gson.get("mTime").asString
                 startTimeResultParsed = LocalTime.parse(startTimeResult)
 
                 if(TAG == "RtMakeActivity" || TAG == "RtUpdateActivity") {
@@ -752,9 +779,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 } else if(TAG == "TodoMakeActivity" || TAG == "TodoUpdateActivity") {
                     repeat.isChecked = gson.get("onFeed").asInt == 1
 
-                    val formattedForShow: String = LocalDate.parse(gson.get("date").asString).format(formatterMonthDay)
+                    val formattedForShow: String = LocalDate.parse(gson.get("mDate").asString).format(formatterMonthDay)
                     startDate.text = formattedForShow
-                    startDateResult = gson.get("date").asString
+                    startDateResult = gson.get("mDate").asString
                     startDateResultParsed = LocalDate.parse(startDateResult)
                 }
                 memo.setText(gson.get("memo").asString)
@@ -789,7 +816,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 루틴(할 일) 완료 처리하기
     fun doneRt(context : Context, service: RetrofitService, rtId : Int, done : Int, mDays : String, mDateInput : String) {
-        d(TAG, "doneRt 변수들 : $rtId, $done, $mDays, $mDateInput")
+        val doneDate = LocalDate.now().toString()
+        d(TAG, "doneRt 변수들 : $rtId, $done, $mDays, $mDateInput, $doneDate")
         var mDate = ""
         if(mDays.isNotBlank() && done == 1) {
             mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
@@ -797,7 +825,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             mDate = LocalDate.now().toString()
         }
 
-        service.doneRt(rtId, done, mDate).enqueue(object : Callback<JsonObject> {
+        service.doneRt(rtId, done, mDate, doneDate).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴(할 일) 수행 처리 실패 : {$t}")
             }
@@ -912,15 +940,17 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // 메인에서 루틴 선택 시 해당 루틴 내 행동 목록 불러오기
     fun getActions(service: RetrofitService, rtId : Int, userId : Int) {
-        d(TAG, "getActions 변수들 : $rtId, $userId")
-        service.getActions(rtId, userId).enqueue(object : Callback<MutableList<ActionData>> {
+        val past = getDatePast(this)
+        val doneDay = getSelectedDate(this)
+        d(TAG, "getActions 변수들 : $rtId, $userId, $past")
+        service.getActions(rtId, userId, past, doneDay).enqueue(object : Callback<MutableList<ActionData>> {
             override fun onFailure(call: Call<MutableList<ActionData>>, t: Throwable) {
-                d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
+                d(TAG, "루틴 내 행동 목록 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<MutableList<ActionData>>, response: Response<MutableList<ActionData>>) {
-                d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
-//                d(TAG, "getRts : "+response.body().toString())
+                d(TAG, "루틴 내 행동 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, "getActions : "+response.body().toString())
                 val actionDatas = response.body()
                 try {
                     actionViewModel.setList(actionDatas!!)
@@ -951,7 +981,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         })
     }
 
-    // 루틴(할 일) 삭제하기
+    // 루틴 내 행동 삭제하기
     fun deleteAction(service: RetrofitService, actionId : Int, rtId : Int, context : Context) {
         d(TAG, "deleteAction 변수들 : $actionId, $rtId")
         service.deleteAction(actionId).enqueue(object : Callback<JsonObject> {
@@ -961,7 +991,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 d(TAG, "루틴 내 행동 삭제 요청 응답 수신 성공")
-                d(TAG, "getRt : "+response.body().toString())
+                d(TAG, "deleteAction : "+response.body().toString())
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val msg = gson.get("msg").asString
                 val result = gson.get("result").asBoolean
@@ -972,6 +1002,33 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     }
                     false -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
+            }
+        })
+    }
+
+    // 루틴 내 행동 완료 처리하기
+    fun doneAction(context : Context, service: RetrofitService, actionId : Int, done : Int, mDays : String, mDateInput : String) {
+        d(TAG, "doneAction 변수들 : $actionId, $done, $mDays, $mDateInput")
+        var mDate = LocalDate.now().toString()
+//        if(mDays.isNotBlank() && done == 1) {
+//            mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
+//        } else if(done == 0) {
+//            mDate = LocalDate.now().toString()
+//        }
+
+        service.doneAction(actionId, done, mDate).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                d(TAG, "루틴 내 행동 수행 처리 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                d(TAG, "루틴 내 행동 수행 처리 요청 응답 수신 성공")
+                d(TAG, "doneAction : "+response.body().toString())
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                val msg = gson.get("msg").asString
+                val result = gson.get("result").asBoolean
+                val rtId = gson.get("rtId").asInt
+                getActions(service, rtId, getUserId(context))
             }
         })
     }

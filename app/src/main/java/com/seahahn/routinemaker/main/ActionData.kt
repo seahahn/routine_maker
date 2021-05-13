@@ -5,9 +5,10 @@ data class ActionData(
     val actionTitle : String,
     val time : String,
     val memo : String,
-    val color : String,
+    val mDate : String,
     val rtId : Int,
     val userId : Int,
     val done : Int,
+    val pos : Int,
     val createdAt : String
 )

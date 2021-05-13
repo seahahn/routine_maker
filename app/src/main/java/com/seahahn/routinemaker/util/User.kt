@@ -24,6 +24,7 @@ open class User  : Util() {
         service.login(email, pw).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "로그인 실패 : {$t}")
+//                startActivity<LoginActivity>()
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

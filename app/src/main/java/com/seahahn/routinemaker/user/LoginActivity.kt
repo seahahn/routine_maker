@@ -274,7 +274,7 @@ class LoginActivity : User(), View.OnClickListener {
 //                }
 //            }
 
-            checkEmail(service, email, uid, nick, inway)
+            checkEmail(service, email!!, uid, nick!!, inway)
         }
     }
 

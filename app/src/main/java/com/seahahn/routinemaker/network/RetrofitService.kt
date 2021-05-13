@@ -109,7 +109,8 @@ interface RetrofitService {
 
     @GET("/api/main/get_rts.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
     fun getRts(
-        @Query("user_id") userId: Int
+        @Query("user_id") userId: Int,
+        @Query("past") past: Boolean
     ) : Call<MutableList<RtData>>
 
     @GET("/api/main/get_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일의 정보 가져오기
@@ -117,16 +118,18 @@ interface RetrofitService {
         @Query("id") rtId: Int
     ) : Call<JsonObject>
 
-    @GET("/api/main/delete_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
+    @FormUrlEncoded
+    @POST("/api/main/delete_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
     fun deleteRt(
-        @Query("id") rtId: Int
+        @Field("id") rtId: Int
     ) : Call<JsonObject>
 
     @GET("/api/main/done_rt.php") // 루틴 또는 할 일의 고유 번호를 이용하여
     fun doneRt(
         @Query("id") rtId: Int,
         @Query("done") done: Int, // 완료 후 설정할 상태에 대한 값
-        @Query("m_date") mDate: String
+        @Query("m_date") mDate: String,
+        @Query("done_date") doneDate: String // 루틴을 완료한 날짜(할 일에는 안 쓰임)
     ) : Call<JsonObject>
 
     @FormUrlEncoded
@@ -166,7 +169,9 @@ interface RetrofitService {
     @GET("/api/main/get_actions.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
     fun getActions(
         @Query("rt_id") rtId: Int,
-        @Query("user_id") userId: Int
+        @Query("user_id") userId: Int,
+        @Query("past") past: Boolean,
+        @Query("done_day") doneDay: String
     ) : Call<MutableList<ActionData>>
 
     @GET("/api/main/get_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일의 정보 가져오기
@@ -174,9 +179,28 @@ interface RetrofitService {
         @Query("id") actionId: Int
     ) : Call<JsonObject>
 
-    @GET("/api/main/delete_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
+    @FormUrlEncoded
+    @POST("/api/main/delete_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
     fun deleteAction(
-        @Query("id") actionId: Int
+        @Field("id") actionId: Int
     ) : Call<JsonObject>
+
+    @GET("/api/main/done_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여
+    fun doneAction(
+        @Query("id") actionId: Int,
+        @Query("done") done: Int, // 완료 후 설정할 상태에 대한 값
+        @Query("m_date") mDate: String
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/main/change_action_pos.php") // 루틴 내 행동 추가하기 액티비티에서 데이터 보내 DB에 저장하기
+    fun chageActionPos(
+        @Field("id_moved") actionMoved: Int,
+        @Field("id_pushed") actionPushed: Int,
+        @Field("pos_moved") posMoved: Int,
+        @Field("pos_pushed") posPushed: Int
+    ) : Call<JsonObject>
+
+
 
 }

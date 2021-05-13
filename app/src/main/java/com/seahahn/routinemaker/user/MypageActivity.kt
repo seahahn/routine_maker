@@ -176,7 +176,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
                     // 구글 연동 해제
                     if(Firebase.auth.currentUser != null) {
                         val googleUser = Firebase.auth.currentUser
-                        googleUser.delete().addOnCompleteListener { task ->
+                        googleUser!!.delete().addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 d(TAG, "User account deleted.")
                             }
