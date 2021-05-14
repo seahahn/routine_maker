@@ -86,11 +86,12 @@ class MainActivity : Main() {
         initFAB()
 
         // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
-        getRts(service, getUserId(this))
+//        getRts(service, getUserId(this))
 
     }
 
     override fun onResume() {
+        d(TAG, "onResume")
         super.onResume()
 
         // 정보 변경된 경우 바뀐 정보를 적용하기 위해서 다시 초기화해줌

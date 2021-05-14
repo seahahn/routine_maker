@@ -32,7 +32,9 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
 
     // 액티비티로부터 데이터를 가져오는 뷰모델
     private val rtTodoViewModel by activityViewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by activityViewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터(과거)
     private val dateViewModel by activityViewModels<DateViewModel>() // 날짜 데이터
+    private var viewModelExecuted = false
 
     private lateinit var showAll: CheckBox
     private lateinit var deleteDone: Button
@@ -80,6 +82,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
 
         dateViewModel.selectedDate.observe(this) { date ->
             d(TAG, "루틴 프래그먼트 date : $date")
+            viewModelExecuted  = false
             // 사용자가 선택한 날짜를 루틴, 할 일 목록에 보내기
             // 선택한 날짜가 오늘 날짜면 루틴 체크박스 활성화, 다른 날짜면 비활성화
             rtAdapter.replaceDate(date)
@@ -100,6 +103,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
 
             if(!getDatePast(this.requireContext())) {
                 // 루틴, 할 일 목록 데이터 가져오기
+//                if(!rtTodoViewModel.gottenRtData.hasObservers())
                 rtTodoViewModel.gottenRtData.observe(this) { rtDatas ->
                     d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")
                     d(TAG, "과거 여부 : " + getDatePast(this.requireContext()))
@@ -136,7 +140,8 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
                 }
             } else {
                 // 루틴(과거 내역), 할 일 목록 데이터 가져오기
-                rtTodoViewModel.gottenRtDataPast.observe(this) { rtDatas ->
+//                if(!rtDoneViewModel.gottenRtDataPast.hasObservers())
+                rtDoneViewModel.gottenRtDataPast.observe(this) { rtDatas ->
                     d(TAG, "루틴 프래그먼트 과거 : $rtDatas")
                     d(TAG, "과거 여부 : " + getDatePast(this.requireContext()))
                     pastDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
@@ -172,7 +177,9 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
                     }
                 }
             }
+            viewModelExecuted  = true
         }
+
     }
 
     // 전체 목록 보기 체크 여부에 따른 목록 출력 방식 정하기

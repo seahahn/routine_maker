@@ -121,7 +121,7 @@
     <string name="item_todo">ToDo</string>
 
     <string name="showAll">전체 목록 보기</string>
-    <string name="done">완료한 일정 삭제하기</string>
+    <string name="done">완료한 할 일 삭제하기</string>
     <string name="rtTitle">루틴 제목</string>
     <string name="rtTitlePh">루틴의 제목을 입력해주세요</string>
     <string name="todoTitle">할 일 제목</string>

@@ -17,6 +17,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -95,6 +96,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // MainActivity의 프래그먼트들에 데이터 전달하기 위한 뷰모델
     private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
     private val rtTodoViewModel by viewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by viewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터(과거)
     private val actionViewModel by viewModels<ActionViewModel>() // 루틴, 할 일 목록 데이터
 
     // 루틴과 할 일, 루틴 내 행동 만들기 및 수정에 관한 액티비티에 포함된 요소들 초기화하기
@@ -725,11 +727,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             }
 
             override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
-                d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, "루틴(할 일) 목록(과거) 가져오기 요청 응답 수신 성공")
 //                d(TAG, "getRts : "+response.body().toString())
                 val rtdatas = response.body()
                 try {
-                    rtTodoViewModel.setPastList(rtdatas!!)
+                    rtDoneViewModel.setPastList(rtdatas!!)
                 } catch (e: IllegalStateException) {
                     d(TAG, "error : $e")
                 }
