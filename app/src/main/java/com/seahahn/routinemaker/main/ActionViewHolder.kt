@@ -63,11 +63,11 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         // 완료 여부에 따라 체크 여부 설정하기
         val date = LocalDate.parse(getSelectedDate(context)) // 사용자가 선택한 날짜가 오늘 날짜인 경우 체크박스 활성화, 오늘 이후 날짜(미래)인 경우 비활성화하기
         if(actionData.done == 0 || date.isAfter(LocalDate.now())) {
-            d(TAG, "행동 번호 " + actionData.id + "미완료 : " + actionData.done)
+//            d(TAG, "행동 번호 " + actionData.id + "미완료 : " + actionData.done)
             actionTitle.isChecked = false
             actionTitle.paintFlags = 0
         } else if(actionData.done == 1) {
-            d(TAG, "행동 번호 " + actionData.id + "완료 : " + actionData.done)
+//            d(TAG, "행동 번호 " + actionData.id + "완료 : " + actionData.done)
             actionTitle.isChecked = true
             actionTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }

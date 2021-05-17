@@ -71,6 +71,9 @@ class MainActivity : Main() {
         tabLayout = findViewById(R.id.tabLayout)
         tabLayout.addOnTabSelectedListener(OnTabSelectedListener())
 
+        // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
+//        getRts(service, getUserId(this))
+
         // 프래그먼트에 전달할 날짜 데이터 초기화(오늘 날짜)
         onDateSelected(dateformatter.format(dateData.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
 
@@ -84,10 +87,6 @@ class MainActivity : Main() {
         // 우측 하단의 FloatingActionButton 초기화
         // 버튼을 누르면 루틴 또는 할 일을 만들 수 있는 액티비티로 이동함
         initFAB()
-
-        // '루틴' 탭의 루틴 및 할 일 목록 데이터 불러오기
-        getRts(service, getUserId(this))
-
     }
 
     override fun onResume() {

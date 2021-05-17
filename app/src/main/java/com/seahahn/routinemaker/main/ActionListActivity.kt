@@ -72,9 +72,9 @@ class ActionListActivity : Main() {
         }
 
         actionViewModel.gottenActionData.observe(this) { actionDatas ->
-            d(TAG, "actionDatas : $actionDatas")
+//            d(TAG, "actionDatas : $actionDatas")
             mDatas = actionDatas // 뷰모델에 저장해둔 루틴 내 행동 목록 데이터 가져오기
-            d(TAG, "mDatas : $mDatas")
+//            d(TAG, "mDatas : $mDatas")
             actionAdapter.replaceList(mDatas) // 목록 데이터 출력하기
         }
     }
