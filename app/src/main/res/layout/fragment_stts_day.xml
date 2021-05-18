@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+tools:context=".stts.SttsDayFragment">
+
+<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+        <LinearLayout
+                android:id="@+id/LLTotalRtNum"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:background="@drawable/list_bg"
+                android:layout_height="48dp" android:layout_marginTop="24dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp">
+            <TextView
+                    android:text="@string/totalRtNum"
+                    style="@style/txt_l"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:id="@+id/tvtotalRtNum"
+                    android:layout_weight="1"/>
+            <TextView
+                    style="@style/txt_l"
+                    android:text="2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:id="@+id/totalRtNum"/>
+            <TextView
+                    style="@style/txt_l"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/numCountUnit"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/LLTotalRtDoneNum"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:background="@drawable/list_bg"
+                android:layout_height="48dp" android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/LLTotalRtNum"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp">
+            <TextView
+                    android:text="@string/totalRtDoneNum"
+                    style="@style/txt_l"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:id="@+id/tvtotalRtDoneNum"
+                    android:layout_weight="1"/>
+            <TextView
+                    style="@style/txt_l"
+                    android:text="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:id="@+id/totalRtDoneNum"/>
+            <TextView
+                    style="@style/txt_l"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/numCountUnit"/>
+        </LinearLayout>
+
+        <TextView
+                style="@style/txt_l"
+                android:id="@+id/rtDoneRecord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/rtDoneRecord"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                android:id="@+id/recordList"
+                tools:listitem="@layout/item_stts_day" app:layout_constraintTop_toBottomOf="@+id/rtDoneRecord"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

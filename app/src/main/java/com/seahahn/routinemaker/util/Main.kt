@@ -17,6 +17,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
+import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -95,6 +96,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // MainActivity의 프래그먼트들에 데이터 전달하기 위한 뷰모델
     private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
     private val rtTodoViewModel by viewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by viewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터
     private val actionViewModel by viewModels<ActionViewModel>() // 루틴, 할 일 목록 데이터
 
     // 루틴과 할 일, 루틴 내 행동 만들기 및 수정에 관한 액티비티에 포함된 요소들 초기화하기
@@ -302,7 +304,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawers()
             // 테스트를 위해 뒤로가기 버튼시 Toast 메시지
-            Toast.makeText(this,"back btn clicked",Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this,"back btn clicked",Toast.LENGTH_SHORT).show()
         } else{
             super.onBackPressed()
         }
@@ -506,11 +508,12 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // 루틴 만들거나 수정할 경우 사용자가 선택한 수행 요일에 맞춰서 가장 빠른 날짜를 구하기 위한 메소드
     fun getMDate(mDays: String, mDateInput : String, daysToAdd : Long): String {
         // 루틴 또는 할 일을 수행한 날
-        val doneDay : LocalDate = if(mDateInput != "") {
+        var doneDay : LocalDate = if(mDateInput != "") {
             LocalDate.parse(mDateInput)
         } else {
             LocalDate.now()
         }
+        if(doneDay.isBefore(LocalDate.now())) doneDay = LocalDate.now()
         var mDate = doneDay.plusDays(daysToAdd) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
         var dayOfWeek = getDayOfWeek(mDate) // 요일 이름을 넣어둘 변수
 
@@ -725,11 +728,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             }
 
             override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
-                d(TAG, "루틴(할 일) 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, "루틴(할 일) 목록(과거) 가져오기 요청 응답 수신 성공")
 //                d(TAG, "getRts : "+response.body().toString())
                 val rtdatas = response.body()
                 try {
-                    rtTodoViewModel.setPastList(rtdatas!!)
+                    rtDoneViewModel.setPastList(rtdatas!!)
                 } catch (e: IllegalStateException) {
                     d(TAG, "error : $e")
                 }
@@ -1009,7 +1012,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // 루틴 내 행동 완료 처리하기
     fun doneAction(context : Context, service: RetrofitService, actionId : Int, done : Int, mDays : String, mDateInput : String) {
         d(TAG, "doneAction 변수들 : $actionId, $done, $mDays, $mDateInput")
-        var mDate = LocalDate.now().toString()
+        val mDate = LocalDate.now().toString()
 //        if(mDays.isNotBlank() && done == 1) {
 //            mDate = getMDate(mDays, mDateInput, 1) // DB에 저장될 날짜(내일 날짜부터 시작해서 수행 요일에 맞는 날짜 찾은 후에 이 변수에 넣음)
 //        } else if(done == 0) {

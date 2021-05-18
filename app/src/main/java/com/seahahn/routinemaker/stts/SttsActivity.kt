@@ -1,10 +1,12 @@
 package com.seahahn.routinemaker.stts
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
 
@@ -12,9 +14,16 @@ class SttsActivity : Main() {
 
     private val TAG = this::class.java.simpleName
 
-    private lateinit var tabLayout: TabLayout
-    private lateinit var sttsGraphFragment: SttsGraphFragment
-    private lateinit var sttsCountFragment: SttsCountFragment
+//    private lateinit var tabLayout: TabLayout
+    private lateinit var sttsDayFragment: SttsDayFragment
+    private lateinit var sttsWeekFragment: SttsWeekFragment
+    private lateinit var sttsMonthFragment: SttsMonthFragment
+
+    private lateinit var toolbar : Toolbar
+
+    // 사용자가 선택한 시간대에 따라 다른 값을 가짐
+    // 일간(0), 주간(1), 월간(2). 초기값은 일간(0)임
+    private var selectedTime = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +33,18 @@ class SttsActivity : Main() {
         drawerLayout = findViewById(R.id.drawer_layout)
         leftnav = findViewById(R.id.leftnav)
         leftnav.setNavigationItemSelectedListener(this)
-        val leftnav_header = leftnav.getHeaderView(0)
+        val leftnavHeader = leftnav.getHeaderView(0)
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
-        hd_email = leftnav_header.findViewById(R.id.hd_email)
-        hd_nick = leftnav_header.findViewById(R.id.hd_nick)
-        hd_mbs = leftnav_header.findViewById(R.id.hd_mbs)
-        hd_photo = leftnav_header.findViewById(R.id.hd_photo)
+        hd_email = leftnavHeader.findViewById(R.id.hd_email)
+        hd_nick = leftnavHeader.findViewById(R.id.hd_nick)
+        hd_mbs = leftnavHeader.findViewById(R.id.hd_mbs)
+        hd_photo = leftnavHeader.findViewById(R.id.hd_photo)
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
 
         // 하단 BottomNavigationView 초기화
@@ -53,19 +64,20 @@ class SttsActivity : Main() {
         rightArrow.setOnClickListener(DateClickListener())
 
         // 액티비티에 포함될 프래그먼트 초기화
-        sttsGraphFragment = SttsGraphFragment()
-        sttsCountFragment = SttsCountFragment()
+        sttsDayFragment = SttsDayFragment()
+        sttsWeekFragment = SttsWeekFragment()
+        sttsMonthFragment = SttsMonthFragment()
 
         // 탭 레이아웃 초기화. 탭에 따라 보여줄 프래그먼트가 바뀜
-        tabLayout = findViewById(R.id.tabLayout)
-        tabLayout.addOnTabSelectedListener(OnTabSelectedListener())
+//        tabLayout = findViewById(R.id.tabLayout)
+//        tabLayout.addOnTabSelectedListener(OnTabSelectedListener())
 
         // 프래그먼트에 전달할 날짜 데이터 초기화(오늘 날짜)
         onDateSelected(dateformatter.format(dateData.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
 
         // 처음에는 '루틴' 탭에 해당하는 프래그먼트를 보여줌
         supportFragmentManager.commit {
-            replace<SttsGraphFragment>(R.id.container)
+            replace<SttsDayFragment>(R.id.container)
             setReorderingAllowed(true)
             addToBackStack(null) // name can be null
         }
@@ -78,23 +90,28 @@ class SttsActivity : Main() {
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
     }
 
-    inner class OnTabSelectedListener : TabLayout.OnTabSelectedListener {
-        override fun onTabSelected(tab: TabLayout.Tab?) {
-            val position = tabLayout.selectedTabPosition
-            var selected : Fragment = sttsGraphFragment
-            when(position) {
-                0 -> selected = sttsGraphFragment
-                1 -> selected = sttsCountFragment
+    // 툴바 우측 메뉴 버튼 설정
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_time_select, menu)       // main_menu 메뉴를 toolbar 메뉴 버튼으로 설정
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "onOptionsItemSelected Stts")
+        when(item.itemId) {
+            R.id.toolbarDay -> {
+                toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
+                supportFragmentManager.beginTransaction().replace(R.id.container, sttsDayFragment) .commit()
             }
-            supportFragmentManager.beginTransaction() .replace(R.id.container, selected) .commit()
+            R.id.toolbarWeek -> {
+                toolbar.overflowIcon = getDrawable(R.drawable.letter_w)
+                supportFragmentManager.beginTransaction().replace(R.id.container, sttsWeekFragment) .commit()
+            }
+            R.id.toolbarMonth -> {
+                toolbar.overflowIcon = getDrawable(R.drawable.letter_m)
+                supportFragmentManager.beginTransaction().replace(R.id.container, sttsMonthFragment) .commit()
+            }
         }
-
-        override fun onTabUnselected(tab: TabLayout.Tab?) {
-            // do nothing
-        }
-
-        override fun onTabReselected(tab: TabLayout.Tab?) {
-            // do nothing
-        }
+        return super.onOptionsItemSelected(item)
     }
 }

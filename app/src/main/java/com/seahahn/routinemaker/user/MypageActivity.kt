@@ -254,8 +254,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // 사진 촬영한 경우의 결과 받아오기
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) { // 사진 촬영한 경우의 결과 받아오기
             val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
 
             val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString()) // 사진 비트맵이 저장된 파일 경로 가져오기
@@ -267,13 +266,13 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
                 imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
                 imgFile, // 실제 저장될 파일
                 { result ->
-                    d(TAG, "Successfully uploaded: " + result)
+                    d(TAG, "Successfully uploaded : $result")
                     val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
                     changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
                 },
                 { error -> d(TAG, "Upload failed", error) }
             )
-        } else if(requestCode == REQUEST_IMAGE_BRING && resultCode == Activity.RESULT_OK) {
+        } else if(requestCode == REQUEST_IMAGE_BRING && resultCode == Activity.RESULT_OK) { // 갤러리에서 사진 가져온 경우의 결과 받아오기
             val imgUri : Uri? = data?.data
 
             val thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imgUri)
@@ -289,7 +288,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
                 imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
                 imgFile, // 실제 저장될 파일
                 { result ->
-                    d(TAG, "Successfully uploaded: " + result)
+                    d(TAG, "Successfully uploaded : $result")
                     val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
                     changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
                 },

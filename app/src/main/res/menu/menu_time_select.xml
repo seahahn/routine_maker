@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+            android:id="@+id/toolbarDay"
+            android:title="@string/toolbarDay"
+            android:icon="@drawable/letter_d"
+            />
+    <item
+            android:id="@+id/toolbarWeek"
+            android:title="@string/toolbarWeek"
+            android:icon="@drawable/letter_w"
+            />
+    <item
+            android:id="@+id/toolbarMonth"
+            android:title="@string/toolbarMonth"
+            android:icon="@drawable/letter_m"
+            />
+
+</menu>

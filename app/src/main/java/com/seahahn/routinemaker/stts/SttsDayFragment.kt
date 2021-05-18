@@ -12,7 +12,7 @@ import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 
-class SttsGraphFragment : Fragment() {
+class SttsDayFragment : Fragment() {
 
     private val TAG = this::class.java.simpleName
     private val rfServiceViewModel by activityViewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
@@ -23,14 +23,14 @@ class SttsGraphFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stts_graph, container, false)
+        return inflater.inflate(R.layout.fragment_stts_day, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dateViewModel.selectedDate.observe(this) { date ->
-            Log.d(TAG, "그래프 프래그먼트 date : $date")
+            Log.d(TAG, "일간 통계 프래그먼트 date : $date")
         }
     }
 }

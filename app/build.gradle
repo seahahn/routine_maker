@@ -107,12 +107,6 @@ dependencies {
     // round shape ToggleButton
     implementation 'com.nex3z:toggle-button-group:1.2.3'
 
-    // Color Picker
-    implementation 'com.github.dhaval2404:colorpicker:2.0'
-
-    // TimeTableView
-//    implementation 'com.github.alamkanak:android-week-view:1.2.6'
-
-    implementation 'com.github.islandparadise14:Mintable:1.5.1'
-
+    // CalendarView
+    implementation "com.prolificinteractive:material-calendarview:1.4.3"
 }

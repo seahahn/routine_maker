@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -32,6 +33,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
 
     // 액티비티로부터 데이터를 가져오는 뷰모델
     private val rtTodoViewModel by activityViewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by activityViewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터
     private val dateViewModel by activityViewModels<DateViewModel>() // 날짜 데이터
 
     private lateinit var showAll: CheckBox
@@ -199,10 +201,42 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
         }
 
         // 루틴(과거 내역), 할 일 목록 데이터 가져오기
-        rtTodoViewModel.gottenRtDataPast.observe(this) { rtDatas ->
+        rtDoneViewModel.gottenRtDataPast.observe(this) { rtDatas ->
             d(TAG, "루틴 프래그먼트 과거 : $rtDatas")
             d(TAG, "과거 여부 : " + getDatePast(this.requireContext()))
             pastDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+
+            if(getDatePast(this.requireContext())) {
+                // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
+                pastShowDatas.clear()
+                it_pastDatas = pastDatas.iterator()
+                while (it_pastDatas.hasNext()) {
+                    val it_pastData = it_pastDatas.next()
+                    //                    d(TAG, "it_mData : $it_mData")
+                    // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
+//                        val timestamp = it_pastData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
+                    if (it_pastData.mType == "rt" &&
+                        dayOfWeek in it_pastData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
+                        (parsedDate.isEqual(LocalDate.parse(it_pastData.mDate)) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
+//                                    || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate())))
+                                )){
+                        pastShowDatas.add(it_pastData)
+                    } else if (it_pastData.mType == "todo" && it_pastData.mDate == parsedDate.toString()) {
+                        pastShowDatas.add(it_pastData)
+                    }
+                    // 할 일에 반복 여부 있는 경우에는 해당 할 일을 수행하고 나면 그 다음에 반복해야 할 요일의 날짜를 date에 집어넣어 수정한다
+                }
+
+                // 어댑터에 가져온 데이터 연결하여 출력하기
+                // '전체 목록 보기' 여부에 따라 전체를 보여줄지, 해당 요일 데이터만 보여줄지 결정함
+                if (showAll.isChecked) {
+                    rtAdapter.replaceList(mDatas)
+                    rtAdapter.setDayOfWeek(dayOfWeek)
+                } else {
+                    rtAdapter.replaceList(pastShowDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
+                    rtAdapter.setDayOfWeek(dayOfWeek)
+                }
+            }
         }
     }
 
