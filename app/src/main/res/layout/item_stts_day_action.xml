@@ -11,14 +11,13 @@
             android:id="@+id/circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:srcCompat="@drawable/record_action"
+            app:srcCompat="@drawable/record_action"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"
             app:layout_constraintTop_toTopOf="@+id/action_title"
             app:layout_constraintBottom_toBottomOf="@+id/action_title"
     />
     <TextView
-            style="@style/txt_s"
+            style="@style/txt_m"
             android:id="@+id/action_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/circle" android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"/>
     <TextView
-            style="@style/txt_s"
+            style="@style/txt_m"
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@+id/action_title"
             android:layout_marginStart="4dp" android:layout_marginTop="4dp"/>
     <TextView
-            style="@style/txt_s"
+            style="@style/txt_m"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="분"
@@ -47,7 +46,6 @@
             android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/action_title"
             app:layout_constraintBottom_toBottomOf="@+id/num"
-            android:layout_marginEnd="16dp"
             tools:srcCompat="@drawable/stts_green"
     />
 

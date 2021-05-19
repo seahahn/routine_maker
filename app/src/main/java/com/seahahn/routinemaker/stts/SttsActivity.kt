@@ -9,6 +9,7 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.UserInfo
 
 class SttsActivity : Main() {
 
@@ -28,6 +29,9 @@ class SttsActivity : Main() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stts)
+
+        // 레트로핏 통신 연결
+        service = initRetrofit()
 
         // 좌측 Navigation Drawer 초기화
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -62,6 +66,7 @@ class SttsActivity : Main() {
         title.setOnClickListener(DateClickListener())
         leftArrow.setOnClickListener(DateClickListener())
         rightArrow.setOnClickListener(DateClickListener())
+        rightArrow.isEnabled = false
 
         // 액티비티에 포함될 프래그먼트 초기화
         sttsDayFragment = SttsDayFragment()
@@ -86,8 +91,9 @@ class SttsActivity : Main() {
     override fun onResume() {
         super.onResume()
 
-        // 정보 변경된 경우 좌측 내비의 헤더 부분에 바뀐 정보를 적용하기 위해서 다시 초기화해줌
+        // 정보 변경된 경우 바뀐 정보를 적용하기 위해서 다시 초기화해줌
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
+        getActionRtRecords(service, UserInfo.getUserId(this))
     }
 
     // 툴바 우측 메뉴 버튼 설정
@@ -96,6 +102,7 @@ class SttsActivity : Main() {
         return true
     }
 
+    // 툴바 우측 메뉴(일간, 주간, 월간) 선택 시 각각에 해당하는 프래그먼트로 전환시킴
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(TAG, "onOptionsItemSelected Stts")
         when(item.itemId) {

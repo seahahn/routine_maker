@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
 class MainActivity : Main() {

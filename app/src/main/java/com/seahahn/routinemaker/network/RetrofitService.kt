@@ -166,7 +166,7 @@ interface RetrofitService {
         @Field("memo") memo: String
     ) : Call<JsonObject>
 
-    @GET("/api/main/get_actions.php") // 사용자 고유 번호를 이용하여 루틴 및 할 일 목록 가져오기
+    @GET("/api/main/get_actions.php") // 사용자 고유 번호를 이용하여 루틴 내 행동 목록 가져오기
     fun getActions(
         @Query("rt_id") rtId: Int,
         @Query("user_id") userId: Int,
@@ -174,18 +174,18 @@ interface RetrofitService {
         @Query("done_day") doneDay: String
     ) : Call<MutableList<ActionData>>
 
-    @GET("/api/main/get_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일의 정보 가져오기
+    @GET("/api/main/get_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동의 정보 가져오기
     fun getAction(
         @Query("id") actionId: Int
     ) : Call<JsonObject>
 
     @FormUrlEncoded
-    @POST("/api/main/delete_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 또는 할 일 삭제하기
+    @POST("/api/main/delete_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
     fun deleteAction(
         @Field("id") actionId: Int
     ) : Call<JsonObject>
 
-    @GET("/api/main/done_action.php") // 루틴 또는 할 일의 고유 번호를 이용하여
+    @GET("/api/main/done_action.php") // 루틴 내 행동의 고유 번호를 이용하여 완료 처리하기
     fun doneAction(
         @Query("id") actionId: Int,
         @Query("done") done: Int, // 완료 후 설정할 상태에 대한 값
@@ -201,6 +201,14 @@ interface RetrofitService {
         @Field("pos_pushed") posPushed: Int
     ) : Call<JsonObject>
 
+    @GET("/api/stts/get_rt_records.php") // 사용자 고유 번호를 이용하여 루틴 과거 수행 내역 가져오기
+    fun getRtRecords(
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<RtData>>
 
+    @GET("/api/stts/get_action_records.php") // 사용자 고유 번호를 이용하여 루틴 내 행동 목록 가져오기
+    fun getActionRecords(
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<ActionData>>
 
 }

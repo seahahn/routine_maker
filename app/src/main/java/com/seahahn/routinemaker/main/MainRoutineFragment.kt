@@ -33,7 +33,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
 
     // 액티비티로부터 데이터를 가져오는 뷰모델
     private val rtTodoViewModel by activityViewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
-    private val rtDoneViewModel by activityViewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by activityViewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터(과거)
     private val dateViewModel by activityViewModels<DateViewModel>() // 날짜 데이터
 
     private lateinit var showAll: CheckBox

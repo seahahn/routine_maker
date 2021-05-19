@@ -32,6 +32,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
+import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
 import com.seahahn.routinemaker.util.AppVar.getDatePast
@@ -44,6 +45,7 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.sql.Timestamp
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -76,6 +78,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     var dateformatter: DateFormat = SimpleDateFormat("yyyy-MM-dd") // DB 데이터 불러오기 위한 날짜 형식
     var dateDataFormatted: String = dateformatter.format(dateData.time)
     lateinit var title : TextView
+    lateinit var datePicker : DatePickerDialog
+    private val maxDate = Timestamp.valueOf(LocalDateTime.now().toString().replace("T", " ")).time
 
     // 메인 액티비티에서는 오늘 날짜를 툴바 제목으로 씀
     private val current = LocalDate.now() // 오늘 날짜 데이터
@@ -87,7 +91,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     val formattedMDDoW: String = current.format(formatterMDDoW) // 툴바 제목에 들어가는 문자열
     val formattedMonthDay: String = current.format(formatterMonthDay) // 할 일 수행예정일에 들어가는 문자열(월 일)
     val formattedymd: String = current.format(formatterymd) // 할 일 수행예정일에 해당하는 날짜 데이터 값(yyyy-MM-dd)
-    val formattedHM: String = currentHM.format(formatterHM) // 툴바 제목에 들어가는 문자열
+    val formattedHM: String = currentHM.format(formatterHM) // 수행 예정 시각에 해당하는 시간 데이터
 
     // 상단 툴바에 날짜 나올 경우 양쪽에 좌우 화살표 초기화함. 좌는 하루 전, 우는 하루 뒤로 이동시킴
     lateinit var leftArrow : ImageButton
@@ -96,8 +100,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // MainActivity의 프래그먼트들에 데이터 전달하기 위한 뷰모델
     private val dateViewModel by viewModels<DateViewModel>() // 날짜 데이터
     private val rtTodoViewModel by viewModels<RtTodoViewModel>() // 루틴, 할 일 목록 데이터
-    private val rtDoneViewModel by viewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터
-    private val actionViewModel by viewModels<ActionViewModel>() // 루틴, 할 일 목록 데이터
+    private val rtDoneViewModel by viewModels<RtDoneViewModel>() // 루틴, 할 일 목록 데이터(과거)
+    private val actionViewModel by viewModels<ActionViewModel>() // 루틴 내 행동 목록 데이터
+    private val recordViewModel by viewModels<RecordViewModel>() // 루틴 및 루틴 내 행동 과거 수행 내역 데이터
 
     // 루틴과 할 일, 루틴 내 행동 만들기 및 수정에 관한 액티비티에 포함된 요소들 초기화하기
     var rtId : Int = 0// DB내 루틴 또는 할 일 고유 번호. 루틴 또는 할 일 수정 시에 필요
@@ -165,7 +170,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
     fun setToolbarDate(title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int) {
 //        Log.d(TAG, "input : $m $d")
-        DatePickerDialog(this,
+        datePicker = DatePickerDialog(this,
             { _, year, month, day->
                 val cal = Calendar.getInstance()
                 cal.set(year, month, day) // 선택한 날짜를 Calendar 형식으로 가져옴
@@ -181,9 +186,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 title.text = formatted // 툴바 제목에 사용자가 선택한 날짜 집어넣기
 
                 onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
+                if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd
             },
             y, m, d) // DatePicker가 열리면 보여줄 날짜 초기값
-            .show()
+        if(TAG == "SttsActivity") {
+            datePicker.datePicker.maxDate = maxDate
+        }
+        datePicker.show()
     }
 
     // 할 일 만들기, 수정하기의 수행 예정일 선택을 받기 위한 메소드
@@ -217,6 +226,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         title.text = formatted
 
         onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
+        if(TAG == "SttsActivity") {
+            rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd
+        }
     }
 
     // 뷰모델에 날짜 데이터 저장하기
@@ -724,7 +736,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         // 과거 목록 가져오기(수행 가능한 할 일 포함)
         service.getRts(userId, true).enqueue(object : Callback<MutableList<RtData>> {
             override fun onFailure(call: Call<MutableList<RtData>>, t: Throwable) {
-                d(TAG, "루틴(할 일) 목록 가져오기 실패 : {$t}")
+                d(TAG, "루틴(할 일) 목록(과거) 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
@@ -1032,6 +1044,49 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val result = gson.get("result").asBoolean
                 val rtId = gson.get("rtId").asInt
                 getActions(service, rtId, getUserId(context))
+            }
+        })
+    }
+
+    // 통계 액티비티에서 루틴 과거 수행 내역 불러오기
+    fun getRtRecords(service: RetrofitService, userId : Int) {
+        d(TAG, "getRtRecords 변수들 : $userId")
+        service.getRtRecords(userId).enqueue(object : Callback<MutableList<RtData>> {
+            override fun onFailure(call: Call<MutableList<RtData>>, t: Throwable) {
+                d(TAG, "루틴 과거 수행 내역 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<RtData>>, response: Response<MutableList<RtData>>) {
+                d(TAG, "루틴 과거 수행 내역 가져오기 요청 응답 수신 성공")
+                d(TAG, "getRtRecords : "+response.body().toString())
+                val rtdatas = response.body()
+                try {
+                    recordViewModel.setRtRecordList(rtdatas!!)
+                } catch (e: IllegalStateException) {
+                    d(TAG, "error : $e")
+                }
+            }
+        })
+    }
+
+    // 통계 액티비티에서 루틴 내 행동 과거 수행 내역 불러오기
+    fun getActionRtRecords(service: RetrofitService, userId : Int) {
+        d(TAG, "getActionRecords 변수들 : $userId")
+        service.getActionRecords(userId).enqueue(object : Callback<MutableList<ActionData>> {
+            override fun onFailure(call: Call<MutableList<ActionData>>, t: Throwable) {
+                d(TAG, "루틴 내 행동 과거 수행 내역 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<ActionData>>, response: Response<MutableList<ActionData>>) {
+                d(TAG, "루틴 내 행동 과거 수행 내역 가져오기 요청 응답 수신 성공")
+                d(TAG, "getActionRecords : "+response.body().toString())
+                val actionDatas = response.body()
+                try {
+                    recordViewModel.setActionRecordList(actionDatas!!)
+                    getRtRecords(service, userId)
+                } catch (e: IllegalStateException) {
+                    d(TAG, "error : $e")
+                }
             }
         })
     }

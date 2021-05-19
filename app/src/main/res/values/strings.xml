@@ -155,6 +155,7 @@
     <string name="titleEmpty">제목을 입력해주세요</string>
     <string name="daysEmpty">반복 요일을 최소 1개 선택해주세요</string>
     <string name="timecostEmpty">예상 소요 시간을 1분 이상으로 입력해주세요</string>
+    <string name="dataEmpty">데이터가 없습니다</string>
 
     <string name="totalRtNum">총 루틴 갯수</string>
     <string name="totalRtDoneNum">수행 완료 루틴</string>
