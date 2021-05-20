@@ -4,14 +4,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.main.DateViewModel
+import com.seahahn.routinemaker.stts.day.SttsDayFragment
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.Stts
 import com.seahahn.routinemaker.util.UserInfo
 
-class SttsActivity : Main() {
+class SttsActivity : Stts() {
 
     private val TAG = this::class.java.simpleName
 
@@ -22,9 +27,7 @@ class SttsActivity : Main() {
 
     private lateinit var toolbar : Toolbar
 
-    // 사용자가 선택한 시간대에 따라 다른 값을 가짐
-    // 일간(0), 주간(1), 월간(2). 초기값은 일간(0)임
-    private var selectedTime = 0
+    private val dateViewModel by viewModels<DateViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +89,20 @@ class SttsActivity : Main() {
             setReorderingAllowed(true)
             addToBackStack(null) // name can be null
         }
+
+        dateViewModel.selectedDate.observe(this) { date ->
+            when(selectedTime) {
+                0 -> {
+
+                }
+                1 -> {
+
+                }
+                2 -> {
+
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -109,14 +126,20 @@ class SttsActivity : Main() {
             R.id.toolbarDay -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsDayFragment) .commit()
+                selectedTime = 0
+                initToolbarDate(cal, selectedTime, dateData.time, title)
             }
             R.id.toolbarWeek -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_w)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsWeekFragment) .commit()
+                selectedTime = 1
+                initToolbarDate(cal, selectedTime, dateData.time, title)
             }
             R.id.toolbarMonth -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_m)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsMonthFragment) .commit()
+                selectedTime = 2
+                initToolbarDate(cal, selectedTime, dateData.time, title)
             }
         }
         return super.onOptionsItemSelected(item)

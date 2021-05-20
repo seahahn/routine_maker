@@ -1,14 +1,12 @@
-package com.seahahn.routinemaker.stts
+package com.seahahn.routinemaker.stts.day
 
 import android.content.Context
-import android.util.Log.d
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionData
@@ -45,6 +43,9 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun onBind(rtData : RtData, dateInput : String){
+        isOpened = false
+        viewEmptyList.visibility = View.GONE
+
         recordTitle.text = rtData.rtTitle // 루틴 제목 넣기
 
         arrow.setImageResource(R.drawable.record_arrow_down) // 루틴 제목 우측의 화살표. 루틴 내 행동 목록이 열려있으면 상향, 닫혀있으면 하향
@@ -63,7 +64,7 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 // 루틴 내 행동 아무것도 수행하지 않은 경우
                 resultImg.setImageResource(R.drawable.stts_red)
                 // 루틴 내 행동 1개 이상 수행했으나 전부 다 수행하진 않은 경우
-                if(recordActionAdapter.isAllDone() && recordActionAdapter.itemCount != 0) {
+                if(recordActionAdapter.getItemDoneCount() != 0 && recordActionAdapter.itemCount != 0) {
                     resultImg.setImageResource(R.drawable.stts_yellow)
                 } else if(recordActionAdapter.itemCount == 0) {
                     resultImg.setImageResource(R.drawable.horizontal_line)

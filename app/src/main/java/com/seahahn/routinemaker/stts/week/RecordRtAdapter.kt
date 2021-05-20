@@ -1,4 +1,4 @@
-package com.seahahn.routinemaker.stts
+package com.seahahn.routinemaker.stts.week
 
 import android.util.Log.d
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     lateinit var service : RetrofitService
 
     //데이터들을 저장하는 변수
+    private var allData = mutableListOf<RtData>()
     private var data = mutableListOf<RtData>()
     private var doneCount = 0
     private var actionData = mutableListOf<ActionData>()
@@ -25,14 +26,15 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordRtViewHolder {
 //        d(TAG, "rt onCreateViewHolder")
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_stts_day, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_stts_week, parent, false)
         return RecordRtViewHolder(view)
     }
 
     //ViewHolder에서 데이터 묶는 함수가 실행되는 곳
     override fun onBindViewHolder(holder: RecordRtViewHolder, position: Int) {
-        d(TAG, "RRA onBindViewHolder")
+//        d(TAG, "RRA onBindViewHolder")
 //        holder.replaceDate(date)
+        holder.getRtDatas(allData)
         holder.getActionDatas(actionData)
         holder.onBind(data[position], date)
     }
@@ -48,10 +50,14 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     }
 
     fun replaceList(newList: MutableList<RtData>) {
-        d(TAG, "RRA replaceList")
+//        d(TAG, "RRA replaceList")
         data = newList.toMutableList()
         //어댑터의 데이터가 변했다는 notify를 날린다
         notifyDataSetChanged()
+    }
+
+    fun getAllDatas(newList: MutableList<RtData>) {
+        allData = newList.toMutableList()
     }
 
     fun replaceActionList(newList: MutableList<ActionData>) {

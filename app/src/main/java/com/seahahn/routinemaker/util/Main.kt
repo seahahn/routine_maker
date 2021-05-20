@@ -17,7 +17,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -79,7 +78,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     var dateDataFormatted: String = dateformatter.format(dateData.time)
     lateinit var title : TextView
     lateinit var datePicker : DatePickerDialog
-    private val maxDate = Timestamp.valueOf(LocalDateTime.now().toString().replace("T", " ")).time
+    val maxDate = Timestamp.valueOf(LocalDateTime.now().toString().replace("T", " ")).time
 
     // 메인 액티비티에서는 오늘 날짜를 툴바 제목으로 씀
     private val current = LocalDate.now() // 오늘 날짜 데이터
@@ -168,7 +167,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
-    fun setToolbarDate(title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int) {
+    open fun setToolbarDate(title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int) {
 //        Log.d(TAG, "input : $m $d")
         datePicker = DatePickerDialog(this,
             { _, year, month, day->
@@ -210,7 +209,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // 현재 날짜의 하루 전으로 이동하는 메소드
-    fun onedayMove(title: TextView, c: Calendar, dd: Calendar ,y: Int, m: Int, d: Int, updown: Int) {
+    open fun oneTimeMove(title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int, updown: Int) {
 //        Log.d(TAG, "input : $m $d")
         val cal = Calendar.getInstance()
         val day = d + updown
@@ -265,10 +264,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     setToolbarDate(title, cal, dateData, y, m, d)
                 }
                 R.id.left -> { // 좌측 화살표 누르면 하루 전으로
-                    onedayMove(title, cal, dateData, y, m, d, -1)
+                    oneTimeMove(title, cal, dateData, y, m, d, -1)
                 }
                 R.id.right -> { // 우측 화살표 누르면 하루 뒤로
-                    onedayMove(title, cal, dateData, y, m, d, 1)
+                    oneTimeMove(title, cal, dateData, y, m, d, 1)
                 }
             }
 //            Log.d(TAG, "dateDataFormatted : $dateDataFormatted")

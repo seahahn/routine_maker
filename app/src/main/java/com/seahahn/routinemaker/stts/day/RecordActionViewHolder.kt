@@ -1,12 +1,9 @@
-package com.seahahn.routinemaker.stts
+package com.seahahn.routinemaker.stts.day
 
 import android.content.Context
-import android.util.Log.d
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionData

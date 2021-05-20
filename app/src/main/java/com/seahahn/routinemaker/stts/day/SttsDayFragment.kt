@@ -1,4 +1,4 @@
-package com.seahahn.routinemaker.stts
+package com.seahahn.routinemaker.stts.day
 
 import android.os.Bundle
 import android.util.Log.d
@@ -14,6 +14,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
+import com.seahahn.routinemaker.stts.RecordViewModel
 import java.time.LocalDate
 
 class SttsDayFragment : Fragment() {
@@ -59,12 +60,12 @@ class SttsDayFragment : Fragment() {
             d(TAG, "일간 통계 프래그먼트 date : $date")
             recordRtAdapter.replaceDate(date) // 루틴 수행 기록 목록에 사용자가 선택한 날짜 값 전달하기
             parsedDate = LocalDate.parse(date) // 문자열 형태의 날짜값을 LocalDate 형식으로 변환
-            setShowDatas() // 날짜에 맞는 데이터만 목록에 출력하기
+            setShowDatas(false) // 날짜에 맞는 데이터만 목록에 출력하기
         }
 
         recordViewModel.recordRtData.observe(this) { rtDatas ->
             mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
-            setShowDatas() // 날짜에 맞는 데이터만 목록에 출력하기
+            setShowDatas(true) // 날짜에 맞는 데이터만 목록에 출력하기
         }
 
         recordViewModel.recordActionPast.observe(this) { actionDatas ->
@@ -75,7 +76,7 @@ class SttsDayFragment : Fragment() {
     }
 
     // 날짜에 맞는 데이터만 골라서 보여주기 위한 메소드
-    private fun setShowDatas() {
+    private fun setShowDatas(initData : Boolean) {
         showDatas.clear() // 기존 목록 비우기
         it_mDatas = mDatas.iterator()
         while (it_mDatas.hasNext()) {
@@ -92,7 +93,7 @@ class SttsDayFragment : Fragment() {
 
         // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
         if(recordRtAdapter.itemCount == 0) {
-            viewEmptyList.visibility = View.VISIBLE
+            if(initData) viewEmptyList.visibility = View.VISIBLE
         } else {
             viewEmptyList.visibility = View.GONE
         }

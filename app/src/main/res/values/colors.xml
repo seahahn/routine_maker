@@ -11,6 +11,8 @@
 
     <color name="light">#ffffff</color>
     <color name="dark">#000000</color>
+    <color name="red">#FF3232</color>
+    <color name="blue">#2699FB</color>
 
     <color name="fontLight">#ffffff</color>
     <color name="fontDark">#000000</color>
