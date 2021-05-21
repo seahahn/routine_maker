@@ -65,7 +65,7 @@ class ActionListActivity : Main() {
         touchHelper.attachToRecyclerView(actionList)    //리사이클러뷰를 넣어준다
 
         dateViewModel.selectedDate.observe(this) { date ->
-//            d(TAG, "루틴 프래그먼트 date : $date")
+            d(TAG, "행동 목록 date : $date")
             // 사용자가 선택한 날짜를 루틴, 할 일 목록에 보내기
             // 선택한 날짜가 오늘 날짜면 루틴 체크박스 활성화, 다른 날짜면 비활성화
             actionAdapter.replaceDate(date)

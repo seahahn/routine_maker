@@ -195,6 +195,7 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("/api/main/change_action_pos.php") // 루틴 내 행동 추가하기 액티비티에서 데이터 보내 DB에 저장하기
     fun chageActionPos(
+        @Field("m_date") mDate: String,
         @Field("id_moved") actionMoved: Int,
         @Field("id_pushed") actionPushed: Int,
         @Field("pos_moved") posMoved: Int,

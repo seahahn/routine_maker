@@ -84,8 +84,9 @@ class ActionAdapter : RecyclerView.Adapter<ActionViewHolder>() {
                 d(TAG, "데이터 i+1 ID값 : "+ data[i+1].id)
                 d(TAG, "포지션 상승 이동 감지 : $i -> "+ (i+1))
                 d(TAG, "데이터 i ID값 : "+ data[i].id)
+                d(TAG, "날짜 : $mDate")
 
-                chageActionPos(service, data[i+1].id, data[i].id, i+1, i)
+                chageActionPos(service, mDate, data[i+1].id, data[i].id, i+1, i)
             }
         } else {
             for (i in beforePosition downTo afterPosition + 1) {
@@ -94,18 +95,19 @@ class ActionAdapter : RecyclerView.Adapter<ActionViewHolder>() {
                 d(TAG, "데이터 i-1 ID값 : "+ data[i-1].id)
                 d(TAG, "포지션 하락 이동 감지 : $i -> "+ (i-1))
                 d(TAG, "데이터 i ID값 : "+ data[i].id)
+                d(TAG, "날짜 : $mDate")
 
-                chageActionPos(service, data[i-1].id, data[i].id, i-1, i)
+                chageActionPos(service, mDate, data[i-1].id, data[i].id, i-1, i)
             }
         }
         notifyItemMoved(beforePosition, afterPosition)
     }
 
     // 루틴 내 행동 순서 변경하기
-    fun chageActionPos(service: RetrofitService, actionMoved : Int, actionPushed: Int,
+    fun chageActionPos(service: RetrofitService, mDate : String, actionMoved : Int, actionPushed: Int,
                        posMoved: Int, posPushed: Int) {
         d(TAG, "chageActionPos 변수들 : $actionMoved, $actionPushed, $posMoved, $posPushed")
-        service.chageActionPos(actionMoved, actionPushed, posMoved, posPushed).enqueue(object : Callback<JsonObject> {
+        service.chageActionPos(mDate, actionMoved, actionPushed, posMoved, posPushed).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "루틴 내 행동 순서 변경 실패 : {$t}")
             }
