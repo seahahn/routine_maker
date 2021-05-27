@@ -165,13 +165,11 @@
     <string name="recordArrowDown">▼</string>
     <string name="totalTimeCost">총 소요 시간</string>
     <string name="totalMonthRtDoneNum">루틴 수행 횟수</string>
-    <string name="divider"> / </string>
-
+    <string name="divider">/</string>
 
     <string name="tableDate">날짜</string>
     <string name="tableRtNum">갯수</string>
     <string name="tableRtDoneNum">한거</string>
-
 
     <string-array name="timetable_header">
         <item></item>
@@ -185,5 +183,34 @@
     </string-array>
 
     <string name="numCountUnit">개</string>
+    <string name="humanCountUnit">명</string>
+
+    <string name="groupList">가입한 그룹 목록</string>
+    <string name="groupInfo">그룹 정보</string>
+    <string name="joinList">그룹 가입 신청자 목록</string>
+    <string name="searchGroup">그룹 찾기</string>
+    <string name="makeGroup">그룹 만들기</string>
+    <string name="updateGroup">그룹 정보 수정하기</string>
+    <string name="joinGroup">그룹 가입하기</string>
+    <string name="quitGroup">그룹 탈퇴하기</string>
+    <string name="groupTitle">그룹명</string>
+    <string name="groupTitlePh">그룹의 이름을 정해주세요.</string>
+    <string name="headLimit">인원 제한</string>
+    <string name="headNumber">그룹 인원</string>
+    <string name="isLocked">그룹 공개 여부</string>
+    <string name="tags">태그</string>
+    <string name="tagsPh">(띄어쓰기로 자동 구분)</string>
+    <string name="explain">추가 설명</string>
+
+    <string name="makeFeedTitle">피드 작성</string>
+    <string name="updateFeedTitle">피드 수정</string>
+    <string name="searchFeedTitle">피드 검색</string>
+    <string name="makeFeed">피드 작성하기</string>
+    <string name="updateFeed">피드 수정하기</string>
+
+    <string name="searchPh">검색어를 입력해주세요</string>
+    <string name="showOnlyMyFeed">내 피드만 보기</string>
+    <string name="joinPh">신청자의 닉네임 검색하기</string>
+    <string name="feedPh">어떤 하루를 보내고 계신가요?</string>
 
 </resources>

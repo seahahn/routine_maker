@@ -76,6 +76,7 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     fun onBind(rtData : RtData, dateInput : String){
         isOpened = false
+        viewEmptyList.visibility = View.GONE
 
         totalDoneCount = 0
         noneCount = 0
@@ -103,13 +104,13 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 resultImg.setImageResource(R.drawable.stts_red)
                 // 일부 수행한 경우 있으면 노란색 표시
                 if(notEnough) {
-                    d(TAG, "notEnough yellow?")
+//                    d(TAG, "notEnough yellow?")
                     resultImg.setImageResource(R.drawable.stts_yellow)
                 }
             }
             totalDoneCount in 1..6 -> {
                 // 1번 이상 수행했으나 전부 다 수행하진 않은 경우
-                d(TAG, "yellow?")
+//                d(TAG, "yellow?")
                 resultImg.setImageResource(R.drawable.stts_yellow)
             }
             totalDoneCount == 7 -> {
@@ -144,17 +145,7 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             // 첫 행에 날짜 넣기
             dayOfWeekList[i].text = firstDayOfWeek.format(formatterWeek)
 
-            // 두 번째 행에 루틴 수행 여부 표시하는 이미지 넣기
-//            it_rtDatas = rtDatas.iterator()
-//            while (it_rtDatas.hasNext()) {
-//                val it_rtData = it_rtDatas.next()
-//                // 사용자가 선택한 날짜에 해당하는 데이터만 출력 목록에 포함시킴
-//                if (firstDayOfWeek.isEqual(LocalDate.parse(it_rtData.mDate))
-//                    && it_rtData.id == rtId) {
-//                    totalCount++ // 해당 날짜의 루틴 내 행동 수
-//                    if(it_rtData.done == 1) doneCount++ // 해당 날짜의 수행 완료 루틴 수
-//                }
-//            }
+            // 각각의 요일별 날짜에 해당되는 총 루틴 수와 수행 완료한 루틴의 수를 가져옴
             it_mDatas = mDatas.iterator()
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
@@ -165,12 +156,13 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                     if(it_mData.done == 1) doneCount++ // 해당 날짜의 수행 완료 루틴 내 행동 수
                 }
             }
+            // 두 번째 행에 루틴 수행 여부 표시하는 이미지 넣기
             if(totalCount == doneCount && doneCount > 0) {
                 dayOfWeekDoneList[i].imageResource = R.drawable.stts_green
                 totalDoneCount++
             } else if(totalCount != doneCount && doneCount > 0) {
                 dayOfWeekDoneList[i].imageResource = R.drawable.stts_yellow
-                d(TAG, "notEnough?")
+//                d(TAG, "notEnough?")
                 notEnough = true
             } else if(totalCount != 0 && doneCount == 0) {
                 dayOfWeekDoneList[i].imageResource = R.drawable.stts_red

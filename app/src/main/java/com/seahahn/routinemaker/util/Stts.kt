@@ -36,8 +36,9 @@ open class Stts : Main() {
                 onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
 
                 // 선택된 날짜가 오늘 날짜인 경우 또는 주/월간에서 선택된 날짜의 주 또는 월이 오늘 날짜가 포함된 주 또는 월인 경우 툴바 우측 화살표 비활성화시킴
-                val isMaxWeekOrMonth = isMaxWeekOrMonth(c, selectedTime)
-                if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd && !isMaxWeekOrMonth
+//                val isMaxWeekOrMonth = isMaxWeekOrMonth(c, selectedTime)
+//                if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedYMD && !isMaxWeekOrMonth
+//                setEnabledRightArrow(c, dd.time, selectedTime)
             },
             y, m, d) // DatePicker가 열리면 보여줄 날짜 초기값
         if(TAG == "SttsActivity") datePicker.datePicker.maxDate = maxDate
@@ -74,8 +75,9 @@ open class Stts : Main() {
 
         onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
         // 선택된 날짜가 오늘 날짜인 경우 또는 주/월간에서 선택된 날짜의 주 또는 월이 오늘 날짜가 포함된 주 또는 월인 경우 툴바 우측 화살표 비활성화시킴
-        val isMaxWeekOrMonth = isMaxWeekOrMonth(c, selectedTime)
-        if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd && !isMaxWeekOrMonth
+//        val isMaxWeekOrMonth = isMaxWeekOrMonth(c, selectedTime)
+//        rightArrow.isEnabled = dateformatter.format(dd.time) != formattedYMD && !isMaxWeekOrMonth
+//        setEnabledRightArrow(c, dd.time, selectedTime)
     }
 
     // 선택된 시간대(일간 0, 주간 1, 월간 2)에 따라 툴바에 표시될 날짜의 형식을 변경시키는 메소드
@@ -94,10 +96,10 @@ open class Stts : Main() {
             1 -> {
                 dummyCal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
                 val sat = dummyCal.time
-                d(TAG, "sat : $sat")
+//                d(TAG, "sat : $sat")
                 dummyCal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 val sun = dummyCal.time
-                d(TAG, "sun : $sun")
+//                d(TAG, "sun : $sun")
                 formatter = SimpleDateFormat("M/d", Locale.getDefault()) // 툴바 제목에 세팅하기 위한 형식
                 formatted = formatter.format(sun) + " ~ " + formatter.format(sat)
             }
@@ -106,15 +108,22 @@ open class Stts : Main() {
                 formatted = formatter.format(date)
             }
         }
+        setEnabledRightArrow(cal, date, selectedTime)
         title.text = formatted // 툴바 제목에 사용자가 선택한 날짜 집어넣기
     }
 
+    private fun setEnabledRightArrow(cal: Calendar, date : Date, selectedTime : Int) {
+        val isMaxWeekOrMonth = isMaxWeekOrMonth(cal, selectedTime)
+        rightArrow.isEnabled = dateformatter.format(date) != formattedYMD && !isMaxWeekOrMonth
+    }
+
     // 선택된 날짜가 오늘 날짜 기준으로 동일한 주 또는 월인지 확인하는 메소드. 만약 동일하다면 true, 선택된 날짜가 오늘 날짜 이전의 주 또는 월이라면 false
-    fun isMaxWeekOrMonth(c: Calendar, selectedTime : Int) : Boolean {
+    private fun isMaxWeekOrMonth(c: Calendar, selectedTime : Int) : Boolean {
         val cal = Calendar.getInstance() // 오늘 날짜
         val dummyCal = Calendar.getInstance()
         dummyCal.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)) // 사용자가 선택한 날짜
-        d(TAG, "dummyCal : "+ dummyCal.get(Calendar.MONTH) + " " + dummyCal.get(Calendar.DAY_OF_MONTH))
+        val year = dummyCal.get(Calendar.YEAR) // 이게 없으면 주간에서 값이 바뀌질 않음. 원인 불명.
+//        d(TAG, "dummyCal : "+ dummyCal.get(Calendar.MONTH) + " " + dummyCal.get(Calendar.DAY_OF_MONTH))
 
         when(selectedTime) {
             1 -> {
@@ -129,15 +138,15 @@ open class Stts : Main() {
             2 -> {
                 // 오늘 날짜 기준으로 해당 월의 마지막 날짜 구하기
                 cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
-                d(TAG, "cal : "+ cal.get(Calendar.MONTH) + " " + cal.get(Calendar.DAY_OF_MONTH))
+//                d(TAG, "cal : "+ cal.get(Calendar.MONTH) + " " + cal.get(Calendar.DAY_OF_MONTH))
 
                 // 사용자가 선택한 날짜 기준으로 해당 월의 마지막 날짜 구하기
                 dummyCal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
-                d(TAG, "dummyCal Max : "+ dummyCal.get(Calendar.MONTH) + " " + dummyCal.get(Calendar.DAY_OF_MONTH))
+//                d(TAG, "dummyCal Max : "+ dummyCal.get(Calendar.MONTH) + " " + dummyCal.get(Calendar.DAY_OF_MONTH))
             }
         }
 
-        d(TAG, "compare : "+dummyCal.compareTo(cal))
+//        d(TAG, "compare : "+dummyCal.compareTo(cal))
         // 위 둘을 비교하여 같으면 true, 사용자가 선택한 쪽이 보다 과거면 false
         return when(dummyCal.compareTo(cal)) {
             0 -> true

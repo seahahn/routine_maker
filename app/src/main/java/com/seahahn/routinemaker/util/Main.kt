@@ -31,6 +31,9 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
+import com.seahahn.routinemaker.sns.GroupListActivity
+import com.seahahn.routinemaker.sns.GroupMakeActivity
+import com.seahahn.routinemaker.sns.GroupSearchActivity
 import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
@@ -85,11 +88,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     private val currentHM = LocalTime.now() // 현재 시각 데이터
     private val formatterMDDoW: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일 요일)
     private val formatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
-    private val formatterymd : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private val formatterYMD : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) // 문자열 형식(시 분)
     val formattedMDDoW: String = current.format(formatterMDDoW) // 툴바 제목에 들어가는 문자열
     val formattedMonthDay: String = current.format(formatterMonthDay) // 할 일 수행예정일에 들어가는 문자열(월 일)
-    val formattedymd: String = current.format(formatterymd) // 할 일 수행예정일에 해당하는 날짜 데이터 값(yyyy-MM-dd)
+    val formattedYMD: String = current.format(formatterYMD) // 할 일 수행예정일에 해당하는 날짜 데이터 값(yyyy-MM-dd)
     val formattedHM: String = currentHM.format(formatterHM) // 수행 예정 시각에 해당하는 시간 데이터
 
     // 상단 툴바에 날짜 나올 경우 양쪽에 좌우 화살표 초기화함. 좌는 하루 전, 우는 하루 뒤로 이동시킴
@@ -131,9 +134,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // FAB가 필요한 액티비티인 경우 초기화하기
     lateinit var fabtn : ConstraintLayout // 여러 개의 FAB 포함한 레이아웃
     lateinit var fabMain : FloatingActionButton
-    lateinit var fabTodo : ExtendedFloatingActionButton
-    lateinit var fabRt : ExtendedFloatingActionButton
-    lateinit var fabAction : FloatingActionButton
+    lateinit var fabFirst : ExtendedFloatingActionButton
+    lateinit var fabSecond : ExtendedFloatingActionButton
+//    lateinit var fabAction : FloatingActionButton
 
     // 우측 하단의 FAB 관련 애니메이션 초기화하기
     // creating variable that handles Animations loading
@@ -185,7 +188,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 title.text = formatted // 툴바 제목에 사용자가 선택한 날짜 집어넣기
 
                 onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
-                if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd
+                if(TAG == "SttsActivity") rightArrow.isEnabled = dateformatter.format(dd.time) != formattedYMD
             },
             y, m, d) // DatePicker가 열리면 보여줄 날짜 초기값
         if(TAG == "SttsActivity") {
@@ -226,7 +229,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
         onDateSelected(dateformatter.format(dd.time)) // 날짜 데이터 저장하는 뷰모델에 날짜 보내기
         if(TAG == "SttsActivity") {
-            rightArrow.isEnabled = dateformatter.format(dd.time) != formattedymd
+            rightArrow.isEnabled = dateformatter.format(dd.time) != formattedYMD
         }
     }
 
@@ -279,8 +282,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         d(TAG, "onNavigationItemSelected")
         when(item.itemId){
             R.id.mypage-> startActivity<MypageActivity>()
-            R.id.notice-> startActivity<NoticeActivity>("url" to "https://www.notion.so/e37b0494d08549a2984c58a7962b7a72") // 노션에 만들어둔 공지사항 페이지로 이동
-            R.id.faq-> startActivity<NoticeActivity>("url" to "https://www.notion.so/FAQ-cc9c2747132248fab49b2ea1b9079117") // 노션에 만들어둔 FAQ 페이지로 이동
+            R.id.notice-> startActivity<WebNoticeActivity>("url" to "https://www.notion.so/e37b0494d08549a2984c58a7962b7a72") // 노션에 만들어둔 공지사항 페이지로 이동
+            R.id.faq-> startActivity<WebNoticeActivity>("url" to "https://www.notion.so/FAQ-cc9c2747132248fab49b2ea1b9079117") // 노션에 만들어둔 FAQ 페이지로 이동
             R.id.qna-> {
                 val address : Array<String> = arrayOf(getString(R.string.qnaMail))
                 val subject = getString(R.string.qnaSubject)
@@ -292,8 +295,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 email.putExtra(Intent.EXTRA_TEXT, content)
                 email.type = "message/rfc822"
                 startActivity(email)
-            }
-            R.id.writeReview-> Toast.makeText(this,"writeReview clicked",Toast.LENGTH_SHORT).show()
+            } // 사용자 기기에 설치된 이메일 앱으로 이동하여 1:1 문의를 작성하게 함
+            R.id.writeReview-> Toast.makeText(this,"writeReview clicked",Toast.LENGTH_SHORT).show() // 플레이 스토어로 이동하여 앱 리뷰를 남길 수 있게 함(예정)
 
             R.id.home -> {
                 startActivity<MainActivity>()
@@ -303,8 +306,14 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 startActivity<SttsActivity>()
                 overridePendingTransition(0, 0)
             }
-            R.id.group -> toast("group")
-            R.id.notibtm -> toast("noti")
+            R.id.group -> {
+                startActivity<GroupListActivity>()
+                overridePendingTransition(0, 0)
+            }
+            R.id.notibtm -> {
+                startActivity<NoticeActivity>()
+                overridePendingTransition(0, 0)
+            }
         }
         return false
     }
@@ -361,7 +370,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
                 startDate.setOnClickListener(BtnClickListener())
                 startDate.text = formattedMonthDay
-                startDateResult = formattedymd
+                startDateResult = formattedYMD
                 repeat.setOnCheckedChangeListener(this)
             }
             "TodoUpdateActivity" -> {
@@ -371,7 +380,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 startDate = findViewById(R.id.startDate) // 수행 예정일 초기화하기
                 startDate.setOnClickListener(BtnClickListener())
                 startDate.text = formattedMonthDay
-                startDateResult = formattedymd
+                startDateResult = formattedYMD
                 repeat.setOnCheckedChangeListener(this)
             }
         }
@@ -407,16 +416,16 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // FAB 버튼 초기화하기
-    fun initFAB() {
+    open fun initFAB() {
         when(TAG) {
             "MainActivity" -> {
                 fabtn = findViewById(R.id.fabtn)
                 fabMain = findViewById(R.id.fabMain)
-                fabRt = findViewById(R.id.fabRt)
-                fabTodo = findViewById(R.id.fabTodo)
+                fabFirst = findViewById(R.id.fabRt)
+                fabSecond = findViewById(R.id.fabTodo)
                 fabMain.setOnClickListener(BtnClickListener())
-                fabRt.setOnClickListener(BtnClickListener())
-                fabTodo.setOnClickListener(BtnClickListener())
+                fabFirst.setOnClickListener(BtnClickListener())
+                fabSecond.setOnClickListener(BtnClickListener())
             }
             "ActionListActivity" -> {
                 fabtn = findViewById(R.id.fabtn)
@@ -424,6 +433,15 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 fabMain.setOnClickListener {
                     startActivity<ActionMakeActivity>("id" to rtId) // '행동 추가' 액티비티로 이동
                 }
+            }
+            "GroupListActivity" -> {
+                fabtn = findViewById(R.id.fabtn)
+                fabMain = findViewById(R.id.fabMain)
+                fabFirst = findViewById(R.id.fabSearchGroup)
+                fabSecond = findViewById(R.id.fabMakeGroup)
+                fabMain.setOnClickListener(BtnClickListener())
+                fabFirst.setOnClickListener(BtnClickListener())
+                fabSecond.setOnClickListener(BtnClickListener())
             }
         }
     }
@@ -439,12 +457,12 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // A Function used to set the Animation effect
     private fun setAnimation(closed:Boolean) {
         if(!closed){
-            fabTodo.startAnimation(fromBottom)
-            fabRt.startAnimation(fromBottom)
+            fabSecond.startAnimation(fromBottom)
+            fabFirst.startAnimation(fromBottom)
             fabMain.startAnimation(rotateOpen)
         }else{
-            fabTodo.startAnimation(toBottom)
-            fabRt.startAnimation(toBottom)
+            fabSecond.startAnimation(toBottom)
+            fabFirst.startAnimation(toBottom)
             fabMain.startAnimation(rotateClose)
         }
     }
@@ -455,13 +473,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         {
 //            fabTodo.visibility = View.VISIBLE
 //            fabRt.visibility = View.VISIBLE
-            fabTodo.show()
-            fabRt.show()
+            fabSecond.show()
+            fabFirst.show()
         }else{
 //            fabTodo.visibility = View.INVISIBLE
 //            fabRt.visibility = View.INVISIBLE
-            fabTodo.hide()
-            fabRt.hide()
+            fabSecond.hide()
+            fabFirst.hide()
         }
     }
 
@@ -471,8 +489,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             when(v?.id) {
                 // 우측 하단에 위치한 FAB인 경우
                 R.id.fabMain -> onFABMainClick()
-                R.id.fabRt -> startActivity<RtMakeActivity>() // '루틴 만들기' 액티비티로 이동
-                R.id.fabTodo -> startActivity<TodoMakeActivity>() // '할 일 만들기' 액티비티로 이동
+                R.id.fabRt -> startActivity<RtMakeActivity>() // 메인 - '루틴 만들기' 액티비티로 이동
+                R.id.fabTodo -> startActivity<TodoMakeActivity>() // 메인 - '할 일 만들기' 액티비티로 이동
+                R.id.fabSearchGroup -> startActivity<GroupSearchActivity>() // SNS - '그룹 찾기' 액티비티로 이동
+                R.id.fabMakeGroup -> startActivity<GroupMakeActivity>() // SNS - '그룹 만들기' 액티비티로 이동
 
                 // 하단에 가로로 꽉 차는 버튼인 경우
                 R.id.makeRt -> {

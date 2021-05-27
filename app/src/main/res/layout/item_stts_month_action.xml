@@ -11,14 +11,14 @@
             android:id="@+id/circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:srcCompat="@drawable/record_action"
+            app:srcCompat="@drawable/record_action"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="@+id/action_title"
             app:layout_constraintBottom_toBottomOf="@+id/action_title"
     />
     <TextView
-            style="@style/txt_s"
+            style="@style/txt_m"
             android:id="@+id/action_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,19 +45,20 @@
             android:layout_marginStart="16dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="24dp"
             android:layout_marginTop="8dp">
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/totalTimeCost"/>
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
+                android:id="@+id/timecost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100"
         />
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -74,26 +75,28 @@
             android:layout_marginTop="8dp" app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="4dp">
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/totalMonthRtDoneNum"/>
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
+                android:id="@+id/doneCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30"
         />
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:text="@string/divider"
         />
         <TextView
-                style="@style/txt_s"
+                style="@style/txt_m"
+                android:id="@+id/totalCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30"

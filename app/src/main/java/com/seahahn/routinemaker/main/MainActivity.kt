@@ -86,7 +86,7 @@ class MainActivity : Main() {
         }
 
         // 우측 하단의 FloatingActionButton 초기화
-        // 버튼을 누르면 루틴 또는 할 일을 만들 수 있는 액티비티로 이동함
+        // 버튼을 누르면 루틴 또는 할 일을 만들 수 있는 액티비티로 이동 가능한 FAB 2개가 나타남
         initFAB()
     }
 

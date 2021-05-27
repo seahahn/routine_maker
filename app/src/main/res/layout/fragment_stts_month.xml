@@ -5,22 +5,29 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
-tools:context=".stts.SttsMonthFragment">
+tools:context=".stts.month.SttsMonthFragment">
 
-<ScrollView
+<androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:orientation="vertical">
-        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/calendar"
+
+        <com.kizitonwose.calendarview.CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:mcv_selectionColor="#00F"
-                app:mcv_showOtherDates="all"
-                />
+                android:background="@drawable/stts_calendar_body_bg"
+                android:layout_margin="16dp"
+                app:cv_dayViewResource="@layout/calendar_day_layout"
+                app:cv_monthHeaderResource="@layout/calendar_month_header_layout"
+                app:cv_hasBoundaries="true"
+                app:cv_orientation="horizontal"
+                app:cv_scrollMode="paged"
+                app:cv_maxRowCount="6"
+        />
 
         <TextView
                 style="@style/txt_l"
@@ -42,8 +49,14 @@ tools:context=".stts.SttsMonthFragment">
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
         </androidx.recyclerview.widget.RecyclerView>
 
+        <include
+                layout="@layout/view_empty_list"
+                android:visibility="gone"
+                android:id="@+id/view_empty_list"
+        />
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

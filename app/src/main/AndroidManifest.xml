@@ -18,6 +18,28 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".sns.GroupFeedSearchActivity">
+        </activity>
+        <activity android:name=".sns.GroupFeedUpdateActivity">
+        </activity>
+        <activity android:name=".sns.GroupFeedMakeActivity">
+        </activity>
+        <activity android:name=".sns.GroupApplicantActivity">
+        </activity>
+        <activity android:name=".sns.GroupUpdateActivity">
+        </activity>
+        <activity android:name=".sns.GroupInfoActivity">
+        </activity>
+        <activity android:name=".sns.GroupFeedActivity">
+        </activity>
+        <activity android:name=".sns.GroupMakeActivity">
+        </activity>
+        <activity android:name=".sns.GroupSearchActivity">
+        </activity>
+        <activity android:name=".notice.NoticeActivity">
+        </activity>
+        <activity android:name=".sns.GroupListActivity">
+        </activity>
         <activity android:name=".main.ActionListActivity">
         </activity>
         <activity android:name=".main.ActionUpdateActivity">
@@ -34,7 +56,7 @@
         </activity>
         <activity android:name=".stts.SttsActivity">
         </activity>
-        <activity android:name=".notice.NoticeActivity">
+        <activity android:name=".util.WebNoticeActivity">
         </activity>
         <activity android:name=".user.MembershipPayActivity">
         </activity>

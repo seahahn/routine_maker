@@ -1,18 +1,15 @@
 package com.seahahn.routinemaker.stts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.stts.day.SttsDayFragment
-import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.stts.month.SttsMonthFragment
+import com.seahahn.routinemaker.stts.week.SttsWeekFragment
 import com.seahahn.routinemaker.util.Stts
 import com.seahahn.routinemaker.util.UserInfo
 
@@ -26,8 +23,6 @@ class SttsActivity : Stts() {
     private lateinit var sttsMonthFragment: SttsMonthFragment
 
     private lateinit var toolbar : Toolbar
-
-    private val dateViewModel by viewModels<DateViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,20 +84,6 @@ class SttsActivity : Stts() {
             setReorderingAllowed(true)
             addToBackStack(null) // name can be null
         }
-
-        dateViewModel.selectedDate.observe(this) { date ->
-            when(selectedTime) {
-                0 -> {
-
-                }
-                1 -> {
-
-                }
-                2 -> {
-
-                }
-            }
-        }
     }
 
     override fun onResume() {
@@ -115,13 +96,13 @@ class SttsActivity : Stts() {
 
     // 툴바 우측 메뉴 버튼 설정
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_time_select, menu)       // main_menu 메뉴를 toolbar 메뉴 버튼으로 설정
+        menuInflater.inflate(R.menu.menu_time_select, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
         return true
     }
 
     // 툴바 우측 메뉴(일간, 주간, 월간) 선택 시 각각에 해당하는 프래그먼트로 전환시킴
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "onOptionsItemSelected Stts")
+//        d(TAG, "onOptionsItemSelected Stts")
         when(item.itemId) {
             R.id.toolbarDay -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_d)

@@ -99,6 +99,11 @@ open class Util  : AppCompatActivity() {
             R.id.updateTodo -> btn.text = getString(R.string.updateTodo)
             R.id.makeAction -> btn.text = getString(R.string.makeAction)
             R.id.updateAction -> btn.text = getString(R.string.updateAction)
+
+            R.id.makeGroup -> btn.text = getString(R.string.makeGroup)
+            R.id.updateGroup -> btn.text = getString(R.string.updateGroup)
+//            R.id.joinGroup -> btn.text = getString(R.string.joinGroup)
+//            R.id.quitGroup -> btn.text = getString(R.string.quitGroup)
         }
     }
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+            style="@style/txt_l"
+            android:textColor="@color/red"
+            android:text="@string/sunday" />
+    <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:padding="16dp"
+              android:gravity="center"
+              android:layout_weight="1"
+              android:layout_margin="1dp"
+        style="@style/txt_l"
+              android:text="@string/monday" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+        style="@style/txt_l"
+            android:text="@string/tuesday" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+        style="@style/txt_l"
+            android:text="@string/wednesday" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+        style="@style/txt_l"
+            android:text="@string/thursday" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+        style="@style/txt_l"
+            android:text="@string/friday" />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="1dp"
+        style="@style/txt_l"
+            android:textColor="@color/blue"
+            android:text="@string/saturday" />
+</LinearLayout>
+

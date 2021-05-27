@@ -108,5 +108,10 @@ dependencies {
     implementation 'com.nex3z:toggle-button-group:1.2.3'
 
     // CalendarView
-    implementation "com.prolificinteractive:material-calendarview:1.4.3"
+//    implementation "com.prolificinteractive:material-calendarview:1.4.3"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+
+    // PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }
