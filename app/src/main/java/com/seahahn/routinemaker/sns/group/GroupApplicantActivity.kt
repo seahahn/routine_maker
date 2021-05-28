@@ -1,6 +1,5 @@
-package com.seahahn.routinemaker.sns
+package com.seahahn.routinemaker.sns.group
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Sns

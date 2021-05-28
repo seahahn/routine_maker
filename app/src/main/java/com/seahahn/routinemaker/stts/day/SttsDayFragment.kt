@@ -50,7 +50,7 @@ class SttsDayFragment : Fragment() {
 
         totalRtNum = view.findViewById(R.id.totalRtNum) // 총 루틴 갯수 표시
         totalRtDoneNum = view.findViewById(R.id.totalRtDoneNum) // 수행 완료 루틴 갯수 표시
-        viewEmptyList = view.findViewById(R.id.view_empty_list) // 루틴
+        viewEmptyList = view.findViewById(R.id.view_empty_list) // 데이터 없을 때 표시될 뷰
 
         recordList = view.findViewById(R.id.recordList) // 리사이클러뷰 초기화
         recordRtAdapter = RecordRtAdapter() // 어댑터 초기화

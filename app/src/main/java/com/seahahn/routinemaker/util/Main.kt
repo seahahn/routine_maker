@@ -31,9 +31,9 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
-import com.seahahn.routinemaker.sns.GroupListActivity
-import com.seahahn.routinemaker.sns.GroupMakeActivity
-import com.seahahn.routinemaker.sns.GroupSearchActivity
+import com.seahahn.routinemaker.sns.group.GroupListActivity
+import com.seahahn.routinemaker.sns.group.GroupMakeActivity
+import com.seahahn.routinemaker.sns.group.GroupSearchActivity
 import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
@@ -704,7 +704,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         })
     }
 
-    // '루틴 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 만들기)
+    // '루틴 수정하기' 액티비티의 하단 버튼 눌렀을 때의 동작(루틴 수정하기)
     fun updateRt(service : RetrofitService, id : Int, title : String, mDays : MutableList<String>, alarm : Boolean,
         date : String, time : String, onFeed : Boolean, memo : String) {
         d(TAG, "updateRt 변수들 : $id, $title, $mDays, $alarm, $time, $onFeed, $memo")
@@ -785,6 +785,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
 
                 mainTitleInput.setText(gson.get("rtTitle").asString)
+
                 val days = gson.get("mDays").asString.replace(" ", "").toMutableList()
                 d(TAG, "days : $days")
 //                if(days.size > 0) {
@@ -803,6 +804,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                         mainDays.check(resources.getIdentifier(day, "id", packageName))
                     }
 //                }
+
                 activateAlarm.isChecked = gson.get("alarm").asInt == 1
                 startTime.text = gson.get("mTime").asString
                 startTimeResult = gson.get("mTime").asString

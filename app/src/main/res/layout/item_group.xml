@@ -49,7 +49,9 @@
             style="@style/txt_l"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rt_days"
+            android:id="@+id/tags"
+            android:ems="20"
+            android:ellipsize="end"
             android:layout_marginStart="16dp" app:layout_constraintStart_toEndOf="@+id/head_limit_unit"
             app:layout_constraintBottom_toBottomOf="@+id/head_limit"
             app:layout_constraintTop_toTopOf="@+id/head_limit"/>

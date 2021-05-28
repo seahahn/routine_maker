@@ -24,21 +24,21 @@
         </activity>
         <activity android:name=".sns.GroupFeedMakeActivity">
         </activity>
-        <activity android:name=".sns.GroupApplicantActivity">
+        <activity android:name=".sns.group.GroupApplicantActivity">
         </activity>
-        <activity android:name=".sns.GroupUpdateActivity">
+        <activity android:name=".sns.group.GroupUpdateActivity">
         </activity>
-        <activity android:name=".sns.GroupInfoActivity">
+        <activity android:name=".sns.group.GroupInfoActivity">
         </activity>
         <activity android:name=".sns.GroupFeedActivity">
         </activity>
-        <activity android:name=".sns.GroupMakeActivity">
+        <activity android:name=".sns.group.GroupMakeActivity">
         </activity>
-        <activity android:name=".sns.GroupSearchActivity">
+        <activity android:name=".sns.group.GroupSearchActivity">
         </activity>
         <activity android:name=".notice.NoticeActivity">
         </activity>
-        <activity android:name=".sns.GroupListActivity">
+        <activity android:name=".sns.group.GroupListActivity">
         </activity>
         <activity android:name=".main.ActionListActivity">
         </activity>

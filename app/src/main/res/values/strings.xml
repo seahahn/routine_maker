@@ -63,6 +63,9 @@
 
     <string name="popupMenuUpdate">수정</string>
     <string name="popupMenuDelete">삭제</string>
+    <string name="popupMenuGroupInfo">그룹 정보 보기</string>
+    <string name="popupMenuGroupUpdate">그룹 정보 수정</string>
+    <string name="popupMenuGroupDelete">그룹 삭제</string>
 
     <string name="btmHome">메인</string>
     <string name="btmStts">통계</string>
@@ -156,6 +159,8 @@
     <string name="daysEmpty">반복 요일을 최소 1개 선택해주세요</string>
     <string name="timecostEmpty">예상 소요 시간을 1분 이상으로 입력해주세요</string>
     <string name="dataEmpty">데이터가 없습니다</string>
+    <string name="groupTitleEmpty">그룹명을 입력해주세요</string>
+    <string name="groupHeadLimitEmpty">제한할 인원 수를 2 이상 입력해주세요</string>
 
     <string name="totalRtNum">총 루틴 갯수</string>
     <string name="totalRtDoneNum">수행 완료 루틴</string>
@@ -212,5 +217,7 @@
     <string name="showOnlyMyFeed">내 피드만 보기</string>
     <string name="joinPh">신청자의 닉네임 검색하기</string>
     <string name="feedPh">어떤 하루를 보내고 계신가요?</string>
+
+    <string name="zero">0</string>
 
 </resources>

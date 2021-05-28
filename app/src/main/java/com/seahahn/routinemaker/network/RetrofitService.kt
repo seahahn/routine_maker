@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
+import com.seahahn.routinemaker.sns.GroupData
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.GET
@@ -211,5 +212,44 @@ interface RetrofitService {
     fun getActionRecords(
         @Query("user_id") userId: Int
     ) : Call<MutableList<ActionData>>
+
+    @FormUrlEncoded
+    @POST("/api/sns/make_group.php") // 그룹 만들기 액티비티에서 데이터 보내 DB에 저장하기
+    fun makeGroup(
+        @Field("title") title: String,
+        @Field("tags") tags: String,
+        @Field("head_limit") headLimit: Int,
+        @Field("members") members: String,
+        @Field("is_locked") isLocked: Boolean,
+        @Field("memo") memo: String,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/update_group.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
+    fun updateGroup(
+        @Field("id") id: Int,
+        @Field("title") title: String,
+        @Field("tags") tags: String,
+        @Field("head_limit") headLimit: Int,
+        @Field("is_locked") isLocked: Boolean,
+        @Field("memo") memo: String
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/get_groups.php") // 전체 그룹 목록 가져오기
+    fun getGroups(
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<GroupData>>
+
+    @GET("/api/sns/get_group.php") // 그룹의 고유 번호를 이용하여 해당 그룹의 정보 가져오기
+    fun getGroup(
+        @Query("id") groupId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/delete_group.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
+    fun deleteGroup(
+        @Field("id") groupId: Int
+    ) : Call<JsonObject>
 
 }
