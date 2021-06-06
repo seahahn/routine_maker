@@ -133,7 +133,7 @@ tools:context=".sns.group.GroupInfoActivity">
                     android:layout_height="wrap_content"
                     android:checked="false"
                     android:layout_marginEnd="16dp"
-                    android:id="@+id/isLocked"
+                    android:id="@+id/onPublic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -169,6 +169,7 @@ tools:context=".sns.group.GroupInfoActivity">
                           android:orientation="vertical">
                 <EditText
                         android:enabled="false"
+                        style="@style/txt_l"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textMultiLine"
@@ -203,6 +204,7 @@ tools:context=".sns.group.GroupInfoActivity">
                           android:orientation="vertical">
                 <EditText
                         android:enabled="false"
+                        style="@style/txt_l"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:minHeight="100dp"

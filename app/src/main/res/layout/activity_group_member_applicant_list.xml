@@ -5,7 +5,7 @@ xmlns:tools="http://schemas.android.com/tools"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".sns.group.GroupApplicantActivity">
+tools:context=".sns.group.GroupApplicantListActivity">
 
     <include
             layout="@layout/toolbar"
@@ -20,10 +20,18 @@ tools:context=".sns.group.GroupApplicantActivity">
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryBackground="@drawable/list_bg"
-            android:queryHint="@string/joinPh"
+            android:queryHint="@string/searchPh"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"/>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkAll"
+            android:text="@string/checkAll"
+            style="@style/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -31,12 +39,29 @@ tools:context=".sns.group.GroupApplicantActivity">
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             android:overScrollMode="never"
-            android:id="@+id/joinList"
-            tools:listitem="@layout/item_applicant" app:layout_constraintTop_toBottomOf="@+id/searchView"
+            android:id="@+id/applicantList"
+            tools:listitem="@layout/item_group_applicant" app:layout_constraintTop_toBottomOf="@+id/checkAll"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toTopOf="@+id/allowJoin">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <include
+            layout="@layout/full_btm_btn"
+            android:id="@+id/allowJoin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+            layout="@layout/view_empty_list"
+            tools:visibility="invisible"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/view_empty_list" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,9 +15,10 @@ data class GroupData(
     var title : String,
     var tags : String,
     var headLimit : Int,
-    var members : String,
-    var isLocked : Boolean,
+    var onPublic : Boolean,
     var memo : String,
-    val userId : Int,
+    val leaderId : Int,
+    var joined : Boolean,
+    var memberCount : Int,
     val createdAt : String
 )

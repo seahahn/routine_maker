@@ -96,7 +96,7 @@ class SignUpActivity : User() {
                 doAsync {
                     signup(service, email.toString(), pw.toString(), nick.toString())
                 }
-                showAlert("이메일 인증 필요", "서비스 이용을 위해서 이메일 인증을 해주세요!", "확인", "")
+//                showAlert("이메일 인증 필요", "서비스 이용을 위해서 이메일 인증을 해주세요!", "확인", "")
             }
         }
     }
@@ -113,10 +113,10 @@ class SignUpActivity : User() {
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 val status = gson.get("status").asInt
                 val msg = gson.get("msg").asString
-
                 when (status) {
                     200 -> {
                         Toast.makeText(this@SignUpActivity, msg, Toast.LENGTH_SHORT).show()
+                        showAlert("이메일 인증 필요", "서비스 이용을 위해서 이메일 인증을 해주세요!")
                     }
 //                    405 -> {
 //                        Toast.makeText(this@SignUpActivity, "회원가입 실패 : 이메일 또는 비밀번호를 확인해주세요.", Toast.LENGTH_SHORT).show()
@@ -216,11 +216,11 @@ class SignUpActivity : User() {
         return true
     }
 
-    override fun showAlert(title: String, msg: String, pos: String, neg: String) {
+    override fun showAlert(title: String, msg: String) {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(msg)
-            .setPositiveButton(pos) { _: DialogInterface, _: Int -> startActivity<LoginActivity>() }
+            .setPositiveButton(R.string.okay) { _: DialogInterface, _: Int -> startActivity<LoginActivity>() }
             .show()
     }
 

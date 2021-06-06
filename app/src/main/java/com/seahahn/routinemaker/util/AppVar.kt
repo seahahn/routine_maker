@@ -31,4 +31,30 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         return prefs.getBoolean("DATE_PAST", false)
     }
+
+    // 사용자가 선택한 다음 그룹 리더의 고유 번호를 임시 저장
+    fun setNextLeaderId(context: Context, input: Int) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putInt("NEW_LEADER", input)
+        editor.commit()
+    }
+
+    fun getNextLeaderId(context: Context): Int {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getInt("NEW_LEADER", 0)
+    }
+
+    // 사용자가 선택한 그룹 가입 신청자 목록을 임시 저장
+    fun setAcceptedList(context: Context, input: MutableList<Int>) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putString("ACCEPTED_LIST", input.toString())
+        editor.commit()
+    }
+
+    fun getAcceptedList(context: Context): String {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getString("ACCEPTED_LIST", "").toString()
+    }
 }

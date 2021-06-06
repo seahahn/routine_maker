@@ -9,6 +9,9 @@
 
     <string name="s3_bucket_route">https://rtmaker.s3.ap-northeast-2.amazonaws.com/public/</string>
 
+    <string name="okay">확인</string>
+    <string name="cancel">취소</string>
+
     <string name="qnaMail">seah.ahn.nt@gmail.com</string>
     <string name="qnaSubject">루틴 메이커 - 1:1 문의</string>
     <string name="qnaContent">
@@ -65,7 +68,8 @@
     <string name="popupMenuDelete">삭제</string>
     <string name="popupMenuGroupInfo">그룹 정보 보기</string>
     <string name="popupMenuGroupUpdate">그룹 정보 수정</string>
-    <string name="popupMenuGroupDelete">그룹 삭제</string>
+    <string name="popupMenuGroupDelete">그룹 해체</string>
+    <string name="popupMenuGroupApplicants">그룹 가입 신청자 목록 보기</string>
 
     <string name="btmHome">메인</string>
     <string name="btmStts">통계</string>
@@ -192,12 +196,17 @@
 
     <string name="groupList">가입한 그룹 목록</string>
     <string name="groupInfo">그룹 정보</string>
-    <string name="joinList">그룹 가입 신청자 목록</string>
+    <string name="applicantList">그룹 가입 신청자 목록</string>
+    <string name="acceptJoin">그룹 가입 신청 수락하기</string>
     <string name="searchGroup">그룹 찾기</string>
     <string name="makeGroup">그룹 만들기</string>
     <string name="updateGroup">그룹 정보 수정하기</string>
     <string name="joinGroup">그룹 가입하기</string>
+    <string name="applyJoinGroup">그룹 가입 신청하기</string>
+    <string name="cancelJoinGroup">그룹 가입 신청 취소하기</string>
     <string name="quitGroup">그룹 탈퇴하기</string>
+    <string name="changeGroupLeader">그룹 리더 변경하기</string>
+    <string name="deleteGroup">그룹 해체하기</string>
     <string name="groupTitle">그룹명</string>
     <string name="groupTitlePh">그룹의 이름을 정해주세요.</string>
     <string name="headLimit">인원 제한</string>
@@ -206,6 +215,7 @@
     <string name="tags">태그</string>
     <string name="tagsPh">(띄어쓰기로 자동 구분)</string>
     <string name="explain">추가 설명</string>
+    <string name="checkAll">전체 선택하기</string>
 
     <string name="makeFeedTitle">피드 작성</string>
     <string name="updateFeedTitle">피드 수정</string>
@@ -217,6 +227,12 @@
     <string name="showOnlyMyFeed">내 피드만 보기</string>
     <string name="joinPh">신청자의 닉네임 검색하기</string>
     <string name="feedPh">어떤 하루를 보내고 계신가요?</string>
+
+    <string name="selectNextLeaderTitle">새로운 그룹 리더 정하기</string>
+    <string name="selectNextLeaderMsg">새로운 그룹 리더를 선택해주세요</string>
+
+    <string name="acceptJoinImpMsg">가입 가능한 인원을 초과하였습니다</string>
+    <string name="acceptJoinMsg">가입을 수락하였습니다</string>
 
     <string name="zero">0</string>
 

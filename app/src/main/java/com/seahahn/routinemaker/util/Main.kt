@@ -577,7 +577,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         d(TAG, "onOptionsItemSelected Main")
         when(item.itemId){
-            R.id.toolbarTrash -> showAlert("삭제하기", "정말 삭제하시겠어요?", "확인", "취소")
+            R.id.toolbarTrash -> showAlert("삭제하기", "정말 삭제하시겠어요?")
             R.id.toolbarUpdate -> {
                 when(TAG) {
                     "ActionListActivity" -> startActivity<RtUpdateActivity>("id" to rtId) // '루틴 수정하기' 액티비티로 이동
@@ -588,11 +588,11 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // 루틴 또는 할 일 삭제 시 재확인 받는 다이얼로그 띄우기
-    override fun showAlert(title: String, msg: String, pos: String, neg: String) {
+    override fun showAlert(title: String, msg: String) {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(msg)
-            .setPositiveButton(pos) { _: DialogInterface, _: Int ->
+            .setPositiveButton(R.string.okay) { _: DialogInterface, _: Int ->
                 if(TAG == "ActionUpdateActivity") {
                     deleteAction(service, actionId, rtId, this)
                     finish()
@@ -601,7 +601,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     finish()
                 }
             }
-            .setNegativeButton(neg) { _: DialogInterface, _: Int -> }
+            .setNegativeButton(R.string.cancel) { _: DialogInterface, _: Int -> }
             .show()
     }
 

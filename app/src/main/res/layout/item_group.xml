@@ -7,7 +7,18 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
         android:background="@drawable/list_item_state"
+        android:padding="16dp"
         android:id="@+id/item">
+    <ImageView
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/leaderMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/group_title"
+            app:layout_constraintTop_toTopOf="@+id/group_title" app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/crown"
+            app:layout_constraintEnd_toStartOf="@+id/group_title" android:layout_marginEnd="4dp"/>
     <TextView
             tools:text="그룹 이름"
             style="@style/txt_title"
@@ -15,16 +26,26 @@
             android:layout_height="wrap_content"
             android:id="@+id/group_title"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="16dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp"/>
+            app:layout_constraintStart_toEndOf="@+id/leaderMark"/>
+    <ImageView
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/lockMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/group_title"
+            app:layout_constraintBottom_toBottomOf="@+id/group_title"
+            app:layout_constraintTop_toTopOf="@+id/group_title"
+            android:layout_marginStart="4dp" app:srcCompat="@drawable/lock"/>
     <ImageButton
+            android:visibility="visible"
             android:layout_width="48dp"
             android:layout_height="48dp"
             app:srcCompat="@drawable/more_dark"
             android:id="@+id/more_btn"
             style="@style/imgBtn"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="16dp" android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
     />
     <TextView
             tools:text="8 / 10"
@@ -33,8 +54,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/head_limit"
             app:layout_constraintTop_toBottomOf="@+id/group_title" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp" android:layout_marginTop="8dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"/>
     <TextView
             tools:text="@string/humanCountUnit"
             style="@style/txt_l"

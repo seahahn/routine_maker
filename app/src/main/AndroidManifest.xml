@@ -18,13 +18,13 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".sns.group.GroupApplicantListActivity">
+        </activity>
         <activity android:name=".sns.GroupFeedSearchActivity">
         </activity>
         <activity android:name=".sns.GroupFeedUpdateActivity">
         </activity>
         <activity android:name=".sns.GroupFeedMakeActivity">
-        </activity>
-        <activity android:name=".sns.group.GroupApplicantActivity">
         </activity>
         <activity android:name=".sns.group.GroupUpdateActivity">
         </activity>

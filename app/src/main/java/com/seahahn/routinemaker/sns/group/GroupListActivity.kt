@@ -71,7 +71,7 @@ class GroupListActivity : Sns() {
         groupList.adapter = groupListAdapter // 어댑터 연결
         groupListAdapter.getService(service)
 
-//        viewEmptyList = findViewById(R.id.view_empty_list)
+        viewEmptyList = findViewById(R.id.view_empty_list) // 보여줄 데이터 없을 때 출력할 뷰
 
         // 그룹 목록 가져오기
         groupListViewModel.gottenGroupData.observe(this) { groupDatas ->
@@ -84,7 +84,7 @@ class GroupListActivity : Sns() {
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
                 // 사용자가 가입한 그룹 목록만 추려서 출력
-                if (it_mData.members.contains(getUserId(this).toString())) {
+                if (it_mData.joined) {
                     showDatas.add(it_mData)
                 }
             }
@@ -92,11 +92,11 @@ class GroupListActivity : Sns() {
             groupListAdapter.replaceList(showDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
 
             // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
-//            if(groupListAdapter.itemCount == 0) {
-//                viewEmptyList.visibility = View.VISIBLE
-//            } else {
-//                viewEmptyList.visibility = View.GONE
-//            }
+            if(groupListAdapter.itemCount == 0) {
+                viewEmptyList.visibility = View.VISIBLE
+            } else {
+                viewEmptyList.visibility = View.GONE
+            }
         }
     }
 

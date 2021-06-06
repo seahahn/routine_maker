@@ -5,6 +5,7 @@ import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.GroupMemberData
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.GET
@@ -219,10 +220,9 @@ interface RetrofitService {
         @Field("title") title: String,
         @Field("tags") tags: String,
         @Field("head_limit") headLimit: Int,
-        @Field("members") members: String,
-        @Field("is_locked") isLocked: Boolean,
+        @Field("on_public") onPublic: Boolean,
         @Field("memo") memo: String,
-        @Field("user_id") userId: Int
+        @Field("leader_id") leaderId: Int
     ) : Call<JsonObject>
 
     @FormUrlEncoded
@@ -232,7 +232,7 @@ interface RetrofitService {
         @Field("title") title: String,
         @Field("tags") tags: String,
         @Field("head_limit") headLimit: Int,
-        @Field("is_locked") isLocked: Boolean,
+        @Field("on_public") onPublic: Boolean,
         @Field("memo") memo: String
     ) : Call<JsonObject>
 
@@ -241,15 +241,51 @@ interface RetrofitService {
         @Query("user_id") userId: Int
     ) : Call<MutableList<GroupData>>
 
+    @GET("/api/sns/get_group_members.php") // 전체 그룹 목록 가져오기
+    fun getGroupMembers(
+        @Query("group_id") groupId: Int,
+        @Query("joined") joined: Boolean
+    ) : Call<MutableList<GroupMemberData>>
+
+    @FormUrlEncoded
+    @POST("/api/sns/set_group_leader.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
+    fun setGroupLeader(
+        @Field("group_id") groupId: Int,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
     @GET("/api/sns/get_group.php") // 그룹의 고유 번호를 이용하여 해당 그룹의 정보 가져오기
     fun getGroup(
-        @Query("id") groupId: Int
+        @Query("id") groupId: Int,
+        @Query("user_id") userId: Int
     ) : Call<JsonObject>
 
     @FormUrlEncoded
     @POST("/api/sns/delete_group.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
     fun deleteGroup(
         @Field("id") groupId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/join_group.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
+    fun joinGroup(
+        @Field("group_id") groupId: Int,
+        @Field("user_id") userId: Int,
+        @Field("joined") joined: Boolean
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/accept_join_group.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
+    fun acceptJoinGroup(
+        @Field("group_id") groupId: Int,
+        @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/quit_group.php") // 루틴 또는 할 일의 고유 번호를 이용하여 해당 루틴 내 행동 삭제하기
+    fun quitGroup(
+        @Field("group_id") groupId: Int,
+        @Field("user_id") userId: Int
     ) : Call<JsonObject>
 
 }

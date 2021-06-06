@@ -45,12 +45,12 @@ open class Util  : AppCompatActivity() {
         return service
     }
 
-    open fun showAlert(title: String, msg: String, pos: String, neg: String) {
+    open fun showAlert(title: String, msg: String) {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(msg)
-            .setPositiveButton(pos) { _: DialogInterface, _: Int -> finish() }
-            .setNegativeButton(neg) { _: DialogInterface, _: Int -> }
+            .setPositiveButton(R.string.okay) { _: DialogInterface, _: Int -> finish() }
+            .setNegativeButton(R.string.cancel) { _: DialogInterface, _: Int -> }
             .show()
     }
 
@@ -90,7 +90,7 @@ open class Util  : AppCompatActivity() {
     }
 
     // 액티비티 하단에 꽉 차는 버튼 있는 경우에 해당 버튼의 텍스트 설정하기
-    fun setFullBtmBtnText(btn: Button) {
+    open fun setFullBtmBtnText(btn: Button) {
         when(btn.id) {
             R.id.resetpwBtn -> btn.text = getString(R.string.resetpwtext1)
             R.id.makeRt -> btn.text = getString(R.string.makeRt)
@@ -99,11 +99,6 @@ open class Util  : AppCompatActivity() {
             R.id.updateTodo -> btn.text = getString(R.string.updateTodo)
             R.id.makeAction -> btn.text = getString(R.string.makeAction)
             R.id.updateAction -> btn.text = getString(R.string.updateAction)
-
-            R.id.makeGroup -> btn.text = getString(R.string.makeGroup)
-            R.id.updateGroup -> btn.text = getString(R.string.updateGroup)
-            R.id.groupInfo -> btn.text = getString(R.string.joinGroup)
-//            R.id.quitGroup -> btn.text = getString(R.string.quitGroup)
         }
     }
 

@@ -31,11 +31,15 @@ android:fitsSystemWindows="true">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-<!--    <include-->
-<!--            layout="@layout/view_empty_list"-->
-<!--            tools:visibility="visible"-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/view_empty_list"/>-->
+    <include
+            layout="@layout/view_empty_list"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/view_empty_list" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     <include
             layout="@layout/fabtn_sns"
