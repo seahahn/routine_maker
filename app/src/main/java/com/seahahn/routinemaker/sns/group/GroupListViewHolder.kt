@@ -48,6 +48,8 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         // 그룹명 표시하기
         title.text = groupData.title
         if(!groupData.onPublic) lockMark.visibility = View.VISIBLE
+        // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
+        groupData.title = groupData.title.toLowerCase(Locale.getDefault())
 
         // 그룹의 인원 표시하기
         val headCount = groupData.memberCount // 현재 가입되어 있는 그룹 멤버 수
@@ -70,6 +72,9 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         } else {
             tags.text = tagTxt
         }
+        // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
+        groupData.tags = groupData.tags.toLowerCase(Locale.getDefault())
+
 
         // 그룹 정보 수정 or 해체 메뉴 팝업 나오는 버튼
         // 그룹 수정 및 해체는 그룹 생성자와 현재 사용자의 고유 번호가 일치하는 경우에만 가능

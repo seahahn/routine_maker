@@ -11,6 +11,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo
+import java.util.*
 
 /*
 * 그룹 찾기
@@ -25,6 +26,7 @@ class GroupSearchActivity : Sns() {
     private lateinit var groupList: RecyclerView
     var mDatas = mutableListOf<GroupData>()
     var showDatas = mutableListOf<GroupData>()
+    var searchedDatas = mutableListOf<GroupData>()
     lateinit var it_mDatas : Iterator<GroupData>
 
     private lateinit var searchView: SearchView
@@ -41,6 +43,7 @@ class GroupSearchActivity : Sns() {
         initToolbar(title, titleText, 1) // 툴바 세팅하기
 
         searchView = findViewById(R.id.searchView) // 그룹명 검색창
+        searchView.setOnQueryTextListener(QueryTextChenageListener())
 
         groupList = findViewById(R.id.groupList) // 리사이클러뷰 초기화
         groupListAdapter = GroupListAdapter() // 어댑터 초기화
@@ -55,7 +58,6 @@ class GroupSearchActivity : Sns() {
             d(TAG, "groupDatas : $groupDatas")
             mDatas = groupDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
 
-            // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
             showDatas.clear()
             it_mDatas = mDatas.iterator()
             while (it_mDatas.hasNext()) {
@@ -76,4 +78,45 @@ class GroupSearchActivity : Sns() {
             }
         }
     }
+
+    // 검색창에 검색어를 입력할 경우의 동작
+    inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
+
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            d(TAG, "text submitted")
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            d(TAG, "text changed")
+            val inputText = newText!!.toLowerCase(Locale.getDefault())
+
+            searchedDatas.clear() // 검색 결과 목록 비우기
+            it_mDatas = showDatas.iterator() // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록에서 검색 결과 뽑기
+            while (it_mDatas.hasNext()) {
+                val it_mData = it_mDatas.next()
+                if (it_mData.title.contains(inputText) || it_mData.tags.contains(inputText)) {
+                    searchedDatas.add(it_mData)
+                }
+            }
+
+            groupListAdapter.replaceList(searchedDatas) // 검색어 결과에 따라 추출된 목록을 보여줌
+
+            // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
+            if(groupListAdapter.itemCount == 0) {
+                viewEmptyList.visibility = View.VISIBLE
+            } else {
+                viewEmptyList.visibility = View.GONE
+            }
+
+            if(newText == "") {
+                viewEmptyList.visibility = View.GONE
+                groupListAdapter.replaceList(showDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
+            }
+
+            return true
+        }
+    }
+
+
 }

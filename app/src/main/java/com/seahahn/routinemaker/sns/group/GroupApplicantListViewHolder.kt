@@ -60,6 +60,8 @@ class GroupApplicantListViewHolder (itemView : View) : RecyclerView.ViewHolder(i
 
         // 그룹 멤버 닉네임 표시하기
         nick.text = groupMemberData.nick
+        // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
+        groupMemberData.nick = groupMemberData.nick.toLowerCase(Locale.getDefault())
     }
 
     // 레트로핏 서비스 객체 가져오기
