@@ -18,19 +18,21 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".sns.newsfeed.GroupFeedDetailActivity">
+        </activity>
         <activity android:name=".sns.group.GroupApplicantListActivity">
         </activity>
-        <activity android:name=".sns.GroupFeedSearchActivity">
+        <activity android:name=".sns.newsfeed.GroupFeedSearchActivity">
         </activity>
-        <activity android:name=".sns.GroupFeedUpdateActivity">
+        <activity android:name=".sns.newsfeed.GroupFeedUpdateActivity">
         </activity>
-        <activity android:name=".sns.GroupFeedMakeActivity">
+        <activity android:name=".sns.newsfeed.GroupFeedMakeActivity">
         </activity>
         <activity android:name=".sns.group.GroupUpdateActivity">
         </activity>
         <activity android:name=".sns.group.GroupInfoActivity">
         </activity>
-        <activity android:name=".sns.GroupFeedActivity">
+        <activity android:name=".sns.newsfeed.GroupFeedActivity">
         </activity>
         <activity android:name=".sns.group.GroupMakeActivity">
         </activity>

@@ -247,8 +247,14 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
         d(TAG, "oriNick : $oriNick")
         if(nick.isEmpty()) {
             d(TAG, "nick empty")
-            Toast.makeText(context, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
-            ret = false // 이메일을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
+            Toast.makeText(context, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
+            ret = false // 닉네임을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
+            setEditing(service, textInput, !editing, true, isNick)
+            return false
+        } else if(nick.contains(" ") || nick.length < 2 || nick.length > 10) {
+            d(TAG, "nick has space")
+            Toast.makeText(context, "닉네임은 2~10자 이내로\n공백 없이 입력해주세요", Toast.LENGTH_SHORT).show()
+            ret = false // 닉네임을 입력하지 않은 경우 여기서 빠져나감. return 안하면 onResponse에서 null받았다고 하면서 에러 발생.
             setEditing(service, textInput, !editing, true, isNick)
             return false
         } else if(nick == oriNick) {

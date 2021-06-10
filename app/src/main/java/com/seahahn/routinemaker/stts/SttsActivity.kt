@@ -1,9 +1,11 @@
 package com.seahahn.routinemaker.stts
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.seahahn.routinemaker.R
@@ -124,5 +126,17 @@ class SttsActivity : Stts() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
+    override fun onBackPressed() { //뒤로가기 처리
+        Log.d(TAG, "onBackPressed")
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawers()
+            // 테스트를 위해 뒤로가기 버튼시 Toast 메시지
+//            Toast.makeText(this,"back btn clicked",Toast.LENGTH_SHORT).show()
+        } else {
+            super.onBackPressed()
+        }
     }
 }

@@ -7,217 +7,217 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".sns.group.GroupMakeActivity">
 
-<include
-        layout="@layout/toolbar"
-        android:id="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <include
+            layout="@layout/toolbar"
+            android:id="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-<ScrollView
-        android:layout_width="match_parent" android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/makeGroup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <ScrollView
+            android:layout_width="match_parent" android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toTopOf="@+id/makeGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <TextView
-                android:text="@string/groupTitle"
-                style="@style/inputLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/tvMainTitle"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="40dp"
-                app:layout_constraintTop_toTopOf="parent"/>
-        <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mainTitle"
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/groupTitlePh"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/tvMainTitle">
-            <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/mainTitleInput"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:text="@string/groupTitle"
+                    style="@style/inputLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/tvMainTitle"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="40dp"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mainTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/inputPlaceholder"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-                android:id="@+id/LLStartTime"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:background="@drawable/list_bg"
-                android:layout_height="48dp" android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/mainTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp">
-
-            <TextView
-                    android:text="@string/headLimit"
-                    style="@style/txt_l"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:id="@+id/tvHeadLimit"
-                    android:layout_weight="4"/>
-
-            <EditText
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:hint="0"
-                    android:inputType="numberDecimal"
-                    style="@style/txt_l"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="end"
-                    android:background="@null"
-                    android:paddingEnd="16dp"
-                    android:id="@+id/headLimit"/>
-            <TextView
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:text="@string/humanCountUnit"
-                    style="@style/txt_l"
-                    android:id="@+id/headLimitUnit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"/>
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:layout_marginEnd="16dp"
-                    android:id="@+id/isLimited"
+                    android:hint="@string/groupTitlePh"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-        </LinearLayout>
+                    android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMainTitle">
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mainTitleInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/inputPlaceholder"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-                android:id="@+id/LLRtOnFeed"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:background="@drawable/list_bg"
-                android:layout_height="48dp" android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/LLStartTime" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp">
+            <LinearLayout
+                    android:id="@+id/LLStartTime"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/mainTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
 
+                <TextView
+                        android:text="@string/headLimit"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvHeadLimit"
+                        android:layout_weight="4"/>
+
+                <EditText
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        android:hint="0"
+                        android:inputType="numberDecimal"
+                        style="@style/txt_l"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="end"
+                        android:background="@null"
+                        android:paddingEnd="16dp"
+                        android:id="@+id/headLimit"/>
+                <TextView
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        android:text="@string/humanCountUnit"
+                        style="@style/txt_l"
+                        android:id="@+id/headLimitUnit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"/>
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/isLimited"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/LLRtOnFeed"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/LLStartTime" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/isLocked"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvRtOnFeed"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/onPublic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
 
             <TextView
-                    android:text="@string/isLocked"
-                    style="@style/txt_l"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/tags"
+                    android:id="@+id/tvTags"
+                    style="@style/inputLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="40dp" app:layout_constraintTop_toBottomOf="@+id/LLRtOnFeed"
+                    android:layout_marginTop="24dp"/>
+            <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/tagsPh"
+                    android:id="@+id/tvTagsPh"
+                    style="@style/inputPlaceholder"
+                    app:layout_constraintStart_toEndOf="@+id/tvTags"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvTags" app:layout_constraintTop_toTopOf="@+id/tvTags"/>
+            <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:id="@+id/tvRtOnFeed"
-                    android:layout_weight="1"/>
+                    android:id="@+id/tagsBg"
+                    android:background="@drawable/introbg"
+                    android:padding="12dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTags"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
+            >
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                              android:orientation="vertical">
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="textMultiLine"
+                            android:gravity="start|top"
+                            android:ems="10"
+                            android:background="@null"
+                            android:id="@+id/tags"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:layout_width="wrap_content"
+            <TextView
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/explain"
+                    android:id="@+id/tvMemo"
+                    style="@style/inputLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="40dp" app:layout_constraintTop_toBottomOf="@+id/tagsBg"
+                    android:layout_marginTop="24dp"/>
+            <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:layout_marginEnd="16dp"
-                    android:id="@+id/onPublic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-        </LinearLayout>
+                    android:minHeight="120dp"
+                    android:id="@+id/introbg"
+                    android:background="@drawable/introbg"
+                    android:padding="12dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMemo"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
+                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="32dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                              android:minHeight="100dp"
+                              android:orientation="vertical">
+                    <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:minHeight="100dp"
+                            android:inputType="textMultiLine"
+                            android:gravity="start|top"
+                            android:ems="10"
+                            android:background="@null"
+                            android:id="@+id/memo"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
-        <TextView
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/tags"
-                android:id="@+id/tvTags"
-                style="@style/inputLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="40dp" app:layout_constraintTop_toBottomOf="@+id/LLRtOnFeed"
-                android:layout_marginTop="24dp"/>
-        <TextView
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/tagsPh"
-                android:id="@+id/tvTagsPh"
-                style="@style/inputPlaceholder"
-                app:layout_constraintStart_toEndOf="@+id/tvTags"
-                android:layout_marginStart="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTags" app:layout_constraintTop_toTopOf="@+id/tvTags"/>
-        <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tagsBg"
-                android:background="@drawable/introbg"
-                android:padding="12dp"
-                app:layout_constraintTop_toBottomOf="@+id/tvTags"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
-        >
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                          android:orientation="vertical">
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textMultiLine"
-                        android:gravity="start|top"
-                        android:ems="10"
-                        android:background="@null"
-                        android:id="@+id/tags"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/explain"
-                android:id="@+id/tvMemo"
-                style="@style/inputLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="40dp" app:layout_constraintTop_toBottomOf="@+id/tagsBg"
-                android:layout_marginTop="24dp"/>
-        <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="120dp"
-                android:id="@+id/introbg"
-                android:background="@drawable/introbg"
-                android:padding="12dp"
-                app:layout_constraintTop_toBottomOf="@+id/tvMemo"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="32dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                          android:minHeight="100dp"
-                          android:orientation="vertical">
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:minHeight="100dp"
-                        android:inputType="textMultiLine"
-                        android:gravity="start|top"
-                        android:ems="10"
-                        android:background="@null"
-                        android:id="@+id/memo"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
-
-<include
-        layout="@layout/full_btm_btn"
-        android:id="@+id/makeGroup"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <include
+            layout="@layout/full_btm_btn"
+            android:id="@+id/makeGroup"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

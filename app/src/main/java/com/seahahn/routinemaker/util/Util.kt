@@ -2,6 +2,7 @@ package com.seahahn.routinemaker.util
 
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Bitmap
 import android.graphics.Rect
 import android.util.Log
 import android.util.Log.d
@@ -23,6 +24,10 @@ import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import retrofit2.Retrofit
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 open class Util  : AppCompatActivity() {
 
@@ -111,13 +116,48 @@ open class Util  : AppCompatActivity() {
                 v.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     v.clearFocus()
-                    val imm: InputMethodManager =
-                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                    if(TAG != "GroupFeedDetailActivity") {
+                        val imm: InputMethodManager =
+                            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0)
+                    }
                 }
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    // 사진 촬영 후 저장된 사진 비트맵을 임시 디렉토리에 이미지 파일로 저장하는 메소드
+    fun saveBitmapToJpg(bitmap: Bitmap, name: String, quality: Int): String {
+        /**
+         * 캐시 디렉토리에 비트맵을 이미지파일로 저장하는 코드입니다.
+         *
+         * @version target API 28 ★ API29이상은 테스트 하지않았습니다.★
+         * @param Bitmap bitmap - 저장하고자 하는 이미지의 비트맵
+         * @param String fileName - 저장하고자 하는 이미지의 비트맵
+         *
+         * File storage = 저장이 될 저장소 위치
+         *
+         * return = 저장된 이미지의 경로
+         *
+         * 비트맵에 사용될 스토리지와 이름을 지정하고 이미지파일을 생성합니다.
+         * FileOutputStream으로 이미지파일에 비트맵을 추가해줍니다.
+         */
+        val storage: File = cacheDir //  path = /data/user/0/YOUR_PACKAGE_NAME/cache
+        val fileName = "$name.jpg"
+        val imgFile = File(storage, fileName)
+        try {
+            imgFile.createNewFile()
+            val out = FileOutputStream(imgFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, out) //썸네일로 사용하므로 퀄리티를 낮게설정
+            out.close()
+        } catch (e: FileNotFoundException) {
+            Log.e("saveBitmapToJpg", "FileNotFoundException : " + e)
+        } catch (e: IOException) {
+            Log.e("saveBitmapToJpg", "IOException : " + e)
+        }
+        d("imgPath", "$cacheDir/$fileName")
+        return "$cacheDir/$fileName"
     }
 
 

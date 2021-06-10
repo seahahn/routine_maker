@@ -63,6 +63,11 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="roundImg">
+        <item name="android:foreground">@drawable/round_img</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
     <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
     </style>

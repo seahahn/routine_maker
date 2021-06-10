@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/takePhoto"
+            android:title="@string/takePhoto"/>
+    <item
+            android:id="@+id/bringPhoto"
+            android:title="@string/bringPhoto"/>
+<!--    <item-->
+<!--            android:id="@+id/deletePhoto"-->
+<!--            android:title="@string/deletePhoto"/>-->
+</menu>

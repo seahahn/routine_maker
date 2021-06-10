@@ -257,7 +257,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) { // 사진 촬영한 경우의 결과 받아오기
             val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
 
-            val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString()) // 사진 비트맵이 저장된 파일 경로 가져오기
+            val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString(), 50) // 사진 비트맵이 저장된 파일 경로 가져오기
             val imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
             val imgPath = "photo/"+System.currentTimeMillis().toString()+".jpg" // S3에 저장될 경로 설정
 
@@ -279,7 +279,7 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
 
 //            val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
 
-            val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString()) // 사진 비트맵이 저장된 파일 경로 가져오기
+            val img = saveBitmapToJpg(thumbnail!!, System.currentTimeMillis().toString(), 50) // 사진 비트맵이 저장된 파일 경로 가져오기
             val imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
             val imgPath = "photo/"+System.currentTimeMillis().toString()+".jpg" // S3에 저장될 경로 설정
 
@@ -328,36 +328,36 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
     }
 
     // 사진 촬영 후 저장된 사진 비트맵을 임시 디렉토리에 이미지 파일로 저장하는 메소드
-    fun saveBitmapToJpg(bitmap: Bitmap, name: String): String {
-        /**
-         * 캐시 디렉토리에 비트맵을 이미지파일로 저장하는 코드입니다.
-         *
-         * @version target API 28 ★ API29이상은 테스트 하지않았습니다.★
-         * @param Bitmap bitmap - 저장하고자 하는 이미지의 비트맵
-         * @param String fileName - 저장하고자 하는 이미지의 비트맵
-         *
-         * File storage = 저장이 될 저장소 위치
-         *
-         * return = 저장된 이미지의 경로
-         *
-         * 비트맵에 사용될 스토리지와 이름을 지정하고 이미지파일을 생성합니다.
-         * FileOutputStream으로 이미지파일에 비트맵을 추가해줍니다.
-         */
-        val storage: File = cacheDir //  path = /data/user/0/YOUR_PACKAGE_NAME/cache
-        val fileName = "$name.jpg"
-        val imgFile = File(storage, fileName)
-        try {
-            imgFile.createNewFile()
-            val out = FileOutputStream(imgFile)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out) //썸네일로 사용하므로 퀄리티를 낮게설정
-            out.close()
-        } catch (e: FileNotFoundException) {
-            Log.e("saveBitmapToJpg", "FileNotFoundException : " + e)
-        } catch (e: IOException) {
-            Log.e("saveBitmapToJpg", "IOException : " + e)
-        }
-        d("imgPath", "$cacheDir/$fileName")
-        return "$cacheDir/$fileName"
-    }
+//    fun saveBitmapToJpg(bitmap: Bitmap, name: String): String {
+//        /**
+//         * 캐시 디렉토리에 비트맵을 이미지파일로 저장하는 코드입니다.
+//         *
+//         * @version target API 28 ★ API29이상은 테스트 하지않았습니다.★
+//         * @param Bitmap bitmap - 저장하고자 하는 이미지의 비트맵
+//         * @param String fileName - 저장하고자 하는 이미지의 비트맵
+//         *
+//         * File storage = 저장이 될 저장소 위치
+//         *
+//         * return = 저장된 이미지의 경로
+//         *
+//         * 비트맵에 사용될 스토리지와 이름을 지정하고 이미지파일을 생성합니다.
+//         * FileOutputStream으로 이미지파일에 비트맵을 추가해줍니다.
+//         */
+//        val storage: File = cacheDir //  path = /data/user/0/YOUR_PACKAGE_NAME/cache
+//        val fileName = "$name.jpg"
+//        val imgFile = File(storage, fileName)
+//        try {
+//            imgFile.createNewFile()
+//            val out = FileOutputStream(imgFile)
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out) //썸네일로 사용하므로 퀄리티를 낮게설정
+//            out.close()
+//        } catch (e: FileNotFoundException) {
+//            Log.e("saveBitmapToJpg", "FileNotFoundException : " + e)
+//        } catch (e: IOException) {
+//            Log.e("saveBitmapToJpg", "IOException : " + e)
+//        }
+//        d("imgPath", "$cacheDir/$fileName")
+//        return "$cacheDir/$fileName"
+//    }
 
 }

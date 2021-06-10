@@ -13,7 +13,7 @@
             android:layout_width="wrap_content" android:layout_height="wrap_content"/>
     <ImageView
             android:id="@+id/img"
-            android:foreground="@drawable/round_img"
+            style="@style/roundImg"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"

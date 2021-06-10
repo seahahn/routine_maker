@@ -10,7 +10,7 @@ android:fitsSystemWindows="true">
 <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".sns.GroupFeedActivity">
+        tools:context=".sns.newsfeed.GroupFeedActivity">
 
     <include
             layout="@layout/toolbar"
@@ -30,15 +30,26 @@ android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             android:overScrollMode="never"
             android:id="@+id/feedList"
             tools:listitem="@layout/item_feed" app:layout_constraintTop_toBottomOf="@+id/showOnlyMyFeed"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btmnav">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <include
+            layout="@layout/view_empty_list"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/view_empty_list" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     <include
             layout="@layout/fabtn_sns"

@@ -42,7 +42,7 @@ open class GroupInfoActivity : Sns() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if(leaderId == getUserId(this)) {
             // 그룹 생성자인 경우에만 그룹 정보 수정 가능하게 함
-            menuInflater.inflate(R.menu.menu_update, menu)
+            menuInflater.inflate(R.menu.menu_sns_update, menu)
         }       // main_menu 메뉴를 toolbar 메뉴 버튼으로 설정
         return true
     }

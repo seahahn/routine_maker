@@ -1,4 +1,7 @@
 package com.seahahn.routinemaker.sns
+
+import java.io.Serializable
+
 /*
 * 뉴스피드 데이터 클래스
 * id는 DB에서의 피드 고유번호(Primary Key)
@@ -11,10 +14,14 @@ package com.seahahn.routinemaker.sns
 * */
 data class FeedData(
     val id : Int,
-    val userId : Int,
+    val writerId : Int,
     var content : String,
     var images : String,
-    var groupId : Int,
-    var challengeId : Int,
-    val createdAt : String
-)
+    val groupId : Int,
+    val challengeId : Int,
+    val createdAt : String,
+    val likeCount : Int,
+    val commentCount : Int,
+    val liked : Boolean,
+    val cmt : Boolean
+) : Serializable

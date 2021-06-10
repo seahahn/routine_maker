@@ -28,6 +28,7 @@
     <string name="pwconfirmph">비밀번호를 한번 더 입력해주세요</string>
     <string name="nickname">닉네임</string>
     <string name="nicknameph">닉네임을 입력해주세요</string>
+    <string name="nicknameguide">2~10자 이내, 공백 불가</string>
     <string name="checkExist">중복 확인</string>
     <string name="send">전송</string>
     <string name="next">다음</string>
@@ -70,6 +71,7 @@
     <string name="popupMenuGroupUpdate">그룹 정보 수정</string>
     <string name="popupMenuGroupDelete">그룹 해체</string>
     <string name="popupMenuGroupApplicants">그룹 가입 신청자 목록 보기</string>
+    <string name="popupMenuUnfollow">숨기기</string>
 
     <string name="btmHome">메인</string>
     <string name="btmStts">통계</string>
@@ -165,6 +167,7 @@
     <string name="dataEmpty">데이터가 없습니다</string>
     <string name="groupTitleEmpty">그룹명을 입력해주세요</string>
     <string name="groupHeadLimitEmpty">제한할 인원 수를 2 이상 입력해주세요</string>
+    <string name="feedContentEmpty">피드 내용을 입력해주세요</string>
 
     <string name="totalRtNum">총 루틴 갯수</string>
     <string name="totalRtDoneNum">수행 완료 루틴</string>
@@ -220,8 +223,15 @@
     <string name="makeFeedTitle">피드 작성</string>
     <string name="updateFeedTitle">피드 수정</string>
     <string name="searchFeedTitle">피드 검색</string>
+    <string name="detailFeedTitle">피드 보기</string>
     <string name="makeFeed">피드 작성하기</string>
     <string name="updateFeed">피드 수정하기</string>
+
+    <string name="makeSubCmt">답글 달기</string>
+    <string name="cmtPh">댓글을 입력하세요</string>
+    <string name="subCmtPh">님에게 답글 남기기</string>
+    <string name="subCmtInfo">님에게 답글 남기는 중</string>
+    <string name="chatPh">메시지를 입력하세요</string>
 
     <string name="searchPh">검색어를 입력해주세요</string>
     <string name="showOnlyMyFeed">내 피드만 보기</string>
@@ -233,6 +243,11 @@
 
     <string name="acceptJoinImpMsg">가입 가능한 인원을 초과하였습니다</string>
     <string name="acceptJoinMsg">가입을 수락하였습니다</string>
+
+    <string name="maxFivePics">최대 5장 선택 가능</string>
+    <string name="maxOnePic">최대 1장 선택 가능</string>
+    <string name="maxFivePicsWarning">최대 5장까지 선택 가능합니다</string>
+    <string name="maxOnePicWarning">최대 5장까지 선택 가능합니다</string>
 
     <string name="zero">0</string>
 

@@ -4,6 +4,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
+import com.seahahn.routinemaker.sns.CmtData
+import com.seahahn.routinemaker.sns.FeedData
 import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import retrofit2.Call
@@ -286,6 +288,84 @@ interface RetrofitService {
     fun quitGroup(
         @Field("group_id") groupId: Int,
         @Field("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/get_user_data.php") // 사용자의 닉네임, 프로필 사진 URL 등의 정보를 가져옴
+    fun getUserData(
+        @Query("user_id") id: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/make_feed.php") // 그룹 피드 작성 액티비티에서 데이터 보내 DB에 저장하기
+    fun makeFeed(
+        @Field("writer_id") writerId: Int,
+        @Field("content") content: String,
+        @Field("images") images: String,
+        @Field("group_id") groupId: Int,
+        @Field("challenge_id") challengeId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/update_feed.php") // 그룹 피드 수정 액티비티에서 데이터 보내 DB에 저장하기
+    fun updateFeed(
+        @Field("id") feedId: Int,
+        @Field("content") content: String,
+        @Field("images") images: String
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/get_feeds.php") // 선택한 그룹의 피드 목록 가져오기
+    fun getFeeds(
+        @Query("group_id") groupId: Int,
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<FeedData>>
+
+    @GET("/api/sns/get_feed.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
+    fun getFeed(
+        @Query("id") feedId: Int,
+        @Query("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/delete_feed.php") // 그룹 피드의 고유 번호를 이용하여 해당 피드 삭제하기
+    fun deleteFeed(
+        @Field("id") feedId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/set_feed_like.php") // 그룹 피드의 고유 번호를 이용하여 해당 피드 삭제하기
+    fun setFeedLike(
+        @Field("feed_id") feedId: Int,
+        @Field("writer_id") writerId: Int,
+        @Field("is_liked") isLiked: Boolean
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/get_cmts.php") // 선택한 그룹의 피드 목록 가져오기
+    fun getCmts(
+        @Query("feed_id") feedId: Int
+    ) : Call<MutableList<CmtData>>
+
+    @FormUrlEncoded
+    @POST("/api/sns/make_cmt.php") // 그룹 피드 디테일 액티비티에서 댓글 작성 시 데이터 보내 DB에 저장하기
+    fun makeCmt(
+        @Field("writer_id") writerId: Int,
+        @Field("feed_id") feedId: Int,
+        @Field("content") content: String,
+        @Field("image") image: String,
+        @Field("is_sub") isSub: Boolean,
+        @Field("main_cmt") mainCmt: Int?
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/update_cmt.php") // 그룹 피드 디테일 액티비티에서 댓글 수정하기
+    fun updateCmt(
+        @Field("id") cmtId: Int,
+        @Field("content") content: String
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/delete_cmt.php") // 그룹 피드 댓글의 고유 번호를 이용하여 해당 댓글 삭제하기
+    fun deleteCmt(
+        @Field("id") cmtId: Int
     ) : Call<JsonObject>
 
 }

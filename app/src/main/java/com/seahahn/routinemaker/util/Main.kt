@@ -34,6 +34,7 @@ import com.seahahn.routinemaker.notice.NoticeActivity
 import com.seahahn.routinemaker.sns.group.GroupListActivity
 import com.seahahn.routinemaker.sns.group.GroupMakeActivity
 import com.seahahn.routinemaker.sns.group.GroupSearchActivity
+import com.seahahn.routinemaker.sns.newsfeed.GroupFeedMakeActivity
 import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
@@ -318,17 +319,15 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         return false
     }
 
-    // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
-    override fun onBackPressed() { //뒤로가기 처리
-        d(TAG, "onBackPressed")
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
-            drawerLayout.closeDrawers()
-            // 테스트를 위해 뒤로가기 버튼시 Toast 메시지
-//            Toast.makeText(this,"back btn clicked",Toast.LENGTH_SHORT).show()
-        } else{
-            super.onBackPressed()
-        }
-    }
+//    // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
+//    override fun onBackPressed() { //뒤로가기 처리
+//        d(TAG, "onBackPressed")
+//        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+//            drawerLayout.closeDrawers()
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
 
     // 루틴, 할 일 만들기 및 수정 액티비티 내의 공통 요소들 초기화하기
     fun initRtTodoActivity(btmBtnId : Int) {
@@ -577,7 +576,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         d(TAG, "onOptionsItemSelected Main")
         when(item.itemId){
-            R.id.toolbarTrash -> showAlert("삭제하기", "정말 삭제하시겠어요?")
+            R.id.toolbarTrash -> {
+                showAlert("삭제하기", "정말 삭제하시겠어요?")
+            }
             R.id.toolbarUpdate -> {
                 when(TAG) {
                     "ActionListActivity" -> startActivity<RtUpdateActivity>("id" to rtId) // '루틴 수정하기' 액티비티로 이동

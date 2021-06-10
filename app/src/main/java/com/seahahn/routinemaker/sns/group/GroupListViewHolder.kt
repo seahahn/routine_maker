@@ -12,6 +12,7 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import java.util.*
@@ -30,11 +31,6 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
     private val headLimit : TextView = itemView.findViewById(R.id.head_limit)
     private val tags : TextView = itemView.findViewById(R.id.tags)
 
-//    private val layoutParams = ConstraintLayout.LayoutParams(
-//        ConstraintLayout.LayoutParams.WRAP_CONTENT,
-//        ConstraintLayout.LayoutParams.WRAP_CONTENT
-//    )
-
     init {
 //        d(TAG, "RtViewHolder init")
         item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
@@ -43,13 +39,11 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 
     fun onBind(groupData : GroupData){
         // 아이템 태그에 그룹의 고유 번호와 제목을 담아둠(메소드에서 활용)
-        item.tag = hashMapOf("id" to groupData.id)
+        item.tag = hashMapOf("id" to groupData.id, "title" to groupData.title)
 
         // 그룹명 표시하기
         title.text = groupData.title
         if(!groupData.onPublic) lockMark.visibility = View.VISIBLE
-        // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
-        groupData.title = groupData.title.toLowerCase(Locale.getDefault())
 
         // 그룹의 인원 표시하기
         val headCount = groupData.memberCount // 현재 가입되어 있는 그룹 멤버 수
@@ -72,9 +66,6 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         } else {
             tags.text = tagTxt
         }
-        // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
-        groupData.tags = groupData.tags.toLowerCase(Locale.getDefault())
-
 
         // 그룹 정보 수정 or 해체 메뉴 팝업 나오는 버튼
         // 그룹 수정 및 해체는 그룹 생성자와 현재 사용자의 고유 번호가 일치하는 경우에만 가능
@@ -86,13 +77,6 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             moreBtn.tag = hashMapOf("id" to groupData.id, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
     }
 
-    // 마진값의 단위를 dp로 변환해주는 메소드
-    private fun changeDP(value : Int) : Int {
-        var displayMetrics = context.resources.displayMetrics
-        var dp = Math.round(value * displayMetrics.density)
-        return dp
-    }
-
     // 레트로핏 서비스 객체 가져오기
     fun getService(serviceInput : RetrofitService) {
         serviceInViewHolder = serviceInput
@@ -102,8 +86,15 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
     inner class ItemClickListener() : View.OnClickListener {
         override fun onClick(v: View?) {
             val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()
-            val it = Intent(context, GroupInfoActivity::class.java)
+            val title = ((v.tag as HashMap<*, *>)["title"]).toString()
+            d(TAG, "context : $context")
+            val it = when(context) {
+                is GroupListActivity -> Intent(context, GroupFeedActivity::class.java)
+                is GroupSearchActivity -> Intent(context, GroupInfoActivity::class.java)
+                else -> Intent(context, GroupInfoActivity::class.java)
+            }
             it.putExtra("id", id)
+            it.putExtra("title", title)
             context.startActivity(it)
         }
     }

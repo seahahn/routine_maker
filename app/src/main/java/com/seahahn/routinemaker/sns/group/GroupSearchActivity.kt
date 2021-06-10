@@ -88,14 +88,15 @@ class GroupSearchActivity : Sns() {
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
-            d(TAG, "text changed")
+//            d(TAG, "text changed")
             val inputText = newText!!.toLowerCase(Locale.getDefault())
 
             searchedDatas.clear() // 검색 결과 목록 비우기
             it_mDatas = showDatas.iterator() // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록에서 검색 결과 뽑기
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
-                if (it_mData.title.contains(inputText) || it_mData.tags.contains(inputText)) {
+                // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
+                if (it_mData.title.toLowerCase(Locale.getDefault()).contains(inputText) || it_mData.tags.toLowerCase(Locale.getDefault()).contains(inputText)) {
                     searchedDatas.add(it_mData)
                 }
             }

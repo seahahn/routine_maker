@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/feed_manage">
+        <item
+                android:id="@+id/update"
+                android:title="@string/popupMenuUpdate"/>
+        <item
+                android:id="@+id/delete"
+                android:title="@string/popupMenuDelete"/>
+    </group>
+    <group android:id="@+id/feed_unfollow">
+        <item
+                android:id="@+id/unfollow"
+                android:title="@string/popupMenuUnfollow"/>
+    </group>
+</menu>

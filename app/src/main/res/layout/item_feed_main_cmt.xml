@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item">
+    <ImageView
+            android:id="@+id/profile_pic"
+            style="@style/roundImg"
+            android:layout_width="32dp"
+            android:layout_height="32dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@drawable/ic_launcher_background"
+            android:layout_marginTop="12dp" android:layout_marginStart="12dp"/>
+    <TextView
+            tools:text="사용자 닉네임"
+            style="@style/txt_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nick"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="@+id/profile_pic"/>
+    <TextView
+            tools:text="댓글 내용"
+            android:visibility="visible"
+            style="@style/txt_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/content"
+            app:layout_constraintTop_toBottomOf="@+id/nick" app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            android:layout_marginStart="4dp"/>
+    <LinearLayout
+            android:id="@+id/under_content"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/profile_pic"
+            app:layout_constraintStart_toStartOf="@+id/content" android:layout_marginTop="4dp">
+        <TextView
+                android:id="@+id/createdAt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/txt_s"
+                android:text="2021. 2. 20 18:13:15"/>
+        <ImageView
+                android:id="@+id/commentIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp" app:srcCompat="@drawable/comment_white"
+                android:layout_marginStart="16dp"
+        />
+        <TextView
+                android:id="@+id/commentTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/txt_s"
+                android:layout_marginStart="4dp"
+                android:text="@string/makeSubCmt"/>
+    </LinearLayout>
+    <ImageView
+            android:id="@+id/cmt_img"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/under_content"
+            app:layout_constraintStart_toStartOf="@+id/under_content"
+            app:layout_constraintEnd_toEndOf="@+id/under_content"/>
+    <View
+            android:visibility="visible"
+            android:id="@+id/divider_tv"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"
+            app:layout_constraintTop_toBottomOf="@+id/cmt_img"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp" android:layout_marginTop="4dp"/>
+
+
+
+    <!-- 댓글 수정 시 출현할 뷰들 -->
+    <EditText
+            tools:text="댓글 내용"
+            android:visibility="gone"
+            style="@style/txt_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            android:minWidth="200dp"
+            android:gravity="start"
+            android:padding="4dp"
+            android:id="@+id/contentET"
+            android:background="@drawable/introbg"
+            app:layout_constraintTop_toBottomOf="@+id/nick" app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            android:layout_marginStart="4dp"/>
+    <LinearLayout
+            android:id="@+id/under_edittext"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/contentET"
+            app:layout_constraintEnd_toEndOf="@+id/contentET" android:layout_marginTop="4dp">
+        <TextView
+                android:id="@+id/cmt_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/txt_s"
+                android:text="@string/cancel"/>
+        <TextView
+                android:id="@+id/cmt_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/txt_s"
+                android:layout_marginStart="16dp"
+                android:text="@string/update"/>
+    </LinearLayout>
+
+    <View
+            android:visibility="gone"
+            android:id="@+id/divider_et"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"
+            app:layout_constraintTop_toBottomOf="@+id/under_edittext"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp" android:layout_marginTop="4dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
