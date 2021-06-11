@@ -18,6 +18,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.size
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.amplifyframework.core.Amplify
@@ -109,6 +111,13 @@ open class Sns : Main() {
     lateinit var photoInput : ImageButton
     lateinit var chatSend : ImageButton
 
+    lateinit var prograssbar : ContentLoadingProgressBar
+
+    lateinit var fullImgLayoutContainer : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
+//    lateinit var fullImgLayout : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
+    lateinit var fullImgPager : ViewPager2 // 이미지 클릭 시 크게 보여줄 뷰페이저
+    lateinit var fullImgClose : ImageButton // 이미지 클릭 시 크게 보여줄 화면 닫기 버튼
+
     // 그룹 만들기, 수정 및 그룹 정보 액티비티 내의 공통 요소들 초기화하기
     fun initGroupActivity(btmBtnId : Int) {
         // 액티비티별로 별개인 요소 초기화하기
@@ -181,6 +190,10 @@ open class Sns : Main() {
         btmBtn = findViewById(btmBtnId)
         setFullBtmBtnText(btmBtn)
         btmBtn.setOnClickListener(BtnClickListener())
+
+        // 이미지 업로드 시 출력할 프로그레스바 초기화
+        prograssbar = findViewById(R.id.prograssbar)
+        showProgress(false)
     }
 
     fun initChatInput(ph : Int) {
@@ -190,6 +203,13 @@ open class Sns : Main() {
         chatSend = findViewById(R.id.chatSend)
 
         chatInput.setHint(ph)
+    }
+
+    fun initFullImgLayout() {
+        fullImgLayoutContainer = findViewById(R.id.full_img_layout)
+//        fullImgLayout = findViewById(R.id.fullImgLayout)
+        fullImgPager = findViewById(R.id.fullImgPager)
+        fullImgClose = findViewById(R.id.fullImgClose)
     }
 
     // 하단 입력창에 포커스 가면 키보드 올리기
@@ -475,8 +495,15 @@ open class Sns : Main() {
         }
     }
 
+    // 피드 이미지 포지션 저장해두기
+    inner class MyOnPageChangeCallback : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            if(position != 0) AppVar.setPagerPos(applicationContext, position)
+        }
+    }
+
     // 피드 작성 또는 수정에서 이미지 추가 버튼 클릭 시 팝업 메뉴 출력
-    inner class ImgClickListener : View.OnClickListener {
+    inner class ImgAddClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             photo(v!!)
         }
@@ -528,6 +555,7 @@ open class Sns : Main() {
                     imgDatas.add(thumbnail!!)
                     feedImgAdapter.replaceList(imgDatas)
                 }
+                mViewPager.setCurrentItem(imgDatas.size, false)
             }
         }
 
@@ -569,6 +597,8 @@ open class Sns : Main() {
 
     // 사진 경로 저장하기
     fun saveImgsURL(imgDatas : MutableList<Any>, imagesList : MutableList<String>) {
+        d(TAG, "imgDatas : $imgDatas")
+        d(TAG, "imagesList : $imagesList")
         var imgUri : Any?
         var thumbnail : Bitmap
 
@@ -578,50 +608,69 @@ open class Sns : Main() {
         val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
 
         for(i in 0 until imgDatas.size) {
-            if(imgDatas[i] is Uri) {
-                imgUri = imgDatas[i]
-                thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imgUri as Uri)
+            when {
+                imgDatas[i] is Uri -> { // 갤러리에서 사진 가져온 경우
+                    imgUri = imgDatas[i]
+                    thumbnail = MediaStore.Images.Media.getBitmap(contentResolver, imgUri as Uri)
 
-                img = saveBitmapToJpg(thumbnail, System.currentTimeMillis().toString(), 100) // 사진 비트맵이 저장된 파일 경로 가져오기
-                imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
-                imgPath = "photo/" + System.currentTimeMillis().toString() + ".jpg" // S3에 저장될 경로 설정
+                    img = saveBitmapToJpg(thumbnail, System.currentTimeMillis().toString(), 100) // 사진 비트맵이 저장된 파일 경로 가져오기
+                    imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
+                    imgPath = "photo/" + System.currentTimeMillis().toString() + ".jpg" // S3에 저장될 경로 설정
 
-                imagesList.add("$s3url$imgPath") // 이미지 경로 추가
+                    imagesList.add("$s3url$imgPath") // 이미지 경로 추가
 
-                // s3에 저장하기
-                Amplify.Storage.uploadFile(
-                    imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
-                    imgFile, // 실제 저장될 파일
-                    { result ->
-                        Log.d(TAG, "Successfully uploaded : $result")
-                        //                changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
-                    },
-                    { error -> Log.d(TAG, "Upload failed", error) }
-                )
-            } else if(imgDatas[i] is Bitmap) {
-                img = saveBitmapToJpg(imgDatas[i] as Bitmap, System.currentTimeMillis().toString(), 100) // 사진 비트맵이 저장된 파일 경로 가져오기
-                imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
-                imgPath = "photo/" + System.currentTimeMillis().toString() + ".jpg" // S3에 저장될 경로 설정
+                    // s3에 저장하기
+                    runOnUiThread {
+                        showProgress(true)
+                        uploadFileToAWS(imgPath, imgFile)
+                    }
+                }
+                imgDatas[i] is Bitmap -> { // 카메라로 사진 찍은 경우
+                    img = saveBitmapToJpg(imgDatas[i] as Bitmap, System.currentTimeMillis().toString(), 100) // 사진 비트맵이 저장된 파일 경로 가져오기
+                    imgFile = File(img) // 가져온 경로를 바탕으로 파일로 만들기
+                    imgPath = "photo/" + System.currentTimeMillis().toString() + ".jpg" // S3에 저장될 경로 설정
 
-                imagesList.add("$s3url$imgPath") // 이미지 경로 추가
+                    imagesList.add("$s3url$imgPath") // 이미지 경로 추가
 
-                // s3에 저장하기
-                Amplify.Storage.uploadFile(
-                    imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
-                    imgFile, // 실제 저장될 파일
-                    { result ->
-                        Log.d(TAG, "Successfully uploaded : $result")
-                        //                changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
-                    },
-                    { error -> Log.d(TAG, "Upload failed", error) }
-                )
-            } else {
-                imagesList.add(imgDatas[i].toString())
+                    // s3에 저장하기
+                    runOnUiThread {
+                        showProgress(true)
+                        uploadFileToAWS(imgPath, imgFile)
+                    }
+                }
+                else -> { // 원래 있던 것 그대로 둔 경우
+                    imagesList.add(imgDatas[i].toString())
+                }
             }
         }
         imagesURL = imagesList.toString() // 이미지 경로를 모아둔 리스트를 문자열로 바꾸어 저장
+        imgDatas.clear()
+        imagesList.clear()
 //        val acceptedList = Arrays.stream(acceptedListString.substring(1, acceptedListString.length - 1).split(",").toTypedArray())
 //            .map { obj: String -> obj.trim { it <= ' ' } }.mapToInt(Integer::parseInt).toArray()
+    }
+
+    private fun uploadFileToAWS(imgPath : String, imgFile : File) {
+        // s3에 저장하기
+        Amplify.Storage.uploadFile(
+            imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
+            imgFile, // 실제 저장될 파일
+            { result ->
+                Log.d(TAG, "Successfully uploaded : $result")
+                showProgress(false)
+                //                changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
+            },
+            { error -> Log.d(TAG, "Upload failed", error) }
+        )
+    }
+
+    fun showProgress(show : Boolean) {
+        if(show) {
+            prograssbar.show()
+        } else {
+            prograssbar.hide()
+            if(TAG == "GroupFeedDetailActivity") getCmts(service, feedId)
+        }
     }
 
     // '그룹 만들기' 액티비티의 하단 버튼 눌렀을 때의 동작(그룹 만들기)
@@ -1121,7 +1170,7 @@ open class Sns : Main() {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "그룹 피드 댓글 작성 요청 응답 수신 성공")
                 Log.d(TAG, response.body().toString())
-                getCmts(service, feedId)
+//                getCmts(service, feedId)
 //                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
 //                val msg = gson.get("msg").asString
 //                val result = gson.get("result").asBoolean

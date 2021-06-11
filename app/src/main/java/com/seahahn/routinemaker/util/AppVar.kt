@@ -57,4 +57,17 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         return prefs.getString("ACCEPTED_LIST", "").toString()
     }
+
+    // 그룹 피드에서 사용자가 보고 있는 피드 이미지의 포지션 값 임시 저장
+    fun setPagerPos(context: Context, input: Int) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putInt("PAGER_POS", input)
+        editor.commit()
+    }
+
+    fun getPagerPos(context: Context): Int {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getInt("PAGER_POS", 0)
+    }
 }

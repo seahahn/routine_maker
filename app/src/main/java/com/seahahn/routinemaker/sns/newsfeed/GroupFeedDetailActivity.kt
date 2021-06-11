@@ -1,30 +1,31 @@
 package com.seahahn.routinemaker.sns.newsfeed
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Rect
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger
+import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.CmtData
+import com.seahahn.routinemaker.util.AppVar.getPagerPos
+import com.seahahn.routinemaker.util.AppVar.setPagerPos
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -78,6 +79,9 @@ class GroupFeedDetailActivity : Sns() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_feed_detail)
 
+        Logger.d(TAG, "imgDatas : $imgDatas")
+        Logger.d(TAG, "imagesList : $imagesList")
+
         // 레트로핏 통신 연결
         service = initRetrofit()
 
@@ -87,15 +91,20 @@ class GroupFeedDetailActivity : Sns() {
 
         initActivity() // 액티비티 구성요소 초기화
         initChatInput(R.string.cmtPh) // 하단 댓글 입력창 초기화
+        initFullImgLayout() // 이미지 전체 보기 레이아웃 초기화
         photoInput.tag = 1 // 최대 업로드 가능한 사진 개수
-        photoInput.setOnClickListener(ImgClickListener())
+        photoInput.setOnClickListener(ImgAddClickListener())
         chatSend.setOnClickListener(BtnClickListener())
         imgDelete.setOnClickListener(BtnClickListener())
+        fullImgClose.setOnClickListener(BtnClickListener())
 
         // 추가된 이미지 보여줄 뷰페이저 초기화
         feedImgAdapter = FeedImgAdapter() // 어댑터 초기화
         mViewPager.adapter = feedImgAdapter // 어댑터 연결
+        fullImgPager.adapter = feedImgAdapter // 어댑터 연결(이미지 전체화면)
         feedImgAdapter.isChangableActivity(false)
+        feedImgAdapter.isFullScreen(false)
+        mViewPager.registerOnPageChangeCallback(MyOnPageChangeCallback())
 
         cmtList = findViewById(R.id.cmtList) // 리사이클러뷰 초기화
         cmtListAdapter = FeedCmtAdapter() // 어댑터 초기화
@@ -147,6 +156,9 @@ class GroupFeedDetailActivity : Sns() {
         subCmtCtrl = findViewById(R.id.subCmtCtrl)
         subCmtInfo = findViewById(R.id.subCmtInfo)
         subCmtCancel = findViewById(R.id.subCmtCancel)
+
+        prograssbar = findViewById(R.id.prograssbar)
+        showProgress(false)
     }
 
     // 선택된 피드에 해당하는 데이터들 가져오기
@@ -195,8 +207,6 @@ class GroupFeedDetailActivity : Sns() {
                 moreBtn.tag = hashMapOf("id" to feedId, "writerId" to feedWriterId)
                 moreBtn.setOnClickListener(BtnClickListener())
             }
-
-
         })
     }
 
@@ -237,6 +247,18 @@ class GroupFeedDetailActivity : Sns() {
                 R.id.imgDelete -> {
                     previewImgArea.visibility = View.GONE
                 }
+                R.id.fullImgClose -> {
+                    feedImgAdapter.isFullScreen(false)
+                    fullImgLayoutContainer.visibility = View.GONE
+                    feedImgAdapter.replaceList(imgDatas)
+                    d(TAG, "pos : ${getPagerPos(applicationContext)}")
+                    if(!feedImgAdapter.isCmt) {
+                        mViewPager.setCurrentItem(fullImgPager.currentItem, false)
+                    } else {
+                        mViewPager.setCurrentItem(getPagerPos(applicationContext), false)
+                    }
+                    feedImgAdapter.isCmt(false)
+                }
                 R.id.chatSend -> {
                     val cmt = chatInput.text
                     if(chatInput.text.isNotBlank()) {
@@ -258,7 +280,7 @@ class GroupFeedDetailActivity : Sns() {
                     previewImgArea.visibility = View.GONE
                     Glide.with(applicationContext).load("").into(preview)
 
-                    getCmts(service, feedId)
+                    if(!prograssbar.isShown) getCmts(service, feedId)
                 }
                 R.id.subCmtCancel -> {
                     chatInput.setHint(R.string.cmtPh) // "댓글을 입력하세요"로 힌트 변경
@@ -326,7 +348,11 @@ class GroupFeedDetailActivity : Sns() {
             toast(getString(R.string.maxOnePicWarning))
         } else {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            getContent.launch(intent)
+            createImageUri(System.currentTimeMillis().toString(), "image/jpeg")?.let { uri ->
+                photoURI = uri
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                getContent.launch(intent)
+            }
         }
     }
 
@@ -351,7 +377,7 @@ class GroupFeedDetailActivity : Sns() {
                 val data = result.data
                 if (data?.clipData != null) { // 사진 여러개 선택한 경우
                     val count = data.clipData!!.itemCount
-                    if (count > 1) {
+                    if (count > 5) {
                         toast(getString(R.string.maxOnePicWarning))
                     } else {
                         val imageUri = data.clipData!!.getItemAt(0).uri
@@ -360,15 +386,17 @@ class GroupFeedDetailActivity : Sns() {
                         previewImgArea.visibility = View.VISIBLE
                         Glide.with(this).load(imageUri).into(preview)
                     }
-
-                } else {
-                    val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
-                    imgDatasCmt.add(thumbnail!!)
+                } else if(photoURI != null) {
+                    d(TAG, "photoURI : $photoURI")
+                    d(TAG, "data : $data")
+                    val imageUri = photoURI
+                    imgDatasCmt.add(imageUri as Any)
 
                     previewImgArea.visibility = View.VISIBLE
-                    Glide.with(this).load(thumbnail).into(preview)
+                    Glide.with(this).load(imageUri).into(preview)
+                } else {
+                    d(TAG, "photo etc")
                 }
             }
         }
-
 }

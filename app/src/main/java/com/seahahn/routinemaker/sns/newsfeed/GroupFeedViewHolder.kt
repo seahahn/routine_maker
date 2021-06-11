@@ -19,6 +19,7 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.FeedData
+import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call
@@ -29,7 +30,7 @@ import java.util.*
 class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     private val TAG = this::class.java.simpleName
-    val context: Context = itemView.context
+    val context: Context = itemView.context as GroupFeedActivity
     lateinit var serviceInViewHolder : RetrofitService
 
     private val item : ConstraintLayout = itemView.findViewById(R.id.item)
@@ -69,8 +70,8 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         content.text = feedData.content
         // 이미지 보여줄 뷰페이저 초기화
         feedImgAdapter = FeedImgAdapter() // 어댑터 초기화
-        mViewPager.adapter = feedImgAdapter // 어댑터 연결 mapToInt(Integer::parseInt).toArray()
-        feedImgAdapter.isChangableActivity(false)
+        feedImgAdapter.setFeedIdTag(feedData.id)
+        mViewPager.adapter = feedImgAdapter // 어댑터 연결
         if(feedData.images.isNotBlank()) {
             val imgArray = Arrays.stream(feedData.images.substring(1, feedData.images.length - 1).split(",").toTypedArray())
                 .map { obj: String -> obj.trim { it <= ' ' } }.toArray() // 문자열을 먼저 배열로 변환
@@ -139,6 +140,7 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         }
     }
 
+    // 피드 누르면 동작할 내용
     inner class IconClickListener() : Sns(), View.OnClickListener {
         override fun onClick(v: View?) {
             val feedId = (v?.tag as HashMap<*, *>)["id"].toString().toInt()

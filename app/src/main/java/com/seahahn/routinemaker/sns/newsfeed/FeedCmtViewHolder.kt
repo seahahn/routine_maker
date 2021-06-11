@@ -35,7 +35,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     private val nick : TextView = itemView.findViewById(R.id.nick)
     private val contentTV : TextView = itemView.findViewById(R.id.content)
 
-    private val cmt_img : ImageView = itemView.findViewById(R.id.cmt_img)
+    private val cmtImg : ImageView = itemView.findViewById(R.id.cmt_img)
 
     private val underContent : LinearLayout = itemView.findViewById(R.id.under_content) // 작성시점과 답글 달기 버튼 있는 영역
     private val createdAt : TextView = itemView.findViewById(R.id.createdAt)
@@ -50,6 +50,8 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     private val cmtUpdate : TextView = itemView.findViewById(R.id.cmt_update)
     private val dividerEt : View = itemView.findViewById(R.id.divider_et)
 
+    private lateinit var imageURL : String
+    private var tempImgList = mutableListOf<Any>()
 //    private var likeState : Boolean = false
 //    private var commentState : Boolean = false
 
@@ -70,8 +72,10 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         // 피드 내용 표시하기
         contentTV.text = cmtData.content
         if(cmtData.image.isNotBlank()) {
-            Glide.with(context).load(cmtData.image.substring(1, cmtData.image.length - 1)).into(cmt_img)
+            imageURL = cmtData.image.substring(1, cmtData.image.length - 1)
+            Glide.with(context).load(imageURL).into(cmtImg)
         }
+        cmtImg.setOnClickListener(ImgClickListener())
 
         // 답글 달기 기능 초기화
         commentIcon.tag = hashMapOf("id" to cmtData.id, "mainCmt" to cmtData.mainCmt) // 댓글 고유 번호 넣어두기. 대댓글인 경우 대상 댓글의 고유 번호도 함께 넣어두기
@@ -134,6 +138,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         }
     }
 
+    // 아이콘 클릭 시 동작할 내용
     inner class IconClickListener() : View.OnClickListener {
         override fun onClick(v: View?) {
             val context = v!!.context as GroupFeedDetailActivity
@@ -200,7 +205,26 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             dividerTv.visibility = View.VISIBLE
             dividerEt.visibility = View.GONE
 
+            cmtImg.visibility = View.VISIBLE // 이미지 보이기
+
             fullBtmChat.visibility = View.VISIBLE // 하단 댓글 입력창 보이기
+        }
+    }
+
+    // 댓글 이미지 클릭 시 동작할 내용
+    inner class ImgClickListener : View.OnClickListener {
+        override fun onClick(v: View?) {
+            when (val context = v?.context) {
+                is GroupFeedDetailActivity -> {
+                    context.fullImgLayoutContainer.visibility = View.VISIBLE
+                    tempImgList.clear()
+                    tempImgList.add(imageURL)
+                    context.feedImgAdapter.replaceList(tempImgList)
+                    context.feedImgAdapter.isFullScreen(true)
+                    context.feedImgAdapter.isCmt(true)
+//                    context.fullImgPager.setCurrentItem(context.mViewPager.currentItem, false)
+                }
+            }
         }
     }
 
@@ -250,6 +274,8 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
                     dividerTv.visibility = View.INVISIBLE
                     dividerEt.visibility = View.VISIBLE
+
+                    cmtImg.visibility = View.GONE // 이미지 숨기기
 
                     context.fullBtmChat.visibility = View.GONE // 하단 댓글 입력창 숨기기
                     true

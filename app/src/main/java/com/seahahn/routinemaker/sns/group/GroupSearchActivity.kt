@@ -63,7 +63,8 @@ class GroupSearchActivity : Sns() {
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
                 // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록만 추려서 출력
-                if (!it_mData.joined && (it_mData.headLimit > it_mData.memberCount || it_mData.headLimit == 0)) {
+//                if (!it_mData.joined && (it_mData.headLimit > it_mData.memberCount || it_mData.headLimit == 0)) {
+                if (it_mData.headLimit >= it_mData.memberCount || it_mData.headLimit == 0) {
                     showDatas.add(it_mData)
                 }
             }

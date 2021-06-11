@@ -1,9 +1,15 @@
 package com.seahahn.routinemaker.util
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.Rect
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Log.d
 import android.view.MenuItem
@@ -38,6 +44,9 @@ open class Util  : AppCompatActivity() {
 
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
+
+    // 카메라 원본이미지 Uri를 저장할 변수
+    var photoURI: Uri? = null
 
     // 레트로핏 객체 생성 및 API 연결
     fun initRetrofit(): RetrofitService {
@@ -158,6 +167,31 @@ open class Util  : AppCompatActivity() {
         }
         d("imgPath", "$cacheDir/$fileName")
         return "$cacheDir/$fileName"
+    }
+
+    // 사진 원본 가져오기 위한 메소드들
+    fun createImageUri(filename: String, mimeType: String) : Uri? { // 이미지 URI 생성
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+        values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+        return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    }
+
+    // 이미지 불러오기
+    fun loadBitmapFromMediaStoreBy(photoUri: Uri): Bitmap? {
+        var image: Bitmap? = null
+        try {
+            image = if (Build.VERSION.SDK_INT > 27) { // Api 버전별 이미지 처리
+                val source: ImageDecoder.Source =
+                    ImageDecoder.createSource(this.contentResolver, photoUri)
+                ImageDecoder.decodeBitmap(source)
+            } else {
+                MediaStore.Images.Media.getBitmap(this.contentResolver, photoUri)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return image
     }
 
 

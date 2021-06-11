@@ -152,7 +152,7 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/btn_disabled"
+            android:background="@color/dark"
             android:orientation="horizontal" app:layout_constraintBottom_toTopOf="@+id/subCmtCtrl"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
         <ImageView
@@ -197,8 +197,6 @@
             android:text="@string/cancel"/>
     </LinearLayout>
 
-
-
     <include
             layout="@layout/full_btm_chat"
             android:id="@+id/full_btm_chat"
@@ -209,5 +207,54 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/prograssbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:progressBarStyleLarge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include
+            layout="@layout/full_img_layout"
+            android:id="@+id/full_img_layout"
+            android:visibility="gone"
+            tools:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/fullImgLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:visibility="gone"-->
+<!--            tools:visibility="visible">-->
+<!--        <androidx.viewpager2.widget.ViewPager2-->
+<!--                android:id="@+id/fullImgPager"-->
+<!--                android:background="#000000"-->
+<!--                tools:listitem="@layout/item_full_img"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"/>-->
+<!--        <ImageButton-->
+<!--                android:id="@+id/fullImgClose"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                app:srcCompat="@drawable/img_delete"-->
+<!--                style="@style/imgBtn"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                android:layout_marginTop="8dp" android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"-->
+<!--        />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
