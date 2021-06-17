@@ -18,7 +18,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.size
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -113,8 +112,7 @@ open class Sns : Main() {
 
     lateinit var prograssbar : ContentLoadingProgressBar
 
-    lateinit var fullImgLayoutContainer : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
-//    lateinit var fullImgLayout : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
+    lateinit var fullImgLayout : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
     lateinit var fullImgPager : ViewPager2 // 이미지 클릭 시 크게 보여줄 뷰페이저
     lateinit var fullImgClose : ImageButton // 이미지 클릭 시 크게 보여줄 화면 닫기 버튼
 
@@ -206,7 +204,7 @@ open class Sns : Main() {
     }
 
     fun initFullImgLayout() {
-        fullImgLayoutContainer = findViewById(R.id.full_img_layout)
+        fullImgLayout = findViewById(R.id.fullImgLayout)
 //        fullImgLayout = findViewById(R.id.fullImgLayout)
         fullImgPager = findViewById(R.id.fullImgPager)
         fullImgClose = findViewById(R.id.fullImgClose)

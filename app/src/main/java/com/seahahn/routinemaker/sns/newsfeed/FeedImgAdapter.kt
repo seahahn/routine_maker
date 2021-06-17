@@ -2,7 +2,6 @@ package com.seahahn.routinemaker.sns.newsfeed
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +12,6 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.FeedData
-import com.seahahn.routinemaker.util.AppVar.getPagerPos
-import org.jetbrains.anko.startActivity
 import java.util.HashMap
 
 class FeedImgAdapter : RecyclerView.Adapter<FeedImgAdapter.FeedImgViewHolder>() {
@@ -115,7 +111,7 @@ class FeedImgAdapter : RecyclerView.Adapter<FeedImgAdapter.FeedImgViewHolder>() 
                     is GroupFeedDetailActivity -> {
                         if(!isFullScreen) {
                             isFullScreen(true)
-                            context.fullImgLayoutContainer.visibility = View.VISIBLE
+                            context.fullImgLayout.visibility = View.VISIBLE
                             context.feedImgAdapter.replaceList(data)
                             context.fullImgPager.setCurrentItem(context.mViewPager.currentItem, false)
                         }

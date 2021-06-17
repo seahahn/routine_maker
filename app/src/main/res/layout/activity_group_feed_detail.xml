@@ -220,7 +220,7 @@
 
     <include
             layout="@layout/full_img_layout"
-            android:id="@+id/full_img_layout"
+            android:id="@+id/fullImgLayout"
             android:visibility="gone"
             tools:visibility="invisible"
             android:layout_width="match_parent"

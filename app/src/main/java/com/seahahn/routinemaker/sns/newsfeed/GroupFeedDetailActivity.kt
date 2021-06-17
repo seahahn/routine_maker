@@ -3,7 +3,6 @@ package com.seahahn.routinemaker.sns.newsfeed
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,17 +14,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.nhn.android.idp.common.logger.Logger
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.CmtData
 import com.seahahn.routinemaker.util.AppVar.getPagerPos
-import com.seahahn.routinemaker.util.AppVar.setPagerPos
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -79,8 +75,8 @@ class GroupFeedDetailActivity : Sns() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_feed_detail)
 
-        Logger.d(TAG, "imgDatas : $imgDatas")
-        Logger.d(TAG, "imagesList : $imagesList")
+        d(TAG, "imgDatas : $imgDatas")
+        d(TAG, "imagesList : $imagesList")
 
         // 레트로핏 통신 연결
         service = initRetrofit()
@@ -211,7 +207,7 @@ class GroupFeedDetailActivity : Sns() {
     }
 
     // 피드의 좋아요, 댓글, 더보기와 하단의 카메라, 댓글 달기 아이콘 클릭 시 작동할 기능
-    inner class BtnClickListener() : View.OnClickListener {
+    inner class BtnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when(v!!.id) {
                 R.id.likeIcon -> {
@@ -246,10 +242,12 @@ class GroupFeedDetailActivity : Sns() {
                 }
                 R.id.imgDelete -> {
                     previewImgArea.visibility = View.GONE
+
+                    imgDatasCmt.clear()
                 }
                 R.id.fullImgClose -> {
                     feedImgAdapter.isFullScreen(false)
-                    fullImgLayoutContainer.visibility = View.GONE
+                    fullImgLayout.visibility = View.GONE
                     feedImgAdapter.replaceList(imgDatas)
                     d(TAG, "pos : ${getPagerPos(applicationContext)}")
                     if(!feedImgAdapter.isCmt) {
@@ -280,7 +278,7 @@ class GroupFeedDetailActivity : Sns() {
                     previewImgArea.visibility = View.GONE
                     Glide.with(applicationContext).load("").into(preview)
 
-                    if(!prograssbar.isShown) getCmts(service, feedId)
+                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) getCmts(service, feedId)
                 }
                 R.id.subCmtCancel -> {
                     chatInput.setHint(R.string.cmtPh) // "댓글을 입력하세요"로 힌트 변경

@@ -71,7 +71,8 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 피드 내용 표시하기
         contentTV.text = cmtData.content
-        if(cmtData.image.isNotBlank()) {
+        if(cmtData.image.isNotEmpty() || cmtData.image != "[]") {
+            d(TAG, "img is not blank")
             imageURL = cmtData.image.substring(1, cmtData.image.length - 1)
             Glide.with(context).load(imageURL).into(cmtImg)
         }
@@ -216,7 +217,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         override fun onClick(v: View?) {
             when (val context = v?.context) {
                 is GroupFeedDetailActivity -> {
-                    context.fullImgLayoutContainer.visibility = View.VISIBLE
+                    context.fullImgLayout.visibility = View.VISIBLE
                     tempImgList.clear()
                     tempImgList.add(imageURL)
                     context.feedImgAdapter.replaceList(tempImgList)
