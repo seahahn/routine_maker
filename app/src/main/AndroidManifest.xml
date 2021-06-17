@@ -18,6 +18,10 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".sns.chat.ChatActivity">
+        </activity>
+        <activity android:name=".sns.chat.ChatListActivity">
+        </activity>
         <activity android:name=".sns.newsfeed.GroupFeedDetailActivity">
         </activity>
         <activity android:name=".sns.group.GroupApplicantListActivity">

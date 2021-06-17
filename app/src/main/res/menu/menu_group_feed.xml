@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:id="@+id/toolbarSearch"
+            android:title="@string/toolbarSearch"
+            android:icon="@drawable/search"
+            app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/info"
+            app:showAsAction="never"
+            android:title="@string/popupMenuGroupInfo"/>
+    <item
+            android:id="@+id/chat"
+            app:showAsAction="never"
+            android:title="@string/popupMenuGroupChat"/>
+
+    <group android:id="@+id/group_manage"
+           app:showAsAction="never">
+        <item
+                android:id="@+id/update"
+                android:title="@string/popupMenuGroupUpdate"/>
+    </group>
+    <group android:id="@+id/group_applicant"
+           app:showAsAction="never">
+        <item
+                android:id="@+id/applicants"
+                android:title="@string/popupMenuGroupApplicants"/>
+    </group>
+</menu>

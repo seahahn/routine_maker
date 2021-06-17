@@ -74,7 +74,7 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             leaderMark.visibility = View.VISIBLE
         }
 //            moreBtn.visibility = View.VISIBLE
-            moreBtn.tag = hashMapOf("id" to groupData.id, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
+        moreBtn.tag = hashMapOf("id" to groupData.id, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
     }
 
     // 레트로핏 서비스 객체 가져오기
@@ -130,8 +130,8 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             }
         }
     }
-//
-//    // 루틴 목록의 아이템 내 더보기 버튼의 팝업 메뉴 항목별 동작할 내용
+
+    // 루틴 목록의 아이템 내 더보기 버튼의 팝업 메뉴 항목별 동작할 내용
     inner class GroupPopupMenuListener(v: View, serviceInput: RetrofitService) : Sns(), PopupMenu.OnMenuItemClickListener {
 
     private val TAG = this::class.java.simpleName

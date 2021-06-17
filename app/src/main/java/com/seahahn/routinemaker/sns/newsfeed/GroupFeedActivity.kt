@@ -1,20 +1,31 @@
 package com.seahahn.routinemaker.sns.newsfeed
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.FeedData
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
+import com.seahahn.routinemaker.sns.group.GroupInfoActivity
 import com.seahahn.routinemaker.sns.group.GroupListAdapter
+import com.seahahn.routinemaker.sns.group.GroupUpdateActivity
 import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import java.util.HashMap
 
 /*
 * 선택한 그룹 뉴스피드
@@ -22,6 +33,8 @@ import com.seahahn.routinemaker.util.UserInfo.getUserId
 class GroupFeedActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
+
+    private lateinit var toolbar : Toolbar
 
     private lateinit var viewEmptyList : LinearLayout
 
@@ -52,6 +65,8 @@ class GroupFeedActivity : Sns() {
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = groupTitle // 툴바 제목에 들어갈 텍스트. 그룹명을 가져옴
         initToolbar(title, titleText, 1) // 툴바 세팅하기
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.overflowIcon = getDrawable(R.drawable.more) // 우측 상단의 더보기 아이콘 모양 변경
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)
@@ -109,6 +124,64 @@ class GroupFeedActivity : Sns() {
         // 정보 변경된 경우 바뀐 정보를 적용하기 위해서 다시 초기화해줌
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
         getFeeds(service, groupId, getUserId(this))
+    }
+
+    // 툴바 우측 메뉴 버튼 설정
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_group_feed, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
+        if(leaderId == getUserId(this)) {
+            menu?.setGroupVisible(R.id.group_manage, true)
+            if(!onPublicResult) { // 그룹이 비공개일 경우에만 그룹 가입 신청자 목록 보기 가능
+                menu?.setGroupVisible(R.id.group_applicant, true)
+            } else {
+                menu?.setGroupVisible(R.id.group_applicant, false)
+            }
+        } else {
+            menu?.setGroupVisible(R.id.group_manage, false)
+            menu?.setGroupVisible(R.id.group_applicant, false)
+        }
+        return true
+    }
+
+    // 툴바 우측 메뉴 눌렀을 때 동작할 내용
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.toolbarSearch -> {
+                // 검색창 띄우기
+            }
+            R.id.info -> {
+                d(TAG, "그룹 정보 보기")
+                val it = Intent(this, GroupInfoActivity::class.java)
+                it.putExtra("id", groupId)
+                startActivity(it)
+            }
+            R.id.chat -> {
+                d(TAG, "그룹 채팅 참여하기")
+            }
+            R.id.update -> {
+                d(TAG, "그룹 정보 수정")
+                if(leaderId == getUserId(this)) {
+                    item.isVisible
+                } else {
+                    !item.isVisible
+                }
+                val it = Intent(this, GroupUpdateActivity::class.java)
+                it.putExtra("id", groupId)
+                startActivity(it)
+            }
+            R.id.applicants -> {
+                d(TAG, "그룹 가입 신청자 목록 보기")
+                if(leaderId == getUserId(this)) {
+                    item.isVisible
+                } else {
+                    !item.isVisible
+                }
+                val it = Intent(this, GroupApplicantListActivity::class.java)
+                it.putExtra("id", groupId)
+                startActivity(it)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
