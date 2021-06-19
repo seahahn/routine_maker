@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="wrap_content"
+                                                   android:id="@+id/item"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                                    xmlns:tools="http://schemas.android.com/tools">
     <ImageView
@@ -34,6 +35,14 @@
             android:id="@+id/content"
             app:layout_constraintStart_toStartOf="@+id/nick"
             app:layout_constraintTop_toBottomOf="@+id/nick"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"/>
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"
+            android:layout_marginTop="4dp"/>
+    <TextView
+            android:id="@+id/createdAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/txt_s"
+            android:text="18:13" app:layout_constraintStart_toEndOf="@+id/content"
+            app:layout_constraintBottom_toBottomOf="@+id/content" android:layout_marginStart="4dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

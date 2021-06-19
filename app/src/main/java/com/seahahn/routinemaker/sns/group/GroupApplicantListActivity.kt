@@ -97,13 +97,13 @@ class GroupApplicantListActivity : Sns(), View.OnClickListener {
 
         override fun onQueryTextChange(newText: String?): Boolean {
 //            d(TAG, "text changed")
-            val inputText = newText!!.toLowerCase(Locale.getDefault())
+            val inputText = newText!!.lowercase(Locale.getDefault())
 
             searchedDatas.clear() // 검색 결과 목록 비우기
             it_mDatas = groupMemberListData.iterator() // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록에서 검색 결과 뽑기
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
-                if (it_mData.nick.toLowerCase(Locale.getDefault()).contains(inputText)) {
+                if (it_mData.nick.lowercase(Locale.getDefault()).contains(inputText)) {
                     searchedDatas.add(it_mData)
                 }
             }
@@ -111,13 +111,13 @@ class GroupApplicantListActivity : Sns(), View.OnClickListener {
             applicantListAdapter.replaceList(searchedDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
 
             // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
-            if(applicantListAdapter.itemCount == 0) {
+            if (applicantListAdapter.itemCount == 0) {
                 viewEmptyList.visibility = View.VISIBLE
             } else {
                 viewEmptyList.visibility = View.GONE
             }
 
-            if(newText == "") {
+            if (newText == "") {
                 viewEmptyList.visibility = View.GONE
                 applicantListAdapter.replaceList(groupMemberListData) // 검색창이 비었으면 다시 전체 목록을 출력함
             }

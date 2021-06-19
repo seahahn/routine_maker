@@ -1,6 +1,5 @@
 package com.seahahn.routinemaker.sns.chat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -88,15 +87,17 @@ class ChatListActivity : Sns() {
 
         override fun onQueryTextChange(newText: String?): Boolean {
 //            d(TAG, "text changed")
-            val inputText = newText!!.toLowerCase(Locale.getDefault())
+            val inputText = newText!!.lowercase(Locale.getDefault())
 
             searchedDatas.clear() // 검색 결과 목록 비우기
             it_mDatas = showDatas.iterator() // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록에서 검색 결과 뽑기
             while (it_mDatas.hasNext()) {
                 val it_mData = it_mDatas.next()
                 // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
-                if (it_mData.title.toLowerCase(Locale.getDefault()).contains(inputText) || it_mData.tags.toLowerCase(
-                        Locale.getDefault()).contains(inputText)) {
+                if (it_mData.title.lowercase(Locale.getDefault()).contains(inputText) || it_mData.tags.lowercase(
+                        Locale.getDefault()
+                    ).contains(inputText)
+                ) {
                     searchedDatas.add(it_mData)
                 }
             }
@@ -104,13 +105,13 @@ class ChatListActivity : Sns() {
             groupListAdapter.replaceList(searchedDatas) // 검색어 결과에 따라 추출된 목록을 보여줌
 
             // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
-            if(groupListAdapter.itemCount == 0) {
+            if (groupListAdapter.itemCount == 0) {
                 viewEmptyList.visibility = View.VISIBLE
             } else {
                 viewEmptyList.visibility = View.GONE
             }
 
-            if(newText == "") {
+            if (newText == "") {
                 viewEmptyList.visibility = View.GONE
                 groupListAdapter.replaceList(showDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
             }

@@ -3,17 +3,13 @@ package com.seahahn.routinemaker.main
 import android.os.Bundle
 import android.util.Log.d
 import android.view.View
-import androidx.activity.viewModels
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.Main
-import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
 class MainActivity : Main() {

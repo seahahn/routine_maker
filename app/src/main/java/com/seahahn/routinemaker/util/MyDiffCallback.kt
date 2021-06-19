@@ -1,4 +1,4 @@
-package com.seahahn.routinemaker.sns.group
+package com.seahahn.routinemaker.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.seahahn.routinemaker.sns.GroupMemberData

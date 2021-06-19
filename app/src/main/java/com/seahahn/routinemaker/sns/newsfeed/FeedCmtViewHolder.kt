@@ -31,7 +31,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     lateinit var serviceInViewHolder : RetrofitService
 
     private val item : ConstraintLayout = itemView.findViewById(R.id.item)
-    private val profile_pic : ImageView = itemView.findViewById(R.id.profile_pic)
+    private val profilePic : ImageView = itemView.findViewById(R.id.profile_pic)
     private val nick : TextView = itemView.findViewById(R.id.nick)
     private val contentTV : TextView = itemView.findViewById(R.id.content)
 
@@ -113,7 +113,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 Glide.with(context).load(photo)
                     .placeholder(R.drawable.warning)
                     .error(R.drawable.warning)
-                    .into(profile_pic)
+                    .into(profilePic)
                 nick.text = nickname
             }
         })

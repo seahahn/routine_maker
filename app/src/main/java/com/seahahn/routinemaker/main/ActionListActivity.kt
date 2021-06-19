@@ -1,11 +1,9 @@
 package com.seahahn.routinemaker.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log.d
 import android.view.Menu
 import androidx.activity.viewModels
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R

@@ -7,35 +7,35 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".sns.chat.ChatActivity">
 
-<include
-        layout="@layout/toolbar"
-        android:id="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <include
+            layout="@layout/toolbar"
+            android:id="@+id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-<SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:queryBackground="@drawable/list_bg"
-        android:queryHint="@string/searchPh"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"/>
+    <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@drawable/list_bg"
+            android:queryHint="@string/searchPh"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"/>
 
-<androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        android:overScrollMode="never"
-        android:id="@+id/chatting"
-        tools:listitem="@layout/item_chat_mine" app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/full_btm_chat">
-</androidx.recyclerview.widget.RecyclerView>
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:id="@+id/chatContents"
+            tools:listitem="@layout/item_chat_mine" app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/full_btm_chat">
+    </androidx.recyclerview.widget.RecyclerView>
 
     <include
             layout="@layout/full_btm_chat"
@@ -47,5 +47,17 @@ tools:context=".sns.chat.ChatActivity">
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+            layout="@layout/full_img_layout"
+            android:id="@+id/fullImgLayout"
+            android:visibility="gone"
+            tools:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -143,12 +144,21 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 
         override var groupId = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
         override var leaderId = ((groupItem.tag as HashMap<*, *>)["leaderId"]).toString().toInt()
+
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.info -> { // 그룹 정보 보기
 //                    val id = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
                     val it = Intent(context, GroupInfoActivity::class.java)
                     it.putExtra("id", groupId)
+                    context.startActivity(it)
+                    true
+                }
+                R.id.chat -> { // 그룹 채팅 참여하기
+                    val it = Intent(context, ChatActivity::class.java)
+                    it.putExtra("isGroupchat", true)
+                    it.putExtra("hostId", leaderId)
+                    it.putExtra("audienceId", groupId)
                     context.startActivity(it)
                     true
                 }

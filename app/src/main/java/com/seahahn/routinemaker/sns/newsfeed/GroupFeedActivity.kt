@@ -8,24 +8,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.FeedData
-import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
 import com.seahahn.routinemaker.sns.group.GroupInfoActivity
-import com.seahahn.routinemaker.sns.group.GroupListAdapter
 import com.seahahn.routinemaker.sns.group.GroupUpdateActivity
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import java.util.HashMap
 
 /*
 * 선택한 그룹 뉴스피드
@@ -157,6 +151,11 @@ class GroupFeedActivity : Sns() {
             }
             R.id.chat -> {
                 d(TAG, "그룹 채팅 참여하기")
+                val it = Intent(this, ChatActivity::class.java)
+                it.putExtra("isGroupchat", true)
+                it.putExtra("hostId", leaderId)
+                it.putExtra("audienceId", groupId)
+                startActivity(it)
             }
             R.id.update -> {
                 d(TAG, "그룹 정보 수정")

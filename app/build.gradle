@@ -48,7 +48,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.3.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
 
     // Google login
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
@@ -58,7 +58,7 @@ dependencies {
     implementation "com.google.firebase:firebase-auth-ktx:21.0.1"
     implementation "com.firebaseui:firebase-ui-auth:7.1.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.work:work-runtime:2.3.4'
+    implementation 'androidx.work:work-runtime:2.5.0'
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -72,6 +72,17 @@ dependencies {
     implementation "androidx.legacy:legacy-support-core-utils:$android_x_version"
     implementation "androidx.browser:browser:1.3.0"
     implementation "androidx.legacy:legacy-support-v4:$android_x_version"
+
+    // Room Database
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version" // To use Kotlin annotation processing tool (kapt)
+//    ksp "androidx.room:room-compiler:$room_version" // To use Kotlin Symbolic Processing (KSP)
+    implementation "androidx.room:room-ktx:$room_version" // optional - Kotlin Extensions and Coroutines support for Room
+    testImplementation "androidx.room:room-testing:$room_version" // optional - Test helpers
+
+    // Room DB Debug
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     //Anko
     implementation "org.jetbrains.anko:anko:$anko_version"

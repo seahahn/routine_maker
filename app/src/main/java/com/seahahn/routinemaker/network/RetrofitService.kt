@@ -4,10 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
-import com.seahahn.routinemaker.sns.CmtData
-import com.seahahn.routinemaker.sns.FeedData
-import com.seahahn.routinemaker.sns.GroupData
-import com.seahahn.routinemaker.sns.GroupMemberData
+import com.seahahn.routinemaker.sns.*
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.GET
@@ -366,6 +363,23 @@ interface RetrofitService {
     @POST("/api/sns/delete_cmt.php") // 그룹 피드 댓글의 고유 번호를 이용하여 해당 댓글 삭제하기
     fun deleteCmt(
         @Field("id") cmtId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/chat/get_chatroom_data.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
+    fun getChatRoomData(
+        @Field("is_groupchat") isGroupChat: Boolean,
+        @Field("host_id") hostId: Int,
+        @Field("audience_id") audienceId: Int
+    ) : Call<ChatroomData>
+
+    @FormUrlEncoded
+    @POST("/api/chat/make_msg.php") // 그룹 피드 디테일 액티비티에서 댓글 작성 시 데이터 보내 DB에 저장하기
+    fun makeMsg(
+        @Field("writer_id") writerId: Int,
+        @Field("content") content: String,
+        @Field("content_type") contentType: Int,
+        @Field("room_id") roomId: Int
     ) : Call<JsonObject>
 
 }

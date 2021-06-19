@@ -5,19 +5,12 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.RtAdapter
-import com.seahahn.routinemaker.main.RtData
-import com.seahahn.routinemaker.main.RtTodoViewModel
 import com.seahahn.routinemaker.sns.GroupData
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import java.time.LocalDateTime
 
 /*
 * 가입한 그룹 목록

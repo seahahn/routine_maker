@@ -19,7 +19,6 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.FeedData
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call

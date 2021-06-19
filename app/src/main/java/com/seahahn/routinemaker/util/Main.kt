@@ -16,7 +16,6 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -34,7 +33,6 @@ import com.seahahn.routinemaker.notice.NoticeActivity
 import com.seahahn.routinemaker.sns.group.GroupListActivity
 import com.seahahn.routinemaker.sns.group.GroupMakeActivity
 import com.seahahn.routinemaker.sns.group.GroupSearchActivity
-import com.seahahn.routinemaker.sns.newsfeed.GroupFeedMakeActivity
 import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
@@ -85,12 +83,14 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     val maxDate = Timestamp.valueOf(LocalDateTime.now().toString().replace("T", " ")).time
 
     // 메인 액티비티에서는 오늘 날짜를 툴바 제목으로 씀
-    private val current = LocalDate.now() // 오늘 날짜 데이터
-    private val currentHM = LocalTime.now() // 현재 시각 데이터
-    private val formatterMDDoW: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일 요일)
-    private val formatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
-    private val formatterYMD : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) // 문자열 형식(시 분)
+    val current = LocalDate.now() // 오늘 날짜 데이터
+    val currentHM = LocalTime.now() // 현재 시각 데이터
+    val currentDateTime = LocalDateTime.now() // 현재 날짜와 시각 데이터
+    val formatterMDDoW: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 EEE", Locale.getDefault()) // 문자열 형식(월 일 요일)
+    val formatterMonthDay: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) // 문자열 형식(월 일)
+    val formatterYMD : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()) // 문자열 형식(시 분)
+    val formatterYMDHM: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) // 문자열 형식(시 분)
     val formattedMDDoW: String = current.format(formatterMDDoW) // 툴바 제목에 들어가는 문자열
     val formattedMonthDay: String = current.format(formatterMonthDay) // 할 일 수행예정일에 들어가는 문자열(월 일)
     val formattedYMD: String = current.format(formatterYMD) // 할 일 수행예정일에 해당하는 날짜 데이터 값(yyyy-MM-dd)
