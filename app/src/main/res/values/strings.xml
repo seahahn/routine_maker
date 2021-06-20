@@ -248,8 +248,10 @@
     <string name="acceptJoinImpMsg">가입 가능한 인원을 초과하였습니다</string>
     <string name="acceptJoinMsg">가입을 수락하였습니다</string>
 
+    <string name="maxThirtyPics">최대 30장 선택 가능</string>
     <string name="maxFivePics">최대 5장 선택 가능</string>
     <string name="maxOnePic">최대 1장 선택 가능</string>
+    <string name="maxThirtyPicsWarning">최대 5장까지 선택 가능합니다</string>
     <string name="maxFivePicsWarning">최대 5장까지 선택 가능합니다</string>
     <string name="maxOnePicWarning">최대 1장까지 선택 가능합니다</string>
 

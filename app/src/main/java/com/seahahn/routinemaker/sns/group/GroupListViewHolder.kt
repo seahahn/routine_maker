@@ -75,7 +75,7 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             leaderMark.visibility = View.VISIBLE
         }
 //            moreBtn.visibility = View.VISIBLE
-        moreBtn.tag = hashMapOf("id" to groupData.id, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
+        moreBtn.tag = hashMapOf("id" to groupData.id, "title" to groupData.title, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
     }
 
     // 레트로핏 서비스 객체 가져오기
@@ -143,6 +143,7 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         private var context = groupItem.context
 
         override var groupId = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
+        override var groupTitle = ((groupItem.tag as HashMap<*, *>)["title"]).toString()
         override var leaderId = ((groupItem.tag as HashMap<*, *>)["leaderId"]).toString().toInt()
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -156,6 +157,7 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                 }
                 R.id.chat -> { // 그룹 채팅 참여하기
                     val it = Intent(context, ChatActivity::class.java)
+                    it.putExtra("title", groupTitle)
                     it.putExtra("isGroupchat", true)
                     it.putExtra("hostId", leaderId)
                     it.putExtra("audienceId", groupId)

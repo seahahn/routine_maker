@@ -48,6 +48,16 @@ tools:context=".sns.chat.ChatActivity">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/prograssbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:progressBarStyleLarge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     <include
             layout="@layout/full_img_layout"
             android:id="@+id/fullImgLayout"

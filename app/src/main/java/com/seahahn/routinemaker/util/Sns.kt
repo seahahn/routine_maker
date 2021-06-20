@@ -32,6 +32,8 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.*
 import com.seahahn.routinemaker.sns.chat.ChatContentsViewModel
+import com.seahahn.routinemaker.sns.chat.ChatImgAdapter
+import com.seahahn.routinemaker.sns.chat.FullImgAdapter
 import com.seahahn.routinemaker.sns.group.*
 import com.seahahn.routinemaker.sns.newsfeed.FeedCmtViewModel
 import com.seahahn.routinemaker.sns.newsfeed.FeedImgAdapter
@@ -69,7 +71,7 @@ open class Sns : Main() {
     var challengeId : Int = 0 // DB내 그룹 챌린지 고유 번호
 
     lateinit var mainTitleTxt : TextView // 그룹명(텍스트뷰)
-    var groupTitle = ""// 그룹명
+    open var groupTitle = ""// 그룹명
     lateinit var headNumberTxt : TextView // 그룹 가입 인원(텍스트뷰)
     var headCount : Int = 0
     var headLimitValue : Int = 0
@@ -97,19 +99,24 @@ open class Sns : Main() {
     lateinit var contentResult : Editable
     lateinit var mViewPager : ViewPager2
     lateinit var addImg : ImageView
-    var imgDatas = mutableListOf<Any>()
+    var imgDatas = mutableListOf<Any>() // 그룹 피드에 첨부한 이미지 URL들을 담은 리스트
     var imagesList = mutableListOf<String>()
+    var imgDatasCmt = mutableListOf<Any>() // 댓글에 첨부할 이미지 URL을 담은 리스트
+    var imgDatasChat = mutableListOf<Any>() // 채팅 메시지에 첨부할 이미지 URL을 담은 리스트
     lateinit var imagesURL : String
     lateinit var createdAt : TextView
 
     lateinit var feedImgAdapter : FeedImgAdapter
+    lateinit var fullImgAdapter : FullImgAdapter
 
     lateinit var fullBtmChat : ConstraintLayout
     lateinit var chatInput : EditText
     lateinit var photoInput : ImageButton
     lateinit var chatSend : ImageButton
 
-    lateinit var prograssbar : ContentLoadingProgressBar
+    lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
+
+    lateinit var prograssbar : ContentLoadingProgressBar // 이미지 업로드 중에 띄울 프로그레스바
 
     lateinit var fullImgLayout : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
     lateinit var fullImgPager : ViewPager2 // 이미지 클릭 시 크게 보여줄 뷰페이저
@@ -266,6 +273,7 @@ open class Sns : Main() {
         return true
     }
 
+    // 그룹 피드 작성 또는 수정하기 액티비티에서 필수 입력 사항들을 입력하지 않은 경우 입력하도록 안내하기
     fun inputCheckFeed(): Boolean {
         if(contentResult.isBlank()) {
             // 피드 내용을 입력하지 않은 경우 입력하도록 안내하기
@@ -593,7 +601,7 @@ open class Sns : Main() {
     }
 
     // 사진 경로 저장하기
-    fun saveImgsURL(imgDatas : MutableList<Any>, imagesList : MutableList<String>) {
+    open fun saveImgsURL(imgDatas : MutableList<Any>, imagesList : MutableList<String>) {
         d(TAG, "imgDatas : $imgDatas")
         d(TAG, "imagesList : $imagesList")
         var imgUri : Any?
@@ -647,7 +655,7 @@ open class Sns : Main() {
 //            .map { obj: String -> obj.trim { it <= ' ' } }.mapToInt(Integer::parseInt).toArray()
     }
 
-    private fun uploadFileToAWS(imgPath : String, imgFile : File) {
+    open fun uploadFileToAWS(imgPath : String, imgFile : File) {
         // s3에 저장하기
         Amplify.Storage.uploadFile(
             imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함

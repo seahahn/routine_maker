@@ -41,7 +41,7 @@ class GroupFeedDetailActivity : Sns() {
 
     private lateinit var scrollView: NestedScrollView
 
-    private var imgDatasCmt = mutableListOf<Any>()
+//    private var imgDatasCmt = mutableListOf<Any>()
     
     lateinit var moreBtn : ImageButton
 
@@ -68,8 +68,6 @@ class GroupFeedDetailActivity : Sns() {
     lateinit var subCmtCtrl : LinearLayout
     lateinit var subCmtInfo : TextView
     lateinit var subCmtCancel : Button
-
-    private lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -92,7 +92,7 @@ class FeedImgAdapter : RecyclerView.Adapter<FeedImgAdapter.FeedImgViewHolder>() 
         init {
 //        d(TAG, "RtViewHolder init")
             // 피드 누르면 해당 피드의 내용과 좋아요, 댓글만 보이는 액티비티로 이동
-            photoView.setOnClickListener(ImgClickListener()) // 우측 상단 삭제 버튼 눌렀을 때의 리스너 초기화하기
+            photoView.setOnClickListener(ImgClickListener()) // 이미지 눌렀을 때의 리스너 초기화하기
             imgDelete.setOnClickListener(ImgDeleteClickListener()) // 우측 상단 삭제 버튼 눌렀을 때의 리스너 초기화하기
         }
 

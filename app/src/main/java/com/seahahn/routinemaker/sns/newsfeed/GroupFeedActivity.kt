@@ -152,6 +152,7 @@ class GroupFeedActivity : Sns() {
             R.id.chat -> {
                 d(TAG, "그룹 채팅 참여하기")
                 val it = Intent(this, ChatActivity::class.java)
+                it.putExtra("title", groupTitle)
                 it.putExtra("isGroupchat", true)
                 it.putExtra("hostId", leaderId)
                 it.putExtra("audienceId", groupId)
