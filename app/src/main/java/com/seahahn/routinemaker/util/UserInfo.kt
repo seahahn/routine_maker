@@ -91,6 +91,18 @@ object UserInfo {
         return prefs.getString("MY_INWAY", "").toString()
     }
 
+    fun setUserFCMToken(context: Context, input: String) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putString("MY_FCM_TOKEN", input)
+        editor.commit()
+    }
+
+    fun getUserFCMToken(context: Context): String {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getString("MY_FCM_TOKEN", "").toString()
+    }
+
     fun clearUser(context: Context) {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()

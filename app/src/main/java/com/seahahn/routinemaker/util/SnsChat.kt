@@ -18,11 +18,14 @@ import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.sns.ChatUserData
 import com.seahahn.routinemaker.sns.ChatroomData
 import com.seahahn.routinemaker.sns.chat.ChatContentsViewModel
 import com.seahahn.routinemaker.sns.chat.ChatDataBase
 import com.seahahn.routinemaker.sns.chat.ChatMsg
 import com.seahahn.routinemaker.sns.chat.ChatroomViewModel
+import com.seahahn.routinemaker.util.UserInfo.getUserFCMToken
+import com.seahahn.routinemaker.util.UserInfo.getUserId
 import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -55,12 +58,15 @@ open class SnsChat : Sns() {
     val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     lateinit var chatroomData : ChatroomData // 채팅방 데이터
+    lateinit var chatUserData : MutableList<ChatUserData> // 채팅방 참여자 목록 데이터
+    lateinit var chatUserDataMap : HashMap<Int, String> // 채팅방 참여자 목록을 id, token 쌍의 맵으로 저장한 것
     lateinit var chatContents : MutableList<ChatMsg>
 
     var isSocketConnected = false
     // 소켓 통신 스레드
     val socketThread = Thread {
-        connectSocket(SERVER_ADDRESS, PORT, chatroomData.id.toString(), getUserNick(this))
+        println(getUserId(this))
+        connectSocket(SERVER_ADDRESS, PORT, chatroomData.id.toString(), getUserId(this), getUserNick(this))
         receiveMsg()
     }
     // 채팅 내용 불러오는 스레드
@@ -247,9 +253,11 @@ open class SnsChat : Sns() {
                 isSocketConnected = true
                 socketThread.start()
 
+                setChatUser(service, chatroomData.id, true, getUserFCMToken(applicationContext)) // 사용자의 채팅방 입장 여부 데이터 보내기
                 chatDB!!.chatDao().getChatMsgs(chatroomData.id).observe(lifecycleOwner) { chatMsgs ->
                     chatContentsViewModel.setList(chatMsgs)
                 } // 채팅방에 해당하는 채팅 내용 가져오기
+//                getChatUsers(service, chatroomData.id)
             }
         })
     }
@@ -270,14 +278,47 @@ open class SnsChat : Sns() {
         })
     }
 
+    // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기
+    fun setChatUser(service: RetrofitService, roomId: Int, isIn: Boolean, token: String) {
+        val userId = UserInfo.getUserId(applicationContext)
+        Logger.d(TAG, "setChatUser 변수들 : $roomId, $userId, $isIn, $token")
+        service.setChatUser(roomId, userId, isIn, token).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "사용자 채팅방 입장 여부 데이터 전송 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "사용자 채팅방 입장 여부 데이터 전송 요청 응답 수신 성공")
+                Log.d(TAG, response.body().toString())
+            }
+        })
+    }
+
+    // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기
+    fun getChatUsers(service: RetrofitService, roomId: Int) {
+        Logger.d(TAG, "getChatUsers 변수들 : $roomId")
+        service.getChatUsers(roomId).enqueue(object : Callback<MutableList<ChatUserData>> {
+            override fun onFailure(call: Call<MutableList<ChatUserData>>, t: Throwable) {
+                Log.d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<ChatUserData>>, response: Response<MutableList<ChatUserData>>) {
+                Log.d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
+                Log.d(TAG, response.body().toString())
+                chatUserData = response.body()!!
+            }
+        })
+    }
+
     @Throws(IOException::class)
-    fun connectSocket(host: String, port: Int, chatRoomId : String, nick : String) {
+    fun connectSocket(host: String, port: Int, chatRoomId : String, userId : Int, nick : String) {
         socket = Socket(host, port) // Socket 생성 및 접속
         connectInputStream()
         connectOutputStream()
 
         val userData = JsonObject()
         userData.addProperty("chatRoomId", chatRoomId)
+        userData.addProperty("userId", userId)
         userData.addProperty("nick", nick)
         val gson = Gson().toJson(userData)
 
@@ -322,6 +363,8 @@ open class SnsChat : Sns() {
     fun sendMessageToServer(msg: String) {
         outputStream.writeUTF(msg) // 생성된 출력 스트림을 통하여 데이터 송신
         chatInput.text = null // 메시지 보낸 후 입력란 비우기
+
+
     }
 
     @Throws(IOException::class)

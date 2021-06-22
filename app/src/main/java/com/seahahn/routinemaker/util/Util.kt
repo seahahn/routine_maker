@@ -24,11 +24,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.LifecycleOwner
+import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
+import com.seahahn.routinemaker.sns.ChatroomData
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
 import java.io.FileNotFoundException
@@ -194,7 +201,20 @@ open class Util  : AppCompatActivity() {
         return image
     }
 
+    // 채팅방 정보 불러오기
+    fun setFirebaseToken(service: RetrofitService, id : Int, token : String) {
+        Logger.d(TAG, "setFirebaseToken 변수들 : $id, $token")
+        service.setFirebaseToken(id, token).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "토큰값 보내기 실패 : {$t}")
+            }
 
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "토큰값 보내기 요청 응답 수신 성공")
+                Log.d(TAG, "body : ${response.body().toString()}")
+            }
+        })
+    }
 
 
 

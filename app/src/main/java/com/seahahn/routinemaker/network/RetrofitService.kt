@@ -81,6 +81,13 @@ interface RetrofitService {
     ) : Call<JsonObject>
 
     @FormUrlEncoded
+    @POST("/api/users/set_fb_token.php") // 사용자의 기기 파이어베이스 토큰값 보내기
+    fun setFirebaseToken(
+        @Field("id") id: Int,
+        @Field("token") token: String
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
     @POST("/api/main/make_rt.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
     fun makeRt(
         @Field("m_type") mType: String,
@@ -289,7 +296,7 @@ interface RetrofitService {
 
     @GET("/api/sns/get_user_data.php") // 사용자의 닉네임, 프로필 사진 URL 등의 정보를 가져옴
     fun getUserData(
-        @Query("user_id") id: Int
+        @Query("user_id") userId: Int
     ) : Call<JsonObject>
 
     @FormUrlEncoded
@@ -366,11 +373,30 @@ interface RetrofitService {
     ) : Call<JsonObject>
 
     @FormUrlEncoded
+    @POST("/api/chat/set_chat_user.php") // 사용자의 채팅방 입장 또는 퇴장 여부 데이터를 서버에 저장
+    fun setChatUser(
+        @Field("room_id") roomId: Int,
+        @Field("user_id") userId: Int,
+        @Field("is_in") isIn: Boolean,
+        @Field("token") token: String
+    ) : Call<JsonObject>
+
+    @GET("/api/chat/get_chat_users.php") // 사용자가 현재 입장한 채팅방에 들어와 있는 다른 사용자들 목록
+    fun getChatUsers(
+        @Query("room_id") roomId: Int
+    ) : Call<MutableList<ChatUserData>>
+
+    @FormUrlEncoded
     @POST("/api/chat/get_chatroom_data.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
     fun getChatRoomData(
         @Field("is_groupchat") isGroupChat: Boolean,
         @Field("host_id") hostId: Int,
         @Field("audience_id") audienceId: Int
+    ) : Call<ChatroomData>
+
+    @GET("/api/chat/get_chatroom_data_mini.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
+    fun getChatRoomData(
+        @Query("id") id: Int
     ) : Call<ChatroomData>
 
     @FormUrlEncoded

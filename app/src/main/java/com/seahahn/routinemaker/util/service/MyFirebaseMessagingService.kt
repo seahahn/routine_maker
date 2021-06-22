@@ -8,25 +8,51 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import android.util.Log.d
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.MainActivity
+import com.seahahn.routinemaker.network.RetrofitClient
+import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.sns.ChatroomData
+import com.seahahn.routinemaker.sns.chat.ChatActivity
+import com.seahahn.routinemaker.sns.chat.ChatDataBase
+import com.seahahn.routinemaker.sns.chat.ChatMsg
+import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserInfo.setUserFCMToken
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "MyFirebaseMsgService"
+
+    private lateinit var retrofit : Retrofit
+    lateinit var service : RetrofitService
+
+    lateinit var msg : String
+    lateinit var chatMsg : ChatMsg
+
+    lateinit var chatroomData : ChatroomData // 채팅방 데이터
+    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
+
+    lateinit var title : String // 채팅방 제목
+
+    lateinit var intent : Intent
+//    val intent by lazy { Intent(this, ChatActivity::class.java) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     // FirebaseInstanceIdService는 이제 사라짐. 이제 이걸 사용함
     override fun onNewToken(token: String) {
         Log.d(TAG, "new Token: $token")
 
         // 토큰 값을 따로 저장해둔다.
-        val pref = this.getSharedPreferences("token", Context.MODE_PRIVATE)
-        val editor = pref.edit()
-        editor.putString("token", token).apply()
-        editor.commit()
+        setUserFCMToken(this, token)
 
         Log.i("로그: ", "성공적으로 토큰을 저장함")
     }
@@ -39,9 +65,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Log.d(TAG, "Notification Message Body: " + remoteMessage.notification?.body!!)
 
         if(remoteMessage.data.isNotEmpty()){
-            Log.i("바디: ", remoteMessage.data["body"].toString())
             Log.i("타이틀: ", remoteMessage.data["title"].toString())
-            sendNotification(remoteMessage)
+            Log.i("바디: ", remoteMessage.data["body"].toString())
+
+            retrofit = RetrofitClient.getInstance()
+            service = retrofit.create(RetrofitService::class.java)
+
+            msg = remoteMessage.data["body"].toString()
+            chatMsg = Gson().fromJson(msg, ChatMsg::class.java)
+            getChatRoomData(chatMsg.roomId, remoteMessage) // 이동해야 할 채팅방 데이터 가져오기
+            chatDB!!.chatDao().insertChatMsg(chatMsg) // 채팅방에 메시지 추가
+
+//            sendNotification(remoteMessage)
         }
 
         else {
@@ -56,7 +91,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 일회용 PendingIntent
         // PendingIntent : Intent 의 실행 권한을 외부의 어플리케이션에게 위임한다.
-        val intent = Intent(this, MainActivity::class.java)
+        d(TAG, "chatroomData : $chatroomData")
+        intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra("isGroupchat", chatroomData.isGroupchat) // 그룹채팅인지 1:1채팅인지 여부
+        intent.putExtra("hostId", chatroomData.hostId) // 개설자 ID
+        intent.putExtra("audienceId", chatroomData.audienceId) // 채팅방이 속한 그룹 고유 번호 또는 1:1채팅 상대방 고유 번호
+        intent.putExtra("title", title)
+//        if(chatroomData.isGroupchat) { // 그룹 채팅인 경우 그룹명을 채팅방 제목으로 설정
+//            getGroup(chatroomData.audienceId)
+//        } else { // 1:1 채팅인 경우 대화 상대방 닉네임을 채팅방 제목으로 설정
+//            if(chatroomData.hostId != getUserId(this)) {
+//                getUserData(chatroomData.hostId)
+//            } else {
+//                getUserData(chatroomData.audienceId)
+//            }
+//        }
+//        intent.putExtra("title", title)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Activity Stack 을 경로만 남긴다. A-B-C-D-B => A-B
         val pendingIntent = PendingIntent.getActivity(this, uniId, intent, PendingIntent.FLAG_ONE_SHOT)
 
@@ -69,8 +119,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // 알림에 대한 UI 정보와 작업을 지정한다.
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.mipmap.ic_launcher) // 아이콘 설정
-            .setContentTitle(remoteMessage.data["body"].toString()) // 제목
-            .setContentText(remoteMessage.data["title"].toString()) // 메시지 내용
+            .setContentTitle(remoteMessage.data["title"].toString()) // 제목
+            .setContentText(if(chatMsg.contentType == 0) { chatMsg.content } else { "사진" }) // 메시지 내용(0은 텍스트, 그 외(1)는 사진)
             .setAutoCancel(true)
             .setSound(soundUri) // 알림 소리
             .setContentIntent(pendingIntent) // 알림 실행 시 Intent
@@ -86,5 +136,65 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // 알림 생성
         notificationManager.notify(uniId, notificationBuilder.build())
+    }
+
+    fun getChatRoomData(roomId: Int, remoteMessage: RemoteMessage) {
+        Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
+        service.getChatRoomData(roomId).enqueue(object : Callback<ChatroomData> {
+            override fun onFailure(call: Call<ChatroomData>, t: Throwable) {
+                Log.d(TAG, "채팅방 데이터 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<ChatroomData>, response: Response<ChatroomData>) {
+                Log.d(TAG, "채팅방 데이터 가져오기 요청 응답 수신 성공")
+                Log.d(TAG, "body : ${response.body().toString()}")
+                chatroomData = response.body()!!
+                if(chatroomData.isGroupchat) { // 그룹 채팅인 경우 그룹명을 채팅방 제목으로 설정
+                    getGroup(chatroomData.audienceId, remoteMessage)
+                } else { // 1:1 채팅인 경우 대화 상대방 닉네임을 채팅방 제목으로 설정
+                    if(chatroomData.hostId != getUserId(applicationContext)) {
+                        getUserData(chatroomData.hostId, remoteMessage)
+                    } else {
+                        getUserData(chatroomData.audienceId, remoteMessage)
+                    }
+                }
+            }
+        })
+    }
+
+    fun getGroup(roomId: Int, remoteMessage: RemoteMessage) {
+        Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
+        service.getGroup(roomId, getUserId(this)).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "채팅방 그룹 데이터 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "채팅방 그룹 데이터 가져오기 요청 응답 수신 성공")
+                Log.d(TAG, "body : ${response.body().toString()}")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                title = gson.get("title").asString
+                d(TAG, "title : $title")
+                sendNotification(remoteMessage)
+            }
+        })
+    }
+
+    // 피드 작성 시 사용자의 프로필 사진, 닉네임 표시하기
+    fun getUserData(userId : Int, remoteMessage: RemoteMessage) {
+        Logger.d(TAG, "getUserData 변수 : $userId")
+        service.getUserData(userId).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "사용자 데이터 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "사용자 데이터 가져오기 요청 응답 수신 성공")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                title = gson.get("nick").asString
+                d(TAG, "title : $title")
+                sendNotification(remoteMessage)
+            }
+        })
     }
 }

@@ -2,14 +2,18 @@ package com.seahahn.routinemaker.main
 
 import android.os.Bundle
 import android.util.Log.d
+import android.util.Log.w
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.messaging.FirebaseMessaging
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
 class MainActivity : Main() {
@@ -85,6 +89,20 @@ class MainActivity : Main() {
         // 우측 하단의 FloatingActionButton 초기화
         // 버튼을 누르면 루틴 또는 할 일을 만들 수 있는 액티비티로 이동 가능한 FAB 2개가 나타남
         initFAB()
+
+        // 사용자의 파이어베이스 토큰값 가져오기
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            UserInfo.setUserFCMToken(this, token.toString())
+            setFirebaseToken(service, getUserId(this), token.toString())
+            d(TAG, "token : $token")
+        })
     }
 
     override fun onResume() {
