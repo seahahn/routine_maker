@@ -3,6 +3,9 @@ package com.seahahn.routinemaker.sns.chat
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.impl.WorkDatabaseMigrations.MIGRATION_1_2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -17,37 +20,47 @@ data class ChatMsg(
     @ColumnInfo(name = "created_at") val createdAt: String
 )
 
-//@Entity(tableName = "chat_room")
-//data class ChatRoom(
-//    @PrimaryKey
-//    @ColumnInfo(name = "id") val id: Int,
-//    @ColumnInfo(name = "is_groupchat") val isGroupchat: Boolean,
-//    @ColumnInfo(name = "user_id") val userId: Int,
-//    @ColumnInfo(name = "audience_id") val audienceId: Int,
-//    @ColumnInfo(name = "member_list") val memberList: String,
-//    @ColumnInfo(name = "created_at") val createdAt: String
-//)
+@Entity(tableName = "chat_room")
+data class ChatRoom(
+    @PrimaryKey
+    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "is_groupchat") val isGroupchat: Boolean,
+    @ColumnInfo(name = "host_id") val hostId: Int,
+    @ColumnInfo(name = "audience_id") val audienceId: Int,
+    @ColumnInfo(name = "created_at") val createdAt: String,
+    @ColumnInfo(name = "lastmsg") val lastmsg: String,
+    @ColumnInfo(name = "lastmsg_at") val lastmsgAt: String
+)
 
 @Dao
 interface ChatDao {
 
     @Insert
     fun insertChatMsg(chatMsg: ChatMsg)
+
+    @Insert
+    fun insertChatRoom(chatRoom: ChatRoom)
+
+//    @Update
+//    fun updatechatMsg(chatMsg: ChatMsg)
+
+    @Delete
+    fun deletechatroom(chatRoom: ChatRoom)
+
+//    @Delete
+//    fun deletechatMsg(chatMsg: ChatMsg)
 //
-//    @Insert
-//    fun insertChatRoom(chatRoom: ChatRoom)
-
-    @Update
-    fun updatechatMsg(chatMsg: ChatMsg)
-
-    @Delete
-    fun deletechatMsg(chatMsg: ChatMsg)
-
-    @Delete
-    fun deletechatMsgs(vararg chatMsg: ChatMsg)
+//    @Delete
+//    fun deletechatMsgs(vararg chatMsg: ChatMsg)
 
 //    @Query("SELECT * FROM chat_room WHERE is_groupchat=:isGroupchat AND user_id=:userId AND audience_id=:audienceId")
 //    fun getChatRoomId(isGroupchat : Boolean, userId : Int, audienceId : Int): ChatMsg
+
+    @Query("SELECT * FROM chat_room WHERE id = :id")
+    fun getChatroom(id: Int): LiveData<ChatRoom>
+
+    @Query("SELECT * FROM chat_room ORDER BY lastmsg_at ASC")
+    fun getChatrooms(): LiveData<MutableList<ChatRoom>>
 
     @Query("SELECT * FROM chat_msg WHERE room_id = :roomId ORDER BY created_at ASC")
     fun getChatMsgs(roomId: Int): LiveData<MutableList<ChatMsg>>
@@ -60,17 +73,33 @@ interface ChatDao {
 //        getLastChatMsg(roomId).distinctUntilChanged()
 }
 
-@Database(entities = [ChatMsg::class], version = 1)
+@Database(entities = [ChatMsg::class, ChatRoom::class], version = 2)
 abstract class ChatDataBase: RoomDatabase() {
     abstract fun chatDao(): ChatDao
 
     companion object {
         private var chatDBInstance: ChatDataBase? = null
 
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE `chat_room` " +
+                        "(`id` INTEGER NOT NULL, " +
+                        "`is_groupchat` INTEGER NOT NULL, " +
+                        "`host_id` INTEGER NOT NULL, " +
+                        "`audience_id` INTEGER NOT NULL, " +
+                        "`created_at` TEXT NOT NULL, " +
+                        "`lastmsg` TEXT NOT NULL, " +
+                        "`lastmsg_at` TEXT NOT NULL, " +
+                        "PRIMARY KEY(`id`))")
+            }
+        }
+
         fun getInstance(context: Context): ChatDataBase? {
             if(chatDBInstance == null) {
                 synchronized(ChatDataBase::class){
-                    chatDBInstance = Room.databaseBuilder(context.applicationContext, ChatDataBase::class.java, "rtmaker.db").build()
+                    chatDBInstance = Room.databaseBuilder(context.applicationContext, ChatDataBase::class.java, "rtmaker.db")
+                        .addMigrations(MIGRATION_1_2)
+                        .build()
                 }
             }
             return chatDBInstance

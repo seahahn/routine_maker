@@ -5,6 +5,5 @@ data class ChatroomData(
     val isGroupchat: Boolean,
     val hostId: Int,
     val audienceId: Int,
-    var memberList : String,
     val createdAt : String
 )
