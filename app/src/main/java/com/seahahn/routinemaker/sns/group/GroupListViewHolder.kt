@@ -83,7 +83,7 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         serviceInViewHolder = serviceInput
     }
 
-//    // 아이템 클릭 시 동작할 내용
+    // 아이템 클릭 시 동작할 내용
     inner class ItemClickListener() : View.OnClickListener {
         override fun onClick(v: View?) {
             val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()

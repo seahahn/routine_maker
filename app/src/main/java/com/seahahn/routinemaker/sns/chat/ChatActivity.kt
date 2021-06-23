@@ -38,7 +38,6 @@ class ChatActivity : SnsChat() {
         service = initRetrofit()
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        d(TAG, intent.getStringExtra("title").toString())
         groupTitle = intent.getStringExtra("title").toString()
         val titleText = groupTitle // 툴바 제목에 들어갈 텍스트
         initToolbar(title, titleText, 1) // 툴바 세팅하기

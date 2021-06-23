@@ -7,10 +7,10 @@ import com.seahahn.routinemaker.sns.ChatroomData
 
 class ChatroomViewModel : ViewModel(){
 
-    private val mutableChatroomData = MutableLiveData<ChatroomData>()
-    val gottenChatroomData: LiveData<ChatroomData> get() = mutableChatroomData
+    private val mutableChatroomData = MutableLiveData<MutableList<ChatRoom>>()
+    val gottenChatroomData: LiveData<MutableList<ChatRoom>> get() = mutableChatroomData
 
-    fun setData(data: ChatroomData) {
+    fun setData(data: MutableList<ChatRoom>) {
         mutableChatroomData.value = data
     }
 }

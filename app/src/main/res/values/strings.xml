@@ -255,6 +255,9 @@
     <string name="maxFivePicsWarning">최대 5장까지 선택 가능합니다</string>
     <string name="maxOnePicWarning">최대 1장까지 선택 가능합니다</string>
 
+    <string name="chatList">채팅 목록</string>
+
     <string name="zero">0</string>
+    <string name="pic">사진</string>
 
 </resources>

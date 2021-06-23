@@ -29,7 +29,8 @@ data class ChatRoom(
     @ColumnInfo(name = "audience_id") val audienceId: Int,
     @ColumnInfo(name = "created_at") val createdAt: String,
     @ColumnInfo(name = "lastmsg") val lastmsg: String,
-    @ColumnInfo(name = "lastmsg_at") val lastmsgAt: String
+    @ColumnInfo(name = "lastmsg_at") val lastmsgAt: String,
+    @ColumnInfo(name = "msg_badge") val msgBadge: Int
 )
 
 @Dao
@@ -41,8 +42,8 @@ interface ChatDao {
     @Insert
     fun insertChatRoom(chatRoom: ChatRoom)
 
-//    @Update
-//    fun updatechatMsg(chatMsg: ChatMsg)
+    @Update
+    fun updateBadge(chatRoom: ChatRoom)
 
     @Delete
     fun deletechatroom(chatRoom: ChatRoom)
@@ -57,7 +58,7 @@ interface ChatDao {
 //    fun getChatRoomId(isGroupchat : Boolean, userId : Int, audienceId : Int): ChatMsg
 
     @Query("SELECT * FROM chat_room WHERE id = :id")
-    fun getChatroom(id: Int): LiveData<ChatRoom>
+    fun getChatroom(id: Int): ChatRoom
 
     @Query("SELECT * FROM chat_room ORDER BY lastmsg_at ASC")
     fun getChatrooms(): LiveData<MutableList<ChatRoom>>
@@ -67,13 +68,13 @@ interface ChatDao {
 //    fun getChatMsgsDUC(roomId : Int) =
 //        getChatMsgs(roomId).distinctUntilChanged()
 
-    @Query("SELECT * FROM chat_msg WHERE room_id = :roomId ORDER BY created_at ASC LIMIT 1")
+    @Query("SELECT * FROM chat_msg WHERE room_id = :roomId ORDER BY created_at DESC LIMIT 1")
     fun getLastChatMsg(roomId: Int): LiveData<ChatMsg>
 //    fun getLastChatMsgDUC(roomId : Int) =
 //        getLastChatMsg(roomId).distinctUntilChanged()
 }
 
-@Database(entities = [ChatMsg::class, ChatRoom::class], version = 2)
+@Database(entities = [ChatMsg::class, ChatRoom::class], version = 3)
 abstract class ChatDataBase: RoomDatabase() {
     abstract fun chatDao(): ChatDao
 
@@ -94,11 +95,17 @@ abstract class ChatDataBase: RoomDatabase() {
             }
         }
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE chat_room ADD COLUMN msg_badge INTEGER DEFAULT 0 NOT NULL")
+            }
+        }
+
         fun getInstance(context: Context): ChatDataBase? {
             if(chatDBInstance == null) {
                 synchronized(ChatDataBase::class){
                     chatDBInstance = Room.databaseBuilder(context.applicationContext, ChatDataBase::class.java, "rtmaker.db")
-                        .addMigrations(MIGRATION_1_2)
+                        .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                         .build()
                 }
             }

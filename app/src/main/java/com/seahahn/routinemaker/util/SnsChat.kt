@@ -250,23 +250,26 @@ open class SnsChat : Sns() {
                 isSocketConnected = true
                 socketThread.start()
 
-                chatDB!!.chatDao().getChatroom(chatroomData.id).observe(lifecycleOwner) { chatRoom ->
-                    val chatRoomLocal = chatRoom
-                    d(TAG, "chatRoomLocal : $chatRoomLocal")
+                object : Thread() {
+                    override fun run() {
+                        val chatRoomLocal = chatDB!!.chatDao().getChatroom(chatroomData.id)
+                        d(TAG, "chatRoomLocal : $chatRoomLocal")
 
-                    if(chatRoomLocal == null) {
-                        val chatRoom = ChatRoom(
-                            chatroomData.id,
-                            chatroomData.isGroupchat,
-                            chatroomData.hostId,
-                            chatroomData.audienceId,
-                            chatroomData.createdAt,
-                            "",
-                            chatroomData.createdAt
-                        )
-                        chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+                        if(chatRoomLocal == null) {
+                            val chatRoom = ChatRoom(
+                                chatroomData.id,
+                                chatroomData.isGroupchat,
+                                chatroomData.hostId,
+                                chatroomData.audienceId,
+                                chatroomData.createdAt,
+                                "",
+                                chatroomData.createdAt,
+                                0
+                            )
+                            chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+                        }
                     }
-                }
+                }.start()
 
                 setChatUser(service, chatroomData.id, true, getUserFCMToken(applicationContext)) // 사용자의 채팅방 입장 여부 데이터 보내기
                 chatDB!!.chatDao().getChatMsgs(chatroomData.id).observe(lifecycleOwner) { chatMsgs ->

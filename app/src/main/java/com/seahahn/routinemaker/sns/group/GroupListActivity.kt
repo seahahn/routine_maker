@@ -1,7 +1,10 @@
 package com.seahahn.routinemaker.sns.group
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
@@ -9,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.chat.ChatActivity
+import com.seahahn.routinemaker.sns.chat.ChatListActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
@@ -101,6 +106,27 @@ class GroupListActivity : Sns() {
         // 정보 변경된 경우 바뀐 정보를 적용하기 위해서 다시 초기화해줌
         initLeftNav(hd_email, hd_nick, hd_mbs, hd_photo)
         getGroups(service, getUserId(this))
+    }
+
+    // 툴바 우측 메뉴 버튼 설정
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_chatlist, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
+        return true
+    }
+
+    // 툴바 우측 메뉴 눌렀을 때 동작할 내용
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.toolbarSearch -> {
+                // 검색창 띄우기
+            }
+            R.id.toolbarChat -> {
+                // 채팅 목록으로 이동
+                val it = Intent(this, ChatListActivity::class.java)
+                startActivity(it)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
