@@ -37,6 +37,7 @@ class ActionListActivity : Main() {
         btmnav = findViewById(R.id.btmnav)
         btmnav.selectedItemId = R.id.home
         btmnav.setOnNavigationItemSelectedListener(this)
+        setBtmNavBadge()
 
         // 우측 하단의 FloatingActionButton 초기화
         // 버튼을 누르면 루틴 내 행동 추가하기 액티비티로 이동

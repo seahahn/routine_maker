@@ -1,6 +1,7 @@
 package com.seahahn.routinemaker.sns.group
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,13 +10,17 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.chat.ChatActivity
+import com.seahahn.routinemaker.sns.chat.ChatDataBase
 import com.seahahn.routinemaker.sns.chat.ChatListActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import org.jetbrains.anko.doAsync
 
 /*
 * 가입한 그룹 목록
@@ -31,6 +36,9 @@ class GroupListActivity : Sns() {
     var mDatas = mutableListOf<GroupData>()
     var showDatas = mutableListOf<GroupData>()
     lateinit var it_mDatas : Iterator<GroupData>
+
+//    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
+    lateinit var badgeOfChat: BadgeDrawable // 우상단 채팅 아이콘에 붙어 있는 안 읽은 메시지 갯수 배지
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +68,7 @@ class GroupListActivity : Sns() {
         btmnav = findViewById(R.id.btmnav)
         btmnav.selectedItemId = R.id.group
         btmnav.setOnNavigationItemSelectedListener(this)
+        setBtmNavBadge()
 
         // 우측 하단의 FloatingActionButton 초기화
         // 버튼을 누르면 그룹 찾기 또는 그룹 만들기를 할 수 있는 액티비티로 이동 가능한 FAB 2개가 나타남
@@ -112,6 +121,24 @@ class GroupListActivity : Sns() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_chatlist, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        badgeOfChat = BadgeDrawable.create(this) // 우상단 채팅 안 읽은 메시지 갯수 뱃지
+        badgeOfChat.badgeGravity = BadgeDrawable.TOP_END
+        badgeOfChat.horizontalOffset = 10
+        chatDB!!.chatDao().getNumOfBadge().observe(this) { numberList ->
+            badgeOfChat.number = 0
+            for(element in numberList) {
+                badgeOfChat.number += element
+            }
+            badgeOfChat.isVisible = badgeOfChat.number != 0
+        }
+        BadgeUtils.attachBadgeDrawable(badgeOfChat, toolbar, R.id.toolbarChat)
+//        if(badgeOfChat.number != 0) {
+//        }
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     // 툴바 우측 메뉴 눌렀을 때 동작할 내용

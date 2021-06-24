@@ -53,6 +53,7 @@ class MainActivity : Main() {
         btmnav = findViewById(R.id.btmnav)
         btmnav.selectedItemId = R.id.home
         btmnav.setOnNavigationItemSelectedListener(this)
+        setBtmNavBadge()
 
         // 툴바 제목(날짜) 좌우에 위치한 삼각 화살표 초기화
         // 좌측은 1일 전, 우측은 1일 후의 루틴 및 할 일 목록을 보여줌

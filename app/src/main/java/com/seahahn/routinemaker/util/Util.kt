@@ -3,7 +3,6 @@ package com.seahahn.routinemaker.util
 import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.Rect
@@ -22,17 +21,17 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.badge.BadgeDrawable
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
-import com.seahahn.routinemaker.sns.ChatroomData
+import com.seahahn.routinemaker.sns.chat.ChatDataBase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,6 +41,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
+
 open class Util  : AppCompatActivity() {
 
     private val TAG = this::class.java.simpleName
@@ -49,8 +49,11 @@ open class Util  : AppCompatActivity() {
     lateinit var service : RetrofitService
     private val rfServiceViewModel by viewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
 
+    lateinit var toolbar : Toolbar
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
+
+    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     // 카메라 원본이미지 Uri를 저장할 변수
     var photoURI: Uri? = null
@@ -77,7 +80,7 @@ open class Util  : AppCompatActivity() {
 
     // 상단 툴바 초기화
     fun initToolbar(title: TextView, titleText: String, leftIcon: Int) {
-
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(findViewById(R.id.toolbar)) // 커스텀 툴바 설정
 
         supportActionBar!!.setDisplayShowTitleEnabled(false) //기본 제목을 없애줍니다

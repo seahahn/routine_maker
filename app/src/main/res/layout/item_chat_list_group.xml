@@ -98,6 +98,7 @@
     <TextView
             tools:text="10"
             style="@style/txt_s"
+            android:visibility="gone"
             android:textColor="@color/light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -17,6 +17,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,6 +70,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
 
     // BottomNavigationView 초기화하기
     lateinit var btmnav : BottomNavigationView
+    lateinit var badgeSns: BadgeDrawable // 하단 네비 SNS 아이콘에 붙을 배지
 
     // 사용자가 선택한 날짜에 따라 툴바 제목도 그에 맞는 날짜로 변경함
     // 초기값은 오늘 날짜
@@ -299,6 +302,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             } // 사용자 기기에 설치된 이메일 앱으로 이동하여 1:1 문의를 작성하게 함
             R.id.writeReview-> Toast.makeText(this,"writeReview clicked",Toast.LENGTH_SHORT).show() // 플레이 스토어로 이동하여 앱 리뷰를 남길 수 있게 함(예정)
 
+            // 하단 네비 버튼 누를 때 작동할 내용
             R.id.home -> {
                 startActivity<MainActivity>()
                 overridePendingTransition(0, 0)
@@ -317,6 +321,21 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             }
         }
         return false
+    }
+
+    // 하단 네비 아이콘에 표시할 배지 초기화하기
+    fun setBtmNavBadge() {
+//        badgeOfChat = BadgeDrawable.create(this) // 우상단 채팅 안 읽은 메시지 갯수 뱃지
+        badgeSns = btmnav.getOrCreateBadge(R.id.group)
+        badgeSns.badgeGravity = BadgeDrawable.TOP_END
+        badgeSns.verticalOffset = 20
+        chatDB!!.chatDao().getNumOfBadge().observe(this) { numberList ->
+            badgeSns.number = 0
+            for(element in numberList) {
+                badgeSns.number += element
+            }
+            badgeSns.isVisible = badgeSns.number != 0
+        }
     }
 
 //    // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기

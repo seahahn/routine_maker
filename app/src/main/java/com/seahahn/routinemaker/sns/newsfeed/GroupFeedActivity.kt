@@ -28,7 +28,7 @@ class GroupFeedActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
 
-    private lateinit var toolbar : Toolbar
+//    private lateinit var toolbar : Toolbar
 
     private lateinit var viewEmptyList : LinearLayout
 
@@ -59,7 +59,7 @@ class GroupFeedActivity : Sns() {
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = groupTitle // 툴바 제목에 들어갈 텍스트. 그룹명을 가져옴
         initToolbar(title, titleText, 1) // 툴바 세팅하기
-        toolbar = findViewById(R.id.toolbar)
+//        toolbar = findViewById(R.id.toolbar)
         toolbar.overflowIcon = getDrawable(R.drawable.more) // 우측 상단의 더보기 아이콘 모양 변경
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기

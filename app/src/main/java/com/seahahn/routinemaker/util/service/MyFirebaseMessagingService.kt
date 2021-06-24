@@ -22,6 +22,7 @@ import com.seahahn.routinemaker.sns.ChatroomData
 import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.chat.ChatDataBase
 import com.seahahn.routinemaker.sns.chat.ChatMsg
+import com.seahahn.routinemaker.sns.chat.ChatRoomBadgeUpdate
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import com.seahahn.routinemaker.util.UserInfo.setUserFCMToken
 import retrofit2.Call
@@ -75,6 +76,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             chatMsg = Gson().fromJson(msg, ChatMsg::class.java)
             getChatRoomData(chatMsg.roomId, remoteMessage) // 이동해야 할 채팅방 데이터 가져오기
             chatDB!!.chatDao().insertChatMsg(chatMsg) // 채팅방에 메시지 추가
+
+            val badgeBefore = chatDB!!.chatDao().getChatroom(chatMsg.roomId).msgBadge // 이전 뱃지 숫자
+            val badgeUpdate = ChatRoomBadgeUpdate(chatMsg.roomId, badgeBefore+1) // 이전 숫자에 1 추가
+            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
 
 //            sendNotification(remoteMessage)
         }
@@ -138,6 +143,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(uniId, notificationBuilder.build())
     }
 
+    // 알림 누르면 연결될 채팅방에 대한 정보를 가져옴
     fun getChatRoomData(roomId: Int, remoteMessage: RemoteMessage) {
         Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
         service.getChatRoomData(roomId).enqueue(object : Callback<ChatroomData> {
@@ -162,6 +168,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         })
     }
 
+    // 그룹 채팅일 경우 채팅방 제목을 그룹명으로 쓰기 위해 데이터를 가져옴
     fun getGroup(roomId: Int, remoteMessage: RemoteMessage) {
         Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
         service.getGroup(roomId, getUserId(this)).enqueue(object : Callback<JsonObject> {
@@ -180,7 +187,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         })
     }
 
-    // 피드 작성 시 사용자의 프로필 사진, 닉네임 표시하기
+    // 채팅 상대방의 닉네임을 채팅방 제목으로 쓰기 위해 데이터를 가져옴
     fun getUserData(userId : Int, remoteMessage: RemoteMessage) {
         Logger.d(TAG, "getUserData 변수 : $userId")
         service.getUserData(userId).enqueue(object : Callback<JsonObject> {

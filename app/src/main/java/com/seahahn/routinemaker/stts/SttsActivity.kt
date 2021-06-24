@@ -24,7 +24,7 @@ class SttsActivity : Stts() {
     private lateinit var sttsWeekFragment: SttsWeekFragment
     private lateinit var sttsMonthFragment: SttsMonthFragment
 
-    private lateinit var toolbar : Toolbar
+//    private lateinit var toolbar : Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +41,7 @@ class SttsActivity : Stts() {
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
-        toolbar = findViewById(R.id.toolbar)
+//        toolbar = findViewById(R.id.toolbar)
         toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
@@ -55,6 +55,7 @@ class SttsActivity : Stts() {
         btmnav = findViewById(R.id.btmnav)
         btmnav.selectedItemId = R.id.stts
         btmnav.setOnNavigationItemSelectedListener(this)
+        setBtmNavBadge()
 
         // 툴바 제목(날짜) 좌우에 위치한 삼각 화살표 초기화
         // 좌측은 1일 전, 우측은 1일 후의 루틴 및 할 일 목록을 보여줌

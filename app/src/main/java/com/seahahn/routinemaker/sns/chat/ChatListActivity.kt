@@ -1,7 +1,10 @@
 package com.seahahn.routinemaker.sns.chat
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SearchView
@@ -49,6 +52,11 @@ class ChatListActivity : SnsChat() {
         chatroomsAdapter.getService(service)
 
         viewEmptyList = findViewById(R.id.view_empty_list) // 보여줄 데이터 없을 때 출력할 뷰
+    }
+
+    override fun onResume() {
+        super.onResume()
+        d(TAG, "ChatList onResume")
 
         // 채팅 목록 가져오기
         chatDB!!.chatDao().getChatrooms().observe(context) { chatroomData ->
@@ -64,19 +72,6 @@ class ChatListActivity : SnsChat() {
                 viewEmptyList.visibility = View.GONE
             }
         }
-//        chatroomViewModel.gottenChatroomData.observe(this) { chatroomData ->
-//            Log.d(TAG, "chatroomData : $chatroomData")
-//            mDatas = chatroomData // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
-//
-//            chatroomsAdapter.replaceList(showDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
-//
-//            // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
-//            if(chatroomsAdapter.itemCount == 0) {
-//                viewEmptyList.visibility = View.VISIBLE
-//            } else {
-//                viewEmptyList.visibility = View.GONE
-//            }
-//        }
     }
 
     // 검색창에 검색어를 입력할 경우의 동작

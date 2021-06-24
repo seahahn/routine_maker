@@ -77,4 +77,9 @@
         <item name="colorOnPrimary">@color/light</item>
     </style>
 
+<!--    <style name="ActionButton" parent="@android:style/Widget.ActionButton">-->
+<!--        <item name="android:drawablePadding">12dp</item>-->
+<!--        <item name="android:layout_marginStart">12dp</item>-->
+<!--    </style>-->
+
 </resources>

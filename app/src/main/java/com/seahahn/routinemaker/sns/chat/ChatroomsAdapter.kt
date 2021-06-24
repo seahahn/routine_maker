@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -151,12 +152,16 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                 }
                 val lastmsgAt = LocalDateTime.parse(chatMsgs.createdAt.replace(" ", "T"))
                 lastMsgTime.text = lastmsgAt.format(formatterHM)
-            } // 채팅방에 해당하는 채팅 내용 가져오기
-            if(chatRoom.msgBadge != 0) {
+
+                // 안 읽은 메시지 갯수 가져오기
+                d(TAG, "뱃지 수 : ${chatRoom.msgBadge}")
+                if(chatRoom.msgBadge != 0) {
+                    msgBadge.visibility = View.VISIBLE
+                } else {
+                    msgBadge.visibility = View.GONE
+                }
                 msgBadge.text = chatRoom.msgBadge.toString()
-            } else {
-                msgBadge.visibility = View.GONE
-            }
+            } // 채팅방에 해당하는 채팅 내용 가져오기
 
             // 아이템 태그에 채팅방의 정보를 담아둠
             itemTag["isGroupchat"] = chatRoom.isGroupchat

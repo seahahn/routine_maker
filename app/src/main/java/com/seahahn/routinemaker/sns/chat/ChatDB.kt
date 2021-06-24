@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.impl.WorkDatabaseMigrations.MIGRATION_1_2
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
+
 
 @Entity(tableName = "chat_msg")
 data class ChatMsg(
@@ -33,6 +31,12 @@ data class ChatRoom(
     @ColumnInfo(name = "msg_badge") val msgBadge: Int
 )
 
+@Entity
+data class ChatRoomBadgeUpdate(
+    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "msg_badge") val msgBadge: Int
+)
+
 @Dao
 interface ChatDao {
 
@@ -42,8 +46,8 @@ interface ChatDao {
     @Insert
     fun insertChatRoom(chatRoom: ChatRoom)
 
-    @Update
-    fun updateBadge(chatRoom: ChatRoom)
+    @Update(entity = ChatRoom::class)
+    fun updateBadge(chatRoomBadgeUpdate: ChatRoomBadgeUpdate)
 
     @Delete
     fun deletechatroom(chatRoom: ChatRoom)
@@ -72,6 +76,9 @@ interface ChatDao {
     fun getLastChatMsg(roomId: Int): LiveData<ChatMsg>
 //    fun getLastChatMsgDUC(roomId : Int) =
 //        getLastChatMsg(roomId).distinctUntilChanged()
+
+    @Query("SELECT msg_badge FROM chat_room")
+    fun getNumOfBadge(): LiveData<List<Int>>
 }
 
 @Database(entities = [ChatMsg::class, ChatRoom::class], version = 3)

@@ -42,8 +42,8 @@ open class SnsChat : Sns() {
     private val TAG = this::class.java.simpleName
 
     val PORT = 33333
-    //    private val SERVER_ADDRESS = "15.165.168.238"
-    val SERVER_ADDRESS = "10.0.2.2"
+        private val SERVER_ADDRESS = "15.165.168.238"
+//    val SERVER_ADDRESS = "10.0.2.2"
 
     lateinit var socket: Socket
     lateinit var inputStream: DataInputStream
@@ -52,7 +52,7 @@ open class SnsChat : Sns() {
     val chatroomViewModel by viewModels<ChatroomViewModel>() // 채팅방 데이터
     val chatContentsViewModel by viewModels<ChatContentsViewModel>() // 채팅방 내 채팅 내용 목록 데이터
 
-    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
+//    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     lateinit var chatroomData : ChatroomData // 채팅방 데이터
     lateinit var chatUserData : MutableList<ChatUserData> // 채팅방 참여자 목록 데이터
@@ -215,8 +215,8 @@ open class SnsChat : Sns() {
         imagesURL = imagesList.toString() // 이미지 경로를 모아둔 리스트를 문자열로 바꾸어 저장
         imgDatas.clear()
         imagesList.clear()
+        sleep(1000)
         showProgress(false)
-        sleep(500)
 //        val acceptedList = Arrays.stream(acceptedListString.substring(1, acceptedListString.length - 1).split(",").toTypedArray())
 //            .map { obj: String -> obj.trim { it <= ' ' } }.mapToInt(Integer::parseInt).toArray()
     }
@@ -228,7 +228,7 @@ open class SnsChat : Sns() {
             imgFile, // 실제 저장될 파일
             { result ->
                 Log.d(TAG, "Successfully uploaded : $result")
-                showProgress(false)
+//                showProgress(false)
             },
             { error -> Log.d(TAG, "Upload failed", error) }
         )
@@ -267,6 +267,11 @@ open class SnsChat : Sns() {
                                 0
                             )
                             chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+                        } else {
+                            d(TAG, "뱃지 0으로 만들기")
+                            // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
+                            val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
+                            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
                         }
                     }
                 }.start()
@@ -357,7 +362,7 @@ open class SnsChat : Sns() {
                 chatDB!!.chatDao().insertChatMsg(chatMsg) // 채팅방에 해당하는 채팅 내용 가져오기
             } catch(e: SocketException) {
                 d(TAG, "소켓 연결 해제")
-                e.printStackTrace()
+//                e.printStackTrace()
             }
         }
     }
@@ -381,8 +386,6 @@ open class SnsChat : Sns() {
     fun sendMessageToServer(msg: String) {
         outputStream.writeUTF(msg) // 생성된 출력 스트림을 통하여 데이터 송신
         chatInput.text = null // 메시지 보낸 후 입력란 비우기
-
-
     }
 
     @Throws(IOException::class)

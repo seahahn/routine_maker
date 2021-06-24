@@ -1,5 +1,7 @@
 package com.seahahn.routinemaker.sns.chat
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.util.Log.d
@@ -12,6 +14,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import org.jetbrains.anko.doAsync
 import java.time.LocalDateTime
 import java.util.*
 
@@ -70,13 +73,6 @@ class ChatActivity : SnsChat() {
         val audienceId = intent.getIntExtra("audienceId", 0) // 그룹 고유 번호 또는 1:1 채팅 상대방 고유 번호 가져오기
         getChatRoomData(this, service, isGroupchat, hostId, audienceId) // 채팅방 데이터 가져오기
 
-//        chatDB!!.chatDao().getChatMsgs(chatroomData.id).observe(this) { chatMsgs ->
-//            d(TAG, "chatMsgs : $chatMsgs")
-//            mDatas = chatMsgs // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
-//
-//            chatContentsAdapter.replaceList(mDatas)
-//        }
-
         chatContentsViewModel.gottenChatMsg.observe(this) { chatMsgs ->
             Log.d(TAG, "chatMsgs : $chatMsgs")
             mDatas = chatMsgs // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
@@ -89,6 +85,7 @@ class ChatActivity : SnsChat() {
 //                chatContentsView.scrollToPosition(chatContentsAdapter.itemCount-1)
                 layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 300)
             }
+
         }
 //        chatContentsAdapter.registerAdapterDataObserver(
 //            object : RecyclerView.AdapterDataObserver() {
@@ -122,8 +119,25 @@ class ChatActivity : SnsChat() {
         showProgress(false)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // 채팅방 들어오면 채팅 알림 없애기
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
+//        // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
+//        val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
+//        chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+
         closeConnect() // 소켓 연결 해제
     }
 
