@@ -1,59 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="8dp"
-        android:background="@drawable/list_item_state"
-        android:id="@+id/item">
-    <ImageView
-            android:id="@+id/profile_pic"
-            style="@style/roundImg"
-            android:layout_width="36dp"
-            android:layout_height="36dp" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@drawable/ic_launcher_background"
-            android:layout_marginTop="12dp" android:layout_marginStart="12dp"
-            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"/>
-    <TextView
-            tools:text="채팅방 제목"
-            style="@style/txt_m"
-            android:layout_width="wrap_content"
+        android:orientation="horizontal">
+    <FrameLayout
+            android:id="@+id/backframe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_item_backside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+    >
+        <TextView
+                android:id="@+id/chatOut"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/txt_l"
+                android:text="나가기"
+                android:textColor="#ffffff"
+                android:layout_marginEnd="12dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="end|center_vertical"/>
+    </FrameLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/chatTitle"
-            app:layout_constraintStart_toEndOf="@+id/profile_pic"
-            android:layout_marginStart="4dp"
-            app:layout_constraintTop_toTopOf="@+id/profile_pic"/>
-    <TextView
-            tools:text="마지막 메시지 내용"
-            style="@style/txt_s"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/lastMsg"
-            app:layout_constraintStart_toEndOf="@+id/profile_pic"
-            android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_pic"/>
+            android:background="@drawable/list_item_state"
+            android:id="@+id/item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+    >
+        <ImageView
+                android:id="@+id/profile_pic"
+                style="@style/roundImg"
+                android:layout_width="36dp"
+                android:layout_height="36dp" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" tools:srcCompat="@drawable/ic_launcher_background"
+                android:layout_marginTop="12dp" android:layout_marginStart="12dp"
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"/>
+        <TextView
+                tools:text="채팅방 제목"
+                style="@style/txt_m"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/chatTitle"
+                app:layout_constraintStart_toEndOf="@+id/profile_pic"
+                android:layout_marginStart="4dp"
+                app:layout_constraintTop_toTopOf="@+id/profile_pic"/>
+        <TextView
+                tools:text="마지막 메시지 내용"
+                style="@style/txt_s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lastMsg"
+                app:layout_constraintStart_toEndOf="@+id/profile_pic"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_pic"/>
 
-    <TextView
-            tools:text="2021. 1. 26 05:10"
-            style="@style/txt_s"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/lastMsgTime"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="12dp"
-            app:layout_constraintTop_toTopOf="@+id/profile_pic"/>
-    <TextView
-            tools:text="10"
-            style="@style/txt_s"
-            android:visibility="gone"
-            android:textColor="@color/light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="2dp"
-            android:paddingHorizontal="8dp"
-            android:background="@drawable/chatlist_badge"
-            android:id="@+id/msgBadge"
-            android:layout_marginEnd="12dp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="@+id/profile_pic"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+                tools:text="2021. 1. 26 05:10"
+                style="@style/txt_s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lastMsgTime"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toTopOf="@+id/profile_pic"/>
+        <TextView
+                tools:text="10"
+                style="@style/txt_s"
+                android:visibility="gone"
+                android:textColor="@color/light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:paddingHorizontal="8dp"
+                android:background="@drawable/chatlist_badge"
+                android:id="@+id/msgBadge"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="@+id/profile_pic"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -327,6 +327,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     fun setBtmNavBadge() {
 //        badgeOfChat = BadgeDrawable.create(this) // 우상단 채팅 안 읽은 메시지 갯수 뱃지
         badgeSns = btmnav.getOrCreateBadge(R.id.group)
+        badgeSns.isVisible = false
         badgeSns.badgeGravity = BadgeDrawable.TOP_END
         badgeSns.verticalOffset = 20
         chatDB!!.chatDao().getNumOfBadge().observe(this) { numberList ->

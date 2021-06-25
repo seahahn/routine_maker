@@ -3,7 +3,7 @@ package com.seahahn.routinemaker.util
 import androidx.recyclerview.widget.DiffUtil
 import com.seahahn.routinemaker.sns.GroupMemberData
 
-object MyDiffCallback : DiffUtil.ItemCallback<GroupMemberData>() {
+object GroupMemberDiffCallback : DiffUtil.ItemCallback<GroupMemberData>() {
     override fun areItemsTheSame(
         oldItem: GroupMemberData,
         newItem: GroupMemberData

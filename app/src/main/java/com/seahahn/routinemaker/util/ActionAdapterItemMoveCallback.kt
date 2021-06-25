@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionAdapter
 
-class ItemMoveCallback constructor(private val adapter : ActionAdapter) : ItemTouchHelper.Callback() {
+class ActionAdapterItemMoveCallback constructor(private val adapter : ActionAdapter) : ItemTouchHelper.Callback() {
 
     private val TAG = this::class.java.simpleName
 

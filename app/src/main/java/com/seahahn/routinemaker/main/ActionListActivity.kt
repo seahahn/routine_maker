@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.util.ItemMoveCallback
+import com.seahahn.routinemaker.util.ActionAdapterItemMoveCallback
 import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 
@@ -59,7 +59,7 @@ class ActionListActivity : Main() {
         actionAdapter.getRtInfo(mDays!!, mDate!!, isActionEnabled)
 
         // 행동의 순서를 변경하기 위한 헬퍼
-        val callback = ItemMoveCallback(actionAdapter)
+        val callback = ActionAdapterItemMoveCallback(actionAdapter)
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(actionList)    //리사이클러뷰를 넣어준다
 

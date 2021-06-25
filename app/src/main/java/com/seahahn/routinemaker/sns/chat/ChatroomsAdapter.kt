@@ -2,16 +2,12 @@ package com.seahahn.routinemaker.sns.chat
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -22,27 +18,33 @@ import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatUserData
+import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.Socket
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.function.Predicate
-import kotlin.collections.HashMap
 
 
-class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapter.ChatRoomViewHolder>() {
+class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapter.ChatRoomViewHolder>(), Filterable {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
     val context : Context = mContext
 
+    val formatterYMDHM: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) // 문자열 형식(시 분)
+
     val chatDB by lazy { ChatDataBase.getInstance(context) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     //데이터들을 저장하는 변수
     private var data = mutableListOf<ChatRoom>()
+    var filteredData = mutableListOf<ChatRoom>()
+    var resultData = mutableListOf<ChatRoom>()
 
     //ViewHolder에 쓰일 Layout을 inflate하는 함수
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
@@ -87,6 +89,31 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
         service = serviceInput
     }
 
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                if (constraint?.isEmpty() == true) {
+                    filteredData.addAll(data)
+                } else {
+                    val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
+                    for (item in data) {
+                        if (item.title.lowercase(Locale.getDefault()).contains(filterPattern)) {
+                            filteredData.add(item)
+                        }
+                    }
+                }
+                val results = FilterResults()
+                results.values = filteredData
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                resultData.clear()
+                resultData.addAll(results!!.values as Collection<ChatRoom>)
+                replaceList(resultData)
+            }
+        }
+    }
 
     inner class ChatRoomViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
@@ -97,6 +124,8 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
         private val formatterHM: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
 
         private val item : ConstraintLayout = itemView.findViewById(R.id.item)
+        private val backframe : FrameLayout = itemView.findViewById(R.id.backframe)
+        private val chatOut : TextView = itemView.findViewById(R.id.chatOut)
         private lateinit var profilePic : ImageView
         private lateinit var profilePicGroup : ConstraintLayout
         private val chatTitle : TextView = itemView.findViewById(R.id.chatTitle)
@@ -112,6 +141,7 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
 
         private lateinit var itemTag : HashMap<String, Any>
         private lateinit var title : String
+        private var mRoomId : Int = 0
 
         init {
             item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
@@ -119,6 +149,7 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
 
         fun onBind(chatRoom : ChatRoom) {
             itemTag = hashMapOf()
+            mRoomId = chatRoom.id
             // 채팅방 타입 구분하기
             if(!chatRoom.isGroupchat) {
                 // 1:1 채팅인 경우 상대방 프로필 사진 넣기
@@ -145,13 +176,18 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             }
 
             chatDB!!.chatDao().getLastChatMsg(chatRoom.id).observe(context as LifecycleOwner) { chatMsgs ->
-                if(chatMsgs.contentType == 0) {
-                    lastMsg.text = chatMsgs.content // 텍스트인 경우
+                if(chatMsgs != null) {
+                    if(chatMsgs.contentType == 0) {
+                        lastMsg.text = chatMsgs.content // 텍스트인 경우
+                    } else if(chatMsgs.contentType == 1){
+                        lastMsg.text = context.getString(R.string.pic) // 이미지인 경우
+                    }
+                    val lastmsgAt = LocalDateTime.parse(chatMsgs.createdAt.replace(" ", "T"))
+                    lastMsgTime.text = lastmsgAt.format(formatterHM)
                 } else {
-                    lastMsg.text = context.getString(R.string.pic) // 이미지인 경우
+                    lastMsg.text = "" // 받은 메시지 없음
+                    lastMsgTime.text = ""
                 }
-                val lastmsgAt = LocalDateTime.parse(chatMsgs.createdAt.replace(" ", "T"))
-                lastMsgTime.text = lastmsgAt.format(formatterHM)
 
                 // 안 읽은 메시지 갯수 가져오기
                 d(TAG, "뱃지 수 : ${chatRoom.msgBadge}")
@@ -162,6 +198,9 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                 }
                 msgBadge.text = chatRoom.msgBadge.toString()
             } // 채팅방에 해당하는 채팅 내용 가져오기
+
+            chatOut.tag = chatRoom.id
+            chatOut.setOnClickListener(ChatOutClickListener())
 
             // 아이템 태그에 채팅방의 정보를 담아둠
             itemTag["isGroupchat"] = chatRoom.isGroupchat
@@ -244,7 +283,22 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                     chatTitle.text = mTitle
                     title = mTitle
                     itemTag["title"] = title
+                }
+            })
+        }
 
+        // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기
+        fun deleteChatUser(roomId: Int) {
+            val userId = getUserId(context)
+            Logger.d(TAG, "deleteChatUser 변수들 : $userId, $roomId")
+            service.deleteChatUser(userId, roomId).enqueue(object : Callback<JsonObject> {
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
+                }
+
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    Log.d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
+                    Log.d(TAG, response.body().toString())
                 }
             })
         }
@@ -265,6 +319,51 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                 context.startActivity(it)
             }
         }
+
+        inner class ChatOutClickListener() : View.OnClickListener, SnsChat() {
+            override fun onClick(v: View?) {
+                val chatroomId = v!!.tag as Int
+                d(TAG, "나가기 누름")
+                object : Thread() {
+                    override fun run() {
+                        d(TAG, "나가기 작동")
+                        val chatRoomDelete = ChatRoomDelete(chatroomId)
+                        chatDB!!.chatDao().deleteChatroom(chatRoomDelete) // 채팅방 삭제
+                        val chatMsgsDelete = ChatMsgsDelete(chatroomId)
+                        chatDB!!.chatDao().deleteChatMsgs(chatMsgsDelete) // 메시지 삭제
+                        deleteChatUser(chatroomId) // 서버 상에 있는 사용자의 채팅방 참여 여부 삭제
+
+                        d(TAG, "소켓 연결 중")
+                        socket = Socket(SERVER_ADDRESS, PORT) // Socket 생성 및 접속
+                        connectInputStream()
+                        connectOutputStream()
+
+                        val userData = JsonObject()
+                        userData.addProperty("chatRoomId", chatroomId.toString())
+                        userData.addProperty("userId", getUserId(context))
+                        userData.addProperty("nick", getUserNick(context))
+                        val gson = Gson().toJson(userData)
+
+                        sendUserData(gson) // 채팅 서버에 채팅방 고유 번호 보내기
+                        d(TAG, "소켓 연결됨")
+
+                        // 사용자 퇴장 메시지를 띄움
+                        val now = LocalDateTime.now()
+                        val chatMsg = ChatMsg(0,
+                            getUserId(context),
+                            getUserNick(context),
+                            5,
+                            chatroomId,
+                            now.format(formatterYMDHM).toString())
+                        val gson2 = Gson().toJson(chatMsg)
+
+                        outputStream.writeUTF(gson2) // 생성된 출력 스트림을 통하여 데이터 송신
+                        closeConnect()
+                    }
+                }.start()
+            }
+
+        }
     }
 
     inner class ChatUserIOViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
@@ -276,5 +375,4 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             content.text = chatMsg.content
         }
     }
-
 }

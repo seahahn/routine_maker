@@ -127,17 +127,8 @@ class ChatActivity : SnsChat() {
         notificationManager.cancelAll()
     }
 
-    override fun onPause() {
-        super.onPause()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-
-//        // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
-//        val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
-//        chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
-
         closeConnect() // 소켓 연결 해제
     }
 
@@ -195,7 +186,6 @@ class ChatActivity : SnsChat() {
                         }.start()
 //                        hideSoftKeyboard()
                     }
-//                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) getCmts(service, feedId)
                 }
             }
         }

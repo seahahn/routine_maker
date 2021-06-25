@@ -19,10 +19,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatroomData
-import com.seahahn.routinemaker.sns.chat.ChatActivity
-import com.seahahn.routinemaker.sns.chat.ChatDataBase
-import com.seahahn.routinemaker.sns.chat.ChatMsg
-import com.seahahn.routinemaker.sns.chat.ChatRoomBadgeUpdate
+import com.seahahn.routinemaker.sns.chat.*
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import com.seahahn.routinemaker.util.UserInfo.setUserFCMToken
 import retrofit2.Call
@@ -74,12 +71,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             msg = remoteMessage.data["body"].toString()
             chatMsg = Gson().fromJson(msg, ChatMsg::class.java)
-            getChatRoomData(chatMsg.roomId, remoteMessage) // 이동해야 할 채팅방 데이터 가져오기
             chatDB!!.chatDao().insertChatMsg(chatMsg) // 채팅방에 메시지 추가
 
-            val badgeBefore = chatDB!!.chatDao().getChatroom(chatMsg.roomId).msgBadge // 이전 뱃지 숫자
-            val badgeUpdate = ChatRoomBadgeUpdate(chatMsg.roomId, badgeBefore+1) // 이전 숫자에 1 추가
-            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+            if(chatMsg.contentType != 4 && chatMsg.contentType != 5) { // 사용자의 입장 또는 퇴장을 제외한 일반적인 메시지인 경우에만 알림 띄우기
+                getChatRoomData(chatMsg.roomId, remoteMessage) // 이동해야 할 채팅방 데이터 가져오기
+
+                val badgeBefore = chatDB!!.chatDao().getChatroom(chatMsg.roomId).msgBadge // 이전 뱃지 숫자
+                val badgeUpdate = ChatRoomBadgeUpdate(chatMsg.roomId, badgeBefore+1) // 이전 숫자에 1 추가
+                chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+            }
 
 //            sendNotification(remoteMessage)
         }
@@ -159,9 +159,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     getGroup(chatroomData.audienceId, remoteMessage)
                 } else { // 1:1 채팅인 경우 대화 상대방 닉네임을 채팅방 제목으로 설정
                     if(chatroomData.hostId != getUserId(applicationContext)) {
-                        getUserData(chatroomData.hostId, remoteMessage)
+                        getUserData(roomId, chatroomData.hostId, remoteMessage)
                     } else {
-                        getUserData(chatroomData.audienceId, remoteMessage)
+                        getUserData(roomId, chatroomData.audienceId, remoteMessage)
                     }
                 }
             }
@@ -182,13 +182,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 title = gson.get("title").asString
                 d(TAG, "title : $title")
+
+                object : Thread() {
+                    override fun run() {
+                        // 채팅방 검색을 위해서 채팅방 제목(그룹명 또는 상대방 닉네임) 저장해두기
+                        val titleUpdate = ChatRoomTitleUpdate(roomId, title)
+                        chatDB!!.chatDao().updateTitle(titleUpdate)
+                    }
+                }.start()
+
                 sendNotification(remoteMessage)
             }
         })
     }
 
     // 채팅 상대방의 닉네임을 채팅방 제목으로 쓰기 위해 데이터를 가져옴
-    fun getUserData(userId : Int, remoteMessage: RemoteMessage) {
+    fun getUserData(roomId: Int, userId : Int, remoteMessage: RemoteMessage) {
         Logger.d(TAG, "getUserData 변수 : $userId")
         service.getUserData(userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -200,6 +209,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 title = gson.get("nick").asString
                 d(TAG, "title : $title")
+
+                object : Thread() {
+                    override fun run() {
+                        // 채팅방 검색을 위해서 채팅방 제목(그룹명 또는 상대방 닉네임) 저장해두기
+                        val titleUpdate = ChatRoomTitleUpdate(roomId, title)
+                        chatDB!!.chatDao().updateTitle(titleUpdate)
+                    }
+                }.start()
+
                 sendNotification(remoteMessage)
             }
         })

@@ -2,15 +2,21 @@ package com.seahahn.routinemaker.sns.chat
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Log.d
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.util.ChatroomsAdapterItemMoveCallback
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo
 import java.util.*
@@ -31,6 +37,7 @@ class ChatListActivity : SnsChat() {
     lateinit var it_mDatas : Iterator<ChatRoom>
 
     private lateinit var searchView: SearchView
+    private var isSearchViewShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +57,19 @@ class ChatListActivity : SnsChat() {
         chatroomsAdapter = ChatroomsAdapter(this) // 어댑터 초기화
         chatroomList.adapter = chatroomsAdapter // 어댑터 연결
         chatroomsAdapter.getService(service)
+
+        // 채팅방 스와이프 후 나가기 버튼 나오도록 ItemMoveCallback에 연결결
+        val chatroomsAdapterItemMoveCallback = ChatroomsAdapterItemMoveCallback().apply {
+            setClamp(200f)
+        }
+        val itemTouchHelper = ItemTouchHelper(chatroomsAdapterItemMoveCallback)
+        itemTouchHelper.attachToRecyclerView(chatroomList)
+        chatroomList.apply {
+            setOnTouchListener { _, _ ->
+                chatroomsAdapterItemMoveCallback.removePreviousClamp(this)
+                false
+            }
+        }
 
         viewEmptyList = findViewById(R.id.view_empty_list) // 보여줄 데이터 없을 때 출력할 뷰
     }
@@ -74,6 +94,28 @@ class ChatListActivity : SnsChat() {
         }
     }
 
+    // 툴바 우측 메뉴 버튼 설정
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_search, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
+        return true
+    }
+
+    // 툴바 우측 메뉴 눌렀을 때 동작할 내용
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.toolbarSearch -> {
+                // 검색창 띄우기
+                isSearchViewShown = !isSearchViewShown
+                if(isSearchViewShown) {
+                    searchView.visibility = View.VISIBLE
+                } else {
+                    searchView.visibility = View.GONE
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     // 검색창에 검색어를 입력할 경우의 동작
     inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
 
@@ -85,21 +127,7 @@ class ChatListActivity : SnsChat() {
         override fun onQueryTextChange(newText: String?): Boolean {
 //            d(TAG, "text changed")
             val inputText = newText!!.lowercase(Locale.getDefault())
-
-            searchedDatas.clear() // 검색 결과 목록 비우기
-            it_mDatas = mDatas.iterator() // 사용자가 가입하지 않았고 그룹 멤버 수가 인원 제한에 도달하지 않은 그룹 목록에서 검색 결과 뽑기
-//            while (it_mDatas.hasNext()) {
-//                val it_mData = it_mDatas.next()
-//                // 검색 시 대소문자 구분 없이 검색 결과에 출력되기 위해서 전부 소문자로 변환
-//                if (it_mData..lowercase(Locale.getDefault()).contains(inputText) || it_mData.tags.lowercase(
-//                        Locale.getDefault()
-//                    ).contains(inputText)
-//                ) {
-//                    searchedDatas.add(it_mData)
-//                }
-//            }
-
-            chatroomsAdapter.replaceList(searchedDatas) // 검색어 결과에 따라 추출된 목록을 보여줌
+            chatroomsAdapter.filter.filter(inputText) // 검색어 결과에 따라 추출된 목록을 보여줌
 
             // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
             if (chatroomsAdapter.itemCount == 0) {
@@ -110,7 +138,7 @@ class ChatListActivity : SnsChat() {
 
             if (newText == "") {
                 viewEmptyList.visibility = View.GONE
-                chatroomsAdapter.replaceList(showDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
+                chatroomsAdapter.replaceList(mDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
             }
 
             return true

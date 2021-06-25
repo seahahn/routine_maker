@@ -42,7 +42,7 @@ open class SnsChat : Sns() {
     private val TAG = this::class.java.simpleName
 
     val PORT = 33333
-        private val SERVER_ADDRESS = "15.165.168.238"
+    val SERVER_ADDRESS = "15.165.168.238"
 //    val SERVER_ADDRESS = "10.0.2.2"
 
     lateinit var socket: Socket
@@ -258,6 +258,7 @@ open class SnsChat : Sns() {
                         if(chatRoomLocal == null) {
                             val chatRoom = ChatRoom(
                                 chatroomData.id,
+                                "",
                                 chatroomData.isGroupchat,
                                 chatroomData.hostId,
                                 chatroomData.audienceId,
@@ -267,6 +268,22 @@ open class SnsChat : Sns() {
                                 0
                             )
                             chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+
+                            // 채팅방 검색을 위해서 채팅방 제목(그룹명 또는 상대방 닉네임) 저장해두기
+                            val titleUpdate = ChatRoomTitleUpdate(chatroomData.id, groupTitle)
+                            chatDB!!.chatDao().updateTitle(titleUpdate)
+
+                            // 사용자 입장 메시지를 띄움
+                            val now = LocalDateTime.now()
+                            val chatMsg = ChatMsg(0,
+                                getUserId(applicationContext),
+                                getUserNick(applicationContext),
+                                4,
+                                chatroomData.id,
+                                now.format(formatterYMDHM).toString())
+
+                            val gson = Gson().toJson(chatMsg)
+                            sendMessageToServer(gson)
                         } else {
                             d(TAG, "뱃지 0으로 만들기")
                             // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
@@ -274,7 +291,7 @@ open class SnsChat : Sns() {
                             chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
                         }
                     }
-                }.start()
+                }
 
                 setChatUser(service, chatroomData.id, true, getUserFCMToken(applicationContext)) // 사용자의 채팅방 입장 여부 데이터 보내기
                 chatDB!!.chatDao().getChatMsgs(chatroomData.id).observe(lifecycleOwner) { chatMsgs ->
@@ -333,8 +350,25 @@ open class SnsChat : Sns() {
         })
     }
 
+    // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기
+    fun deleteChatUser(service: RetrofitService, roomId: Int) {
+        val userId = getUserId(applicationContext)
+        Logger.d(TAG, "setChatUser 변수들 : $userId, $roomId")
+        service.deleteChatUser(userId, roomId).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
+                Log.d(TAG, response.body().toString())
+            }
+        })
+    }
+
     @Throws(IOException::class)
     fun connectSocket(host: String, port: Int, chatRoomId : String, userId : Int, nick : String) {
+        d(TAG, "소켓 연결 중")
         socket = Socket(host, port) // Socket 생성 및 접속
         connectInputStream()
         connectOutputStream()
@@ -347,6 +381,46 @@ open class SnsChat : Sns() {
 
         sendUserData(gson) // 채팅 서버에 채팅방 고유 번호 보내기
         d(TAG, "소켓 연결됨")
+
+        // 채팅방 정보 불러오기
+        val chatRoomLocal = chatDB!!.chatDao().getChatroom(chatroomData.id)
+        d(TAG, "chatRoomLocal : $chatRoomLocal")
+
+        if(chatRoomLocal == null) {
+            val chatRoom = ChatRoom(
+                chatroomData.id,
+                "",
+                chatroomData.isGroupchat,
+                chatroomData.hostId,
+                chatroomData.audienceId,
+                chatroomData.createdAt,
+                "",
+                chatroomData.createdAt,
+                0
+            )
+            chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+
+            // 채팅방 검색을 위해서 채팅방 제목(그룹명 또는 상대방 닉네임) 저장해두기
+            val titleUpdate = ChatRoomTitleUpdate(chatroomData.id, groupTitle)
+            chatDB!!.chatDao().updateTitle(titleUpdate)
+
+            // 사용자 입장 메시지를 띄움
+            val now = LocalDateTime.now()
+            val chatMsg = ChatMsg(0,
+                getUserId(applicationContext),
+                getUserNick(applicationContext),
+                4,
+                chatroomData.id,
+                now.format(formatterYMDHM).toString())
+
+            val gson = Gson().toJson(chatMsg)
+            sendMessageToServer(gson)
+        } else {
+            d(TAG, "뱃지 0으로 만들기")
+            // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
+            val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
+            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+        }
     }
 
     fun receiveMsg() {

@@ -408,4 +408,11 @@ interface RetrofitService {
         @Field("room_id") roomId: Int
     ) : Call<JsonObject>
 
+    @FormUrlEncoded
+    @POST("/api/chat/delete_chat_user.php") // 그룹 피드 댓글의 고유 번호를 이용하여 해당 댓글 삭제하기
+    fun deleteChatUser(
+        @Field("user_id") userId: Int,
+        @Field("room_id") roomId: Int
+    ) : Call<JsonObject>
+
 }

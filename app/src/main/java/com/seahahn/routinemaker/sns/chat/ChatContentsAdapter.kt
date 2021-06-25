@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.newsfeed.FeedImgAdapter
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,7 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<ChatContentsAdapter.ChatContentViewHolder>() {
+class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
@@ -37,17 +34,31 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<ChatContent
 
     //ViewHolder에 쓰일 Layout을 inflate하는 함수
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatContentViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 //        d(TAG, "rt onCreateViewHolder")
         lateinit var view : View
-        when(viewType) {
-            0 -> view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_mine, parent, false) // 사용자 본인이 보냄
-            1 -> view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other, parent, false) // 타인이 보냄
-            2 -> view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_mine_img, parent, false) // 사용자 본인이 보낸 이미지
-            3 -> view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other_img, parent, false) // 타인이 보낸 이미지
-            4 -> view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_user_io, parent, false) // 타인의 채팅방 입장/퇴장 시 출력 메시지
+        when (viewType) {
+            0 -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_mine, parent, false)
+                return ChatContentViewHolder(view)
+            } // 사용자 본인이 보냄
+            1 -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other, parent, false)
+                return ChatContentViewHolder(view)
+            } // 타인이 보냄
+            2 -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_mine_img, parent, false)
+                return ChatContentViewHolder(view)
+            } // 사용자 본인이 보낸 이미지
+            3 -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_other_img, parent, false)
+                return ChatContentViewHolder(view)
+            } // 타인이 보낸 이미지
+            else -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_chat_user_io, parent, false)
+                return ChatUserIOViewHolder(view)
+            } // 타인의 채팅방 입장/퇴장 시 출력 메시지
         }
-        return ChatContentViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -59,9 +70,13 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<ChatContent
     }
 
     //ViewHolder에서 데이터 묶는 함수가 실행되는 곳
-    override fun onBindViewHolder(holder: ChatContentViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 //        d(TAG, "rt onBindViewHolder")
-        holder.onBind(data[position])
+        if(holder is ChatContentViewHolder){
+            holder.onBind(data[position])
+        }else if(holder is ChatUserIOViewHolder){
+            holder.onBind(data[position])
+        }
     }
 
     override fun getItemCount(): Int = data.size
@@ -177,11 +192,14 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<ChatContent
 
     inner class ChatUserIOViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
-        private lateinit var content : TextView
+        private val content : TextView = itemView.findViewById(R.id.content) // 텍스트
 
         fun onBind(chatMsg : ChatMsg) {
             // 채팅 메시지 타입 구분하기
-            content.text = chatMsg.content
+            when(chatMsg.contentType) {
+                4 -> content.text = chatMsg.content + context.getString(R.string.chatIn)
+                5 -> content.text = chatMsg.content + context.getString(R.string.chatOut)
+            }
         }
     }
 
