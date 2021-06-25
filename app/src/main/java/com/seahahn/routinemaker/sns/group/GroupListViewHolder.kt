@@ -2,6 +2,7 @@ package com.seahahn.routinemaker.sns.group
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -12,10 +13,14 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
@@ -32,10 +37,12 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
     private val headLimit : TextView = itemView.findViewById(R.id.head_limit)
     private val tags : TextView = itemView.findViewById(R.id.tags)
 
+    private var groupMemberIdData = mutableListOf<Int>()
+
     init {
 //        d(TAG, "RtViewHolder init")
         item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
-        moreBtn.setOnClickListener(MoreBtnClickListener()) // 더보기 버튼 눌렀을 때의 리스너 초기화하기
+//        moreBtn.setOnClickListener(MoreBtnClickListener()) // 더보기 버튼 눌렀을 때의 리스너 초기화하기
     }
 
     fun onBind(groupData : GroupData){
@@ -76,6 +83,8 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         }
 //            moreBtn.visibility = View.VISIBLE
         moreBtn.tag = hashMapOf("id" to groupData.id, "title" to groupData.title, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
+
+        getGroupMembers(groupData.id)
     }
 
     // 레트로핏 서비스 객체 가져오기
@@ -112,18 +121,25 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                 setOnMenuItemClickListener(GroupPopupMenuListener(v, serviceInViewHolder))
                 // 사용자가 그룹 생성자이면 그룹 수정 및 가입 신청자 목록 보기 가능, 아니라면 그룹 정보 보기만 가능
 //                if(((v.tag as HashMap<*, *>)["userId"]).toString().toInt() == getUserId(context)) {
-                    inflate(R.menu.menu_group_more)
-                    if(leaderId == getUserId(context)) {
-                        popup.menu.setGroupVisible(R.id.group_manage, true)
-                        if(!onPublic) { // 그룹이 비공개일 경우에만 그룹 가입 신청자 목록 보기 가능
-                            popup.menu.setGroupVisible(R.id.group_applicant, true)
-                        } else {
-                            popup.menu.setGroupVisible(R.id.group_applicant, false)
-                        }
+                inflate(R.menu.menu_group_more)
+                if(leaderId == getUserId(context)) {
+                    popup.menu.setGroupVisible(R.id.group_manage, true)
+                    if(!onPublic) { // 그룹이 비공개일 경우에만 그룹 가입 신청자 목록 보기 가능
+                        popup.menu.setGroupVisible(R.id.group_applicant, true)
                     } else {
-                        popup.menu.setGroupVisible(R.id.group_manage, false)
                         popup.menu.setGroupVisible(R.id.group_applicant, false)
                     }
+                } else {
+                    popup.menu.setGroupVisible(R.id.group_manage, false)
+                    popup.menu.setGroupVisible(R.id.group_applicant, false)
+                }
+
+                // 가입되어 있으면 채팅 입장 가능
+                if(groupMemberIdData.contains(getUserId(context))) {
+                    popup.menu.setGroupVisible(R.id.chat_in, true)
+                } else {
+                    popup.menu.setGroupVisible(R.id.chat_in, false)
+                }
 //                } else {
 //                    inflate(R.menu.menu_group_more_normal)
 //                }
@@ -229,5 +245,27 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 //                .setNegativeButton(R.string.cancel) { _: DialogInterface, _: Int -> }
 //                .show()
 //        }
+    }
+
+    fun getGroupMembers(groupId : Int) {
+        d(TAG, "getGroupMembers 변수들 : $groupId")
+        serviceInViewHolder.getGroupMembers(groupId, true).enqueue(object : Callback<MutableList<GroupMemberData>> {
+            override fun onFailure(call: Call<MutableList<GroupMemberData>>, t: Throwable) {
+                Log.d(TAG, "그룹 멤버 목록 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<GroupMemberData>>, response: Response<MutableList<GroupMemberData>>) {
+                Log.d(TAG, "그룹 멤버 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, "getGroupMembers : "+response.body().toString())
+//                groupMemberListData = response.body()!!
+                val groupMemberDatas = response.body()
+                groupMemberDatas!!
+                for(i in 0 until groupMemberDatas.size) {
+                    groupMemberIdData.add(groupMemberDatas[i].id)
+                }
+                moreBtn.setOnClickListener(MoreBtnClickListener()) // 더보기 버튼 눌렀을 때의 리스너 초기화하기
+
+            }
+        })
     }
 }
