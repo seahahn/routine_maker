@@ -111,7 +111,7 @@ interface ChatDao {
     fun getNumOfBadge(): LiveData<List<Int>>
 }
 
-@Database(entities = [ChatMsg::class, ChatRoom::class], version = 3)
+@Database(entities = [ChatMsg::class, ChatRoom::class], version = 1)
 abstract class ChatDataBase: RoomDatabase() {
     abstract fun chatDao(): ChatDao
 

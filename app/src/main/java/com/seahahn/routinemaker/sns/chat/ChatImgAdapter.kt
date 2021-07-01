@@ -46,8 +46,8 @@ class ChatImgAdapter(mContext : Context) : RecyclerView.Adapter<ChatImgAdapter.C
         fun onBind(img : String, pos : Int) {
             photoView.tag = pos
             Glide.with(context).load(img)
-                .placeholder(R.drawable.warning)
-                .error(R.drawable.warning)
+                .placeholder(R.drawable.no_photo)
+                .error(R.drawable.no_photo)
                 .into(photoView)
         }
 

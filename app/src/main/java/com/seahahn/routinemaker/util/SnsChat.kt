@@ -448,7 +448,9 @@ open class SnsChat : Sns() {
     @Throws(IOException::class)
     fun sendMessageToServer(msg: String) {
         outputStream.writeUTF(msg) // 생성된 출력 스트림을 통하여 데이터 송신
-        chatInput.text = null // 메시지 보낸 후 입력란 비우기
+        runOnUiThread {
+            chatInput.text = null // 메시지 보낸 후 입력란 비우기
+        }
     }
 
     @Throws(IOException::class)

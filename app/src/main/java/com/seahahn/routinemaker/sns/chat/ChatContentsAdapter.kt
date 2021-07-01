@@ -143,20 +143,6 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerVie
                         2 -> GridLayoutManager(context, 2)
                         else -> GridLayoutManager(context, 3)
                     }
-//                    myLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-//                        override fun getSpanSize(position: Int): Int {
-//                            val span = imgList.size % 3
-//                            return if (imgList.size < 2) {
-//                                6
-//                            } else if (span == 0 || (position <= ((imgList.size - 1) - span))) {
-//                                2
-//                            } else if (span == 1) {
-//                                6
-//                            } else {
-//                                3
-//                            }
-//                        }
-//                    }
 
                     contentImg.layoutManager = myLayoutManager
                     chatImgAdapter.replaceList(imgList) // 만든 리스트를 목록에 넣음
