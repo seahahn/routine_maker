@@ -386,6 +386,11 @@ interface RetrofitService {
         @Query("room_id") roomId: Int
     ) : Call<MutableList<ChatUserData>>
 
+    @GET("/api/chat/get_chat_users_nick_and_photo.php") // 사용자가 현재 입장한 채팅방에 들어와 있는 다른 사용자들 목록
+    fun getChatUsersNickAndPhoto(
+        @Query("room_id") roomId: Int
+    ) : Call<MutableList<GroupMemberData>>
+
     @FormUrlEncoded
     @POST("/api/chat/get_chatroom_data.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
     fun getChatRoomData(

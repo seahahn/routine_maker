@@ -19,7 +19,7 @@ class GroupSearchActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
 
-    private lateinit var viewEmptyList : LinearLayout
+//    lateinit var viewEmptyList : LinearLayout
 
     private lateinit var groupListAdapter: GroupListAdapter
     private lateinit var groupList: RecyclerView
@@ -45,7 +45,7 @@ class GroupSearchActivity : Sns() {
         searchView.setOnQueryTextListener(QueryTextChenageListener())
 
         groupList = findViewById(R.id.groupList) // 리사이클러뷰 초기화
-        groupListAdapter = GroupListAdapter() // 어댑터 초기화
+        groupListAdapter = GroupListAdapter(this) // 어댑터 초기화
         groupList.adapter = groupListAdapter // 어댑터 연결
         groupListAdapter.getService(service)
 

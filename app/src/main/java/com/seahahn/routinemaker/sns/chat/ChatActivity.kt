@@ -5,16 +5,25 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.util.Log.d
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.scrollView
 import java.time.LocalDateTime
 import java.util.*
 
@@ -32,6 +41,13 @@ class ChatActivity : SnsChat() {
     lateinit var it_mDatas : Iterator<ChatMsg>
 
     private lateinit var searchView: SearchView
+
+    private lateinit var navRight : LinearLayout
+    private lateinit var chatMembersAdapter: ChatMembersAdapter
+    private lateinit var chatMembersView: RecyclerView
+    var groupMemberDatas = mutableListOf<GroupMemberData>()
+
+    private var initContents = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +71,7 @@ class ChatActivity : SnsChat() {
         chatSend.setOnClickListener(BtnClickListener())
         fullImgClose.setOnClickListener(BtnClickListener())
 
+        // 채팅 내용 초기화하기
         chatContentsView = findViewById(R.id.chatContents) // 리사이클러뷰 초기화
         chatContentsAdapter = ChatContentsAdapter(this) // 어댑터 초기화
         chatContentsView.adapter = chatContentsAdapter // 어댑터 연결
@@ -62,6 +79,14 @@ class ChatActivity : SnsChat() {
         layoutManager.reverseLayout = false
         layoutManager.stackFromEnd = false
         chatContentsAdapter.getService(service)
+
+        // 우측에 표시될 채팅방 참여자 목록 초기화하기
+        drawerLayout = findViewById(R.id.drawer_layout) // 우측 드로어 레이아웃 초기화
+        navRight = findViewById(R.id.nav_right) // 우측 참여자 목록 레이아웃 초기화
+        chatMembersView = findViewById(R.id.chatMemberList) // 리사이클러뷰 초기화
+        chatMembersAdapter = ChatMembersAdapter(this) // 어댑터 초기화
+        chatMembersView.adapter = chatMembersAdapter // 어댑터 연결
+        chatMembersAdapter.getService(service)
 
         // 채팅 메시지의 이미지 크게 보기 기능을 위한 요소 초기화하기
         fullImgAdapter = FullImgAdapter(this) // 어댑터 초기화
@@ -80,12 +105,21 @@ class ChatActivity : SnsChat() {
             chatContentsAdapter.replaceList(mDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
 //                layoutManager.scrollToPositionWithOffset(0, 30)
 
+//            chatContentsView.scrollToPosition(0)
+//            layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 1000)
+            Logger.w(TAG, "chatContentsAdapter.itemCount : ${chatContentsAdapter.itemCount}")
+            chatContentsView.scrollToPosition(chatContentsAdapter.itemCount-1) //chatContentsAdapter.itemCount-1
             if(!chatContentsView.canScrollVertically(1)) {
                 // 최하단일 경우 메시지 오면 맨 아래에 스크롤 가도록 함
-//                chatContentsView.scrollToPosition(chatContentsAdapter.itemCount-1)
-                layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 300)
+//                layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 30)
             }
+        }
 
+        chatMembersViewModel.gottenChatMembers.observe(this) { memberData ->
+            Log.d(TAG, "memberData : $memberData")
+            groupMemberDatas = memberData
+
+            chatMembersAdapter.replaceList(groupMemberDatas) // 들어온 채팅방에 맞는 참여자 목록 넣기
         }
 //        chatContentsAdapter.registerAdapterDataObserver(
 //            object : RecyclerView.AdapterDataObserver() {
@@ -132,6 +166,41 @@ class ChatActivity : SnsChat() {
         closeConnect() // 소켓 연결 해제
     }
 
+    // 툴바 우측 메뉴 버튼 설정
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_searchnbars, menu)       // 시간대 선택 메뉴를 toolbar 메뉴 버튼으로 설정
+        return true
+    }
+
+    // 툴바 우측 메뉴 눌렀을 때 동작할 내용
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.toolbarSearch -> {
+                // 검색창 띄우기
+                searchView.isVisible = !searchView.isVisible
+            }
+            R.id.toolbarBars -> {
+                // 현재 접속 여부 상관 없이 채팅방에 참여하고 있는 모든 멤버 목록 보여주기
+                if(!drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    drawerLayout.openDrawer(GravityCompat.END) // 열려있으면 네비게이션 드로어 닫기기
+                } else {
+                    drawerLayout.closeDrawer(GravityCompat.END) // 열려있으면 네비게이션 드로어 닫기기
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    // 뒤로가기 버튼 누르면 우측 내비게이션 닫기
+    override fun onBackPressed() { //뒤로가기 처리
+        Log.d(TAG, "onBackPressed")
+        if(drawerLayout.isDrawerOpen(GravityCompat.END)){
+            drawerLayout.closeDrawers()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     // 검색창에 검색어를 입력할 경우의 동작
     inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
 
@@ -149,6 +218,11 @@ class ChatActivity : SnsChat() {
                 }
             }
             chatContentsAdapter.replaceList(searchedDatas) // 검색어 결과에 따라 추출된 목록을 보여줌
+
+            if (inputText == "") {
+                viewEmptyList.visibility = View.GONE
+                chatContentsAdapter.replaceList(mDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
+            }
 
             return true
         }

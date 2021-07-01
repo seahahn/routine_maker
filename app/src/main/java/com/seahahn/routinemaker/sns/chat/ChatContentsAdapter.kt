@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger.d
+import com.nhn.android.idp.common.logger.Logger.w
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -86,6 +88,8 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerVie
         data = newList.toMutableList()
         //어댑터의 데이터가 변했다는 notify를 날린다
         notifyDataSetChanged()
+
+        w(TAG, "getItemCount() : $itemCount")
     }
 
     fun returnList(): MutableList<ChatMsg> {

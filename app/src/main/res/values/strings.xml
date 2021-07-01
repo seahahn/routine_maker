@@ -60,6 +60,7 @@
     <string name="toolbarTitle">앱바 타이틀</string>
     <string name="toolbarFilter">필터</string>
     <string name="toolbarMore">더보기</string>
+    <string name="toolbarList">목록</string>
     <string name="toolbarNoti">알림</string>
     <string name="toolbarSearch">검색</string>
     <string name="toolbarTrash">삭제</string>

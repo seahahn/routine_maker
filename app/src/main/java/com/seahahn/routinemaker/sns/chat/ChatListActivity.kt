@@ -27,7 +27,7 @@ class ChatListActivity : SnsChat() {
 
     private val context = this
 
-    private lateinit var viewEmptyList : LinearLayout
+//    private lateinit var viewEmptyList : LinearLayout
 
     private lateinit var chatroomsAdapter: ChatroomsAdapter
     private lateinit var chatroomList: RecyclerView
@@ -84,6 +84,7 @@ class ChatListActivity : SnsChat() {
             mDatas = chatroomData // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
 
             chatroomsAdapter.replaceList(mDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
+            chatroomsAdapter.saveOriginalList(mDatas) // 원본 목록 저장하기(검색 이후 다시 제자리로 돌려놓기 위함)
 
             // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
             if(chatroomsAdapter.itemCount == 0) {
@@ -129,17 +130,17 @@ class ChatListActivity : SnsChat() {
             val inputText = newText!!.lowercase(Locale.getDefault())
             chatroomsAdapter.filter.filter(inputText) // 검색어 결과에 따라 추출된 목록을 보여줌
 
-            // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
-            if (chatroomsAdapter.itemCount == 0) {
-                viewEmptyList.visibility = View.VISIBLE
-            } else {
-                viewEmptyList.visibility = View.GONE
-            }
+//            // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
+//            if (chatroomsAdapter.itemCount == 0) {
+//                viewEmptyList.visibility = View.VISIBLE
+//            } else {
+//                viewEmptyList.visibility = View.GONE
+//            }
 
-            if (newText == "") {
-                viewEmptyList.visibility = View.GONE
-                chatroomsAdapter.replaceList(mDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
-            }
+//            if (newText == "") {
+//                viewEmptyList.visibility = View.GONE
+//                chatroomsAdapter.replaceList(mDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
+//            }
 
             return true
         }

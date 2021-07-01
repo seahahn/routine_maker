@@ -18,6 +18,8 @@ import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatUserData
+import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import com.seahahn.routinemaker.util.UserInfo.getUserNick
@@ -35,13 +37,14 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
-    val context : Context = mContext
+    val context = mContext as Sns
 
     val formatterYMDHM: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()) // 문자열 형식(시 분)
 
     val chatDB by lazy { ChatDataBase.getInstance(context) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
     //데이터들을 저장하는 변수
+    private var originalData = mutableListOf<ChatRoom>()
     private var data = mutableListOf<ChatRoom>()
     var filteredData = mutableListOf<ChatRoom>()
     var resultData = mutableListOf<ChatRoom>()
@@ -81,6 +84,10 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
         notifyDataSetChanged()
     }
 
+    fun saveOriginalList(list: MutableList<ChatRoom>) {
+        originalData = list.toMutableList()
+    }
+
     fun returnList(): MutableList<ChatRoom> {
         return data
     }
@@ -92,11 +99,12 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
+                filteredData.clear()
                 if (constraint?.isEmpty() == true) {
-                    filteredData.addAll(data)
+                    filteredData.addAll(originalData)
                 } else {
                     val filterPattern = constraint.toString().lowercase(Locale.getDefault()).trim()
-                    for (item in data) {
+                    for (item in originalData) {
                         if (item.title.lowercase(Locale.getDefault()).contains(filterPattern)) {
                             filteredData.add(item)
                         }
@@ -111,6 +119,14 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                 resultData.clear()
                 resultData.addAll(results!!.values as Collection<ChatRoom>)
                 replaceList(resultData)
+
+                // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
+                Logger.d(TAG, "groupListAdapter.itemCount : $itemCount")
+                if (itemCount == 0) {
+                    context.viewEmptyList.visibility = View.VISIBLE
+                } else {
+                    context.viewEmptyList.visibility = View.GONE
+                }
             }
         }
     }

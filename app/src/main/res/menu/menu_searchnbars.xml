@@ -8,9 +8,9 @@
             android:icon="@drawable/search"
             app:showAsAction="ifRoom"/>
     <item
-            android:id="@+id/toolbarChat"
-            android:title="@string/toolbarMore"
-            android:icon="@drawable/chat_send"
+            android:id="@+id/toolbarBars"
+            android:title="@string/toolbarList"
+            android:icon="@drawable/hbgmenu"
             app:showAsAction="ifRoom"/>
 
 </menu>

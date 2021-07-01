@@ -1,14 +1,10 @@
 package com.seahahn.routinemaker.sns.group
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
 
 class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>() {
@@ -23,7 +19,7 @@ class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberListViewHolder {
 //        d(TAG, "rt onCreateViewHolder")
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_group_member, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_group_member_radio, parent, false)
         return GroupMemberListViewHolder(view)
     }
 

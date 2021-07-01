@@ -122,6 +122,8 @@ open class Sns : Main() {
     lateinit var fullImgPager : ViewPager2 // 이미지 클릭 시 크게 보여줄 뷰페이저
     lateinit var fullImgClose : ImageButton // 이미지 클릭 시 크게 보여줄 화면 닫기 버튼
 
+    lateinit var viewEmptyList : LinearLayout
+
     // 그룹 만들기, 수정 및 그룹 정보 액티비티 내의 공통 요소들 초기화하기
     fun initGroupActivity(btmBtnId : Int) {
         // 액티비티별로 별개인 요소 초기화하기

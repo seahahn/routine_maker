@@ -14,7 +14,7 @@
             android:orientation="vertical"
             android:overScrollMode="never"
             android:id="@+id/groupMemberList"
-            tools:listitem="@layout/item_group_member">
+            tools:listitem="@layout/item_group_member_radio">
 
     </androidx.recyclerview.widget.RecyclerView>
 

@@ -21,7 +21,7 @@ class GroupApplicantListActivity : Sns(), View.OnClickListener {
 
     private val TAG = this::class.java.simpleName
 
-    private lateinit var viewEmptyList : LinearLayout
+//    private lateinit var viewEmptyList : LinearLayout
 
     private lateinit var searchView: SearchView
     var searchedDatas = mutableListOf<GroupMemberData>()

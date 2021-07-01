@@ -19,6 +19,18 @@ android:fitsSystemWindows="true">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+    <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@drawable/list_bg"
+            android:queryHint="@string/searchPh"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -26,7 +38,7 @@ android:fitsSystemWindows="true">
             android:orientation="vertical"
             android:overScrollMode="never"
             android:id="@+id/groupList"
-            tools:listitem="@layout/item_group" app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:listitem="@layout/item_group" app:layout_constraintTop_toBottomOf="@+id/searchView"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/btmnav">
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@drawable/stts_record_border"
+        android:orientation="vertical"
+        android:layout_gravity="end">
+    <TextView
+            style="@style/txt_title"
+            android:text="대화 상대"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="12dp"
+            android:background="@drawable/chat_img_bg_layerlist"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/chat_img_bg_layerlist"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:id="@+id/chatMemberList"
+            tools:listitem="@layout/item_group_member">
+    </androidx.recyclerview.widget.RecyclerView>
+</LinearLayout>

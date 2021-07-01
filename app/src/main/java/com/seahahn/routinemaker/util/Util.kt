@@ -204,7 +204,7 @@ open class Util  : AppCompatActivity() {
         return image
     }
 
-    // 채팅방 정보 불러오기
+    // 사용자의 파이어베이스 토큰값 서버에 보내서 저장하기
     fun setFirebaseToken(service: RetrofitService, id : Int, token : String) {
         Logger.d(TAG, "setFirebaseToken 변수들 : $id, $token")
         service.setFirebaseToken(id, token).enqueue(object : Callback<JsonObject> {

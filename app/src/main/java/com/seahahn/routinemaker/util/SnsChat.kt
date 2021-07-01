@@ -20,6 +20,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatUserData
 import com.seahahn.routinemaker.sns.ChatroomData
+import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.*
 import com.seahahn.routinemaker.util.UserInfo.getUserFCMToken
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -51,6 +52,7 @@ open class SnsChat : Sns() {
 
     val chatroomViewModel by viewModels<ChatroomViewModel>() // 채팅방 데이터
     val chatContentsViewModel by viewModels<ChatContentsViewModel>() // 채팅방 내 채팅 내용 목록 데이터
+    val chatMembersViewModel by viewModels<ChatMembersViewModel>() // 채팅방 내 채팅 내용 목록 데이터
 
 //    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
@@ -58,6 +60,7 @@ open class SnsChat : Sns() {
     lateinit var chatUserData : MutableList<ChatUserData> // 채팅방 참여자 목록 데이터
     lateinit var chatUserDataMap : HashMap<Int, String> // 채팅방 참여자 목록을 id, token 쌍의 맵으로 저장한 것
     lateinit var chatContents : MutableList<ChatMsg>
+    lateinit var chatUsersNickAndPhoto : MutableList<GroupMemberData>
 
     var isSocketConnected = false
     // 소켓 통신 스레드
@@ -250,49 +253,6 @@ open class SnsChat : Sns() {
                 isSocketConnected = true
                 socketThread.start()
 
-                object : Thread() {
-                    override fun run() {
-                        val chatRoomLocal = chatDB!!.chatDao().getChatroom(chatroomData.id)
-                        d(TAG, "chatRoomLocal : $chatRoomLocal")
-
-                        if(chatRoomLocal == null) {
-                            val chatRoom = ChatRoom(
-                                chatroomData.id,
-                                "",
-                                chatroomData.isGroupchat,
-                                chatroomData.hostId,
-                                chatroomData.audienceId,
-                                chatroomData.createdAt,
-                                "",
-                                chatroomData.createdAt,
-                                0
-                            )
-                            chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
-
-                            // 채팅방 검색을 위해서 채팅방 제목(그룹명 또는 상대방 닉네임) 저장해두기
-                            val titleUpdate = ChatRoomTitleUpdate(chatroomData.id, groupTitle)
-                            chatDB!!.chatDao().updateTitle(titleUpdate)
-
-                            // 사용자 입장 메시지를 띄움
-                            val now = LocalDateTime.now()
-                            val chatMsg = ChatMsg(0,
-                                getUserId(applicationContext),
-                                getUserNick(applicationContext),
-                                4,
-                                chatroomData.id,
-                                now.format(formatterYMDHM).toString())
-
-                            val gson = Gson().toJson(chatMsg)
-                            sendMessageToServer(gson)
-                        } else {
-                            d(TAG, "뱃지 0으로 만들기")
-                            // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
-                            val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
-                            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
-                        }
-                    }
-                }
-
                 setChatUser(service, chatroomData.id, true, getUserFCMToken(applicationContext)) // 사용자의 채팅방 입장 여부 데이터 보내기
                 chatDB!!.chatDao().getChatMsgs(chatroomData.id).observe(lifecycleOwner) { chatMsgs ->
                     chatContentsViewModel.setList(chatMsgs)
@@ -350,7 +310,24 @@ open class SnsChat : Sns() {
         })
     }
 
-    // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기
+    // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기
+    fun getChatUsersNickAndPhoto(roomId: Int) {
+        Logger.d(TAG, "getChatUsersNickAndPhoto 변수들 : $roomId")
+        service.getChatUsersNickAndPhoto(roomId).enqueue(object : Callback<MutableList<GroupMemberData>> {
+            override fun onFailure(call: Call<MutableList<GroupMemberData>>, t: Throwable) {
+                Log.d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<MutableList<GroupMemberData>>, response: Response<MutableList<GroupMemberData>>) {
+                Log.d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
+                Log.d(TAG, response.body().toString())
+                chatUsersNickAndPhoto = response.body()!!
+                chatMembersViewModel.setList(chatUsersNickAndPhoto)
+            }
+        })
+    }
+
+    // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기(채팅 목록 어댑터에서 별도로 사용중)
     fun deleteChatUser(service: RetrofitService, roomId: Int) {
         val userId = getUserId(applicationContext)
         Logger.d(TAG, "setChatUser 변수들 : $userId, $roomId")
@@ -420,7 +397,13 @@ open class SnsChat : Sns() {
             // 읽은 메시지 갯수 0으로 유지(방에 들어와 있기 때문)
             val badgeUpdate = ChatRoomBadgeUpdate(chatroomData.id, 0) // 다 읽은 것으로 표시
             chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+
+            val now = LocalDateTime.now()
+            val lastMsgAtUpdate = ChatRoomLastMsgAtUpdate(chatroomData.id, now.format(formatterYMDHM).toString()) // 다 읽은 것으로 표시
+            chatDB!!.chatDao().updateLastMsgAt(lastMsgAtUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
         }
+
+        getChatUsersNickAndPhoto(chatroomData.id) // 채팅방 참여자 목록 가져오기
     }
 
     fun receiveMsg() {
@@ -434,6 +417,12 @@ open class SnsChat : Sns() {
 //                    UserInfo.getUserId(applicationContext), chatInput.text.toString(), 0, chatroomData.id, System.currentTimeMillis().toString())
                 val chatMsg = Gson().fromJson(msg, ChatMsg::class.java)
                 chatDB!!.chatDao().insertChatMsg(chatMsg) // 채팅방에 해당하는 채팅 내용 가져오기
+
+                // 누군가가 입장 또는 퇴장한 경우 채팅 참여자 목록을 새로 불러옴
+                if(chatMsg.contentType == 4 || chatMsg.contentType == 5)
+                    Thread() {
+                        getChatUsersNickAndPhoto(chatroomData.id) // 채팅방 참여자 목록 가져오기
+                    }.start()
             } catch(e: SocketException) {
                 d(TAG, "소켓 연결 해제")
 //                e.printStackTrace()

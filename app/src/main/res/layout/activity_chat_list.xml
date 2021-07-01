@@ -18,6 +18,7 @@ tools:context=".sns.chat.ChatListActivity">
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:iconifiedByDefault="false"
         android:queryBackground="@drawable/list_bg"
         android:queryHint="@string/searchPh"

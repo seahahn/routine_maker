@@ -30,7 +30,7 @@ class GroupFeedActivity : Sns() {
 
 //    private lateinit var toolbar : Toolbar
 
-    private lateinit var viewEmptyList : LinearLayout
+//    private lateinit var viewEmptyList : LinearLayout
 
     private lateinit var feedListAdapter: GroupFeedAdapter
     private lateinit var feedList: RecyclerView

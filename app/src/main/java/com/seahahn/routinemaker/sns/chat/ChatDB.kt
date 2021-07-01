@@ -45,6 +45,12 @@ data class ChatRoomBadgeUpdate(
 )
 
 @Entity
+data class ChatRoomLastMsgAtUpdate(
+    @ColumnInfo(name = "id") val id: Int,
+    @ColumnInfo(name = "lastmsg_at") val lastmsgAt: String
+)
+
+@Entity
 data class ChatRoomDelete(
     @ColumnInfo(name = "id") val id: Int
 )
@@ -68,6 +74,9 @@ interface ChatDao {
 
     @Update(entity = ChatRoom::class)
     fun updateBadge(chatRoomBadgeUpdate: ChatRoomBadgeUpdate)
+
+    @Update(entity = ChatRoom::class)
+    fun updateLastMsgAt(chatRoomLastMsgAtUpdate: ChatRoomLastMsgAtUpdate)
 
     @Delete(entity = ChatRoom::class)
     fun deleteChatroom(chatRoomDelete: ChatRoomDelete)
