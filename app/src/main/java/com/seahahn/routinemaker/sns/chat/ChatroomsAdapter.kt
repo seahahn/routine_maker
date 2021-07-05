@@ -216,7 +216,7 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             } // 채팅방에 해당하는 채팅 내용 가져오기
 
             chatOut.tag = chatRoom.id
-            chatOut.setOnClickListener(ChatOutClickListener())
+            chatOut.setOnClickListener(ChatOutClickListener(chatRoom.isGroupchat))
 
             // 아이템 태그에 채팅방의 정보를 담아둠
             itemTag["isGroupchat"] = chatRoom.isGroupchat
@@ -336,7 +336,8 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             }
         }
 
-        inner class ChatOutClickListener() : View.OnClickListener, SnsChat() {
+        inner class ChatOutClickListener(mIsGroupchat : Boolean) : View.OnClickListener, SnsChat() {
+            val isGroupchat = mIsGroupchat
             override fun onClick(v: View?) {
                 val chatroomId = v!!.tag as Int
                 d(TAG, "나가기 누름")
@@ -347,7 +348,7 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
                         chatDB!!.chatDao().deleteChatroom(chatRoomDelete) // 채팅방 삭제
                         val chatMsgsDelete = ChatMsgsDelete(chatroomId)
                         chatDB!!.chatDao().deleteChatMsgs(chatMsgsDelete) // 메시지 삭제
-                        deleteChatUser(chatroomId) // 서버 상에 있는 사용자의 채팅방 참여 여부 삭제
+                        if(isGroupchat) deleteChatUser(chatroomId) // 서버 상에 있는 사용자의 채팅방 참여 여부 삭제
 
                         d(TAG, "소켓 연결 중")
                         socket = Socket(SERVER_ADDRESS, PORT) // Socket 생성 및 접속

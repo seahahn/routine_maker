@@ -19,6 +19,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatUserData
 import com.seahahn.routinemaker.sns.GroupMemberData
+import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call
 import retrofit2.Callback
@@ -76,12 +77,21 @@ class ChatMembersAdapter(mContext : Context) : RecyclerView.Adapter<ChatMembersA
         private val img : ImageView = itemView.findViewById(R.id.img)
         private val nick : TextView = itemView.findViewById(R.id.nick)
 
+        init {
+            img.setOnClickListener(Sns.ProfileClickListener())
+            nick.setOnClickListener(Sns.ProfileClickListener())
+        }
+
         fun onBind(groupMemberData : GroupMemberData) {
             Glide.with(context).load(groupMemberData.photo)
                 .placeholder(R.drawable.warning)
                 .error(R.drawable.warning)
                 .into(img)
             nick.text = groupMemberData.nick
+
+            // 프로필 사진 및 닉네임에 사용자의 고유 번호를 태그로 담아둠(누르면 해당 사용자의 프로필 정보를 볼 수 있는 액티비티로 이동하기 위함)
+            img.tag = hashMapOf("id" to groupMemberData.id, "nick" to groupMemberData.nick)
+            nick.tag = hashMapOf("id" to groupMemberData.id, "nick" to groupMemberData.nick)
         }
     }
 }

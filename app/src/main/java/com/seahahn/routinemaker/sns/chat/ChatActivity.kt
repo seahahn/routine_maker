@@ -71,9 +71,15 @@ class ChatActivity : SnsChat() {
         chatSend.setOnClickListener(BtnClickListener())
         fullImgClose.setOnClickListener(BtnClickListener())
 
-        // 채팅 내용 초기화하기
+        // 채팅 내용 가져오기
+        val isGroupchat = intent.getBooleanExtra("isGroupchat", false) // 그룹 채팅 여부 가져오기
+        val hostId = intent.getIntExtra("hostId", getUserId(this)) // 그룹 생성자 또는 사용자 본인 고유 번호 가져오기
+        val audienceId = intent.getIntExtra("audienceId", 0) // 그룹 고유 번호 또는 1:1 채팅 상대방 고유 번호 가져오기
+        getChatRoomData(this, service, isGroupchat, hostId, audienceId) // 채팅방 데이터 가져오기
+
+        // 채팅 내용 출력할 영역(리사이클러뷰, 어댑터 등) 초기화하기
         chatContentsView = findViewById(R.id.chatContents) // 리사이클러뷰 초기화
-        chatContentsAdapter = ChatContentsAdapter(this) // 어댑터 초기화
+        chatContentsAdapter = ChatContentsAdapter(this, isGroupchat) // 어댑터 초기화
         chatContentsView.adapter = chatContentsAdapter // 어댑터 연결
         chatContentsView.layoutManager = layoutManager // 레이아웃 매니저 연결(최하단 스크롤하기 위해서)
         layoutManager.reverseLayout = false
@@ -92,26 +98,16 @@ class ChatActivity : SnsChat() {
         fullImgAdapter = FullImgAdapter(this) // 어댑터 초기화
         fullImgPager.adapter = fullImgAdapter // 어댑터 연결(이미지 전체화면)
 
-        // 채팅 내용 목록 가져오기
-        val isGroupchat = intent.getBooleanExtra("isGroupchat", false) // 그룹 채팅 여부 가져오기
-        val hostId = intent.getIntExtra("hostId", getUserId(this)) // 그룹 생성자 또는 사용자 본인 고유 번호 가져오기
-        val audienceId = intent.getIntExtra("audienceId", 0) // 그룹 고유 번호 또는 1:1 채팅 상대방 고유 번호 가져오기
-        getChatRoomData(this, service, isGroupchat, hostId, audienceId) // 채팅방 데이터 가져오기
-
         chatContentsViewModel.gottenChatMsg.observe(this) { chatMsgs ->
             Log.d(TAG, "chatMsgs : $chatMsgs")
-            mDatas = chatMsgs // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+            mDatas = chatMsgs // 채팅 내용 데이터 가져오기
 
-            chatContentsAdapter.replaceList(mDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
-//                layoutManager.scrollToPositionWithOffset(0, 30)
+            chatContentsAdapter.replaceList(mDatas)
 
-//            chatContentsView.scrollToPosition(0)
-//            layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 1000)
-            Logger.w(TAG, "chatContentsAdapter.itemCount : ${chatContentsAdapter.itemCount}")
-            chatContentsView.scrollToPosition(chatContentsAdapter.itemCount-1) //chatContentsAdapter.itemCount-1
             if(!chatContentsView.canScrollVertically(1)) {
                 // 최하단일 경우 메시지 오면 맨 아래에 스크롤 가도록 함
-//                layoutManager.scrollToPositionWithOffset(chatContentsAdapter.itemCount-1, 30)
+                Logger.w(TAG, "chatContentsAdapter.itemCount : ${chatContentsAdapter.itemCount}")
+                chatContentsView.scrollToPosition(chatContentsAdapter.itemCount-1) //chatContentsAdapter.itemCount-1
             }
         }
 
@@ -121,24 +117,6 @@ class ChatActivity : SnsChat() {
 
             chatMembersAdapter.replaceList(groupMemberDatas) // 들어온 채팅방에 맞는 참여자 목록 넣기
         }
-//        chatContentsAdapter.registerAdapterDataObserver(
-//            object : RecyclerView.AdapterDataObserver() {
-//                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//                    super.onItemRangeInserted(positionStart, itemCount)
-//
-//                    val msgCount = chatContentsAdapter.itemCount
-//                    val lastVisiblePosition =
-//                        layoutManager.findLastCompletelyVisibleItemPosition()
-//
-//                    if (lastVisiblePosition == -1 || positionStart >= msgCount - 1 &&
-//                        lastVisiblePosition == positionStart - 1) {
-//                        chatContentsView.scrollToPosition(positionStart)
-//                    } else {
-//                        chatContentsView.scrollToPosition(chatContentsAdapter.itemCount - 1);
-//                    }
-//                }
-//            }
-//        )
 
         // 키보드 나오면 그 높이에 맞춰서 레이아웃의 스크롤을 움직임
         keyboardVisibilityUtils = KeyboardVisibilityUtils(window,
@@ -161,9 +139,14 @@ class ChatActivity : SnsChat() {
         notificationManager.cancelAll()
     }
 
+    override fun onPause() {
+        super.onPause()
+        closeConnect() // 소켓 연결 해제
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        closeConnect() // 소켓 연결 해제
+//        closeConnect() // 소켓 연결 해제
     }
 
     // 툴바 우측 메뉴 버튼 설정
@@ -232,7 +215,7 @@ class ChatActivity : SnsChat() {
         }
     }
 
-    // 피드의 좋아요, 댓글, 더보기와 하단의 카메라, 댓글 달기 아이콘 클릭 시 작동할 기능
+    // 이미지 전체 화면 닫기 버튼 및 채팅 보내기 버튼 클릭 시 동작할 내용
     inner class BtnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when(v!!.id) {

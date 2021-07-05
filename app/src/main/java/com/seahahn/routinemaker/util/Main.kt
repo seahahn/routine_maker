@@ -18,7 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,13 +31,19 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.notice.NoticeActivity
+import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.group.GroupListActivity
 import com.seahahn.routinemaker.sns.group.GroupMakeActivity
 import com.seahahn.routinemaker.sns.group.GroupSearchActivity
+import com.seahahn.routinemaker.sns.others.OtherMainActivity
+import com.seahahn.routinemaker.sns.others.OtherMypageActivity
+import com.seahahn.routinemaker.sns.others.OtherSttsActivity
 import com.seahahn.routinemaker.stts.RecordViewModel
 import com.seahahn.routinemaker.stts.SttsActivity
 import com.seahahn.routinemaker.user.MypageActivity
 import com.seahahn.routinemaker.util.AppVar.getDatePast
+import com.seahahn.routinemaker.util.AppVar.getOtherUserId
+import com.seahahn.routinemaker.util.AppVar.getOtherUserNick
 import com.seahahn.routinemaker.util.AppVar.getSelectedDate
 import com.seahahn.routinemaker.util.AppVar.setDatePast
 import com.seahahn.routinemaker.util.AppVar.setSelectedDate
@@ -71,6 +76,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     // BottomNavigationView 초기화하기
     lateinit var btmnav : BottomNavigationView
     lateinit var badgeSns: BadgeDrawable // 하단 네비 SNS 아이콘에 붙을 배지
+
+    // 다른 사용자 프로필 들어갔을 때 하단 내비 구성요소 초기화하기
+    lateinit var btmnavOthers : ConstraintLayout
+    lateinit var otherHome : ConstraintLayout // 다른 사용자 루틴 보기
+    lateinit var otherStts : ConstraintLayout // 다른 사용자 루틴 수행 통계 보기
+    lateinit var otherChat : ConstraintLayout // 다른 사용자와 1:1 채팅하기
+    lateinit var otherProfile : ConstraintLayout // 다른 사용자의 프로필 보기
 
     // 사용자가 선택한 날짜에 따라 툴바 제목도 그에 맞는 날짜로 변경함
     // 초기값은 오늘 날짜
@@ -152,6 +164,8 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     //used to check if fab menu are opened or closed
     private var fabClosed = false
 
+    var otherUserId = 0 // 다른 사용자 프로필 방문 시 해당 사용자의 고유 번호를 저장
+
     // 좌측 내비게이션 메뉴 초기화하기
     fun initLeftNav(hd_email: TextView, hd_nick: TextView, hd_mbs: TextView, hd_photo: ImageView) {
 
@@ -171,6 +185,43 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 .placeholder(R.drawable.warning)
                 .error(R.drawable.warning)
                 .into(hd_photo)
+    }
+
+    // 다른 사용자의 프로필 방문 시 하단 내비 구성요소 초기화하기
+    fun initOtherBtmNav() {
+        otherHome = findViewById(R.id.otherHome)
+        otherStts = findViewById(R.id.otherStts)
+        otherChat = findViewById(R.id.otherChat)
+        otherProfile = findViewById(R.id.otherProfile)
+
+        otherHome.setOnClickListener(OtherBtmNavClickListener())
+        otherStts.setOnClickListener(OtherBtmNavClickListener())
+        otherChat.setOnClickListener(OtherBtmNavClickListener())
+        otherProfile.setOnClickListener(OtherBtmNavClickListener())
+    }
+
+    // 다른 사용자 프로필 들어간 경우 하단 내비 버튼 각각의 동작 내용
+    inner class OtherBtmNavClickListener : View.OnClickListener {
+        override fun onClick(v: View?) {
+            when(v?.id) {
+                R.id.otherHome -> {
+                    startActivity<OtherMainActivity>()
+                    overridePendingTransition(0, 0)
+                }
+                R.id.otherStts -> {
+                    startActivity<OtherSttsActivity>()
+                    overridePendingTransition(0, 0)
+                }
+                R.id.otherChat -> {
+                    startActivity<ChatActivity>("title" to getOtherUserNick(v.context), "audienceId" to getOtherUserId(v.context), "isGroupchat" to false)
+                    overridePendingTransition(0, 0)
+                }
+                R.id.otherProfile -> {
+                    startActivity<OtherMypageActivity>()
+                    overridePendingTransition(0, 0)
+                }
+            }
+        }
     }
 
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
@@ -539,13 +590,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                         activateAlarmResult, startDateResult, startTimeResult, repeatResult, memotxt.toString())
                 }
                 R.id.makeAction -> {
-                    if(inputCheck()) makeAction(service, mainTitle.toString(), timecostResult.toString(), memotxt.toString(), rtId)
+                    if(inputCheck()) makeAction(service, mainTitle.toString(), timecostResult.toString().toInt(), memotxt.toString(), rtId)
                 }
                 R.id.updateAction -> {
                     mainTitle = mainTitleInput.text!!
                     timecostResult = timecost.text
                     memotxt = memo.text
-                    if(inputCheck()) updateAction(service, actionId, mainTitle.toString(), timecostResult.toString(), memotxt.toString())
+                    if(inputCheck()) updateAction(service, actionId, mainTitle.toString(), timecostResult.toString().toInt(), memotxt.toString())
                 }
 
                 // 루틴, 할 일 만들기 or 수정에서 "수행 예정 시각" 또는 "수행 예정일" 받아오기
@@ -923,9 +974,9 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // 메인 액티비티 회고 작성 내용 불러오기
-    fun getReview(service: RetrofitService, mDate: String, review: EditText, onPublicSwitch: SwitchMaterial) {
-        d(TAG, "getReview 변수들 : $mDate")
-        service.getReview(mDate, getUserId(applicationContext)).enqueue(object : Callback<JsonObject> {
+    fun getReview(service: RetrofitService, mDate: String, userId : Int, review: EditText, onPublicSwitch: SwitchMaterial) {
+        d(TAG, "getReview 변수들 : $mDate, $userId")
+        service.getReview(mDate, userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 d(TAG, "회고 불러오기 실패 : {$t}")
                 review.setText("")
@@ -939,14 +990,18 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                 val content = gson.get("content").asString // 회고 내용
                 val onPublic = gson.get("on_public").asBoolean // 회고 공개 여부
 
-                review.setText(content)
+                if(userId != getUserId(applicationContext) && !onPublic) {
+                    review.setText(getString(R.string.isPrivateReview))
+                } else {
+                    review.setText(content)
+                }
                 onPublicSwitch.isChecked = onPublic
             }
         })
     }
 
     // '행동 추가하기' 액티비티의 하단 버튼 눌렀을 때의 동작(행동 추가하기)
-    fun makeAction(service : RetrofitService, title : String, time : String, memo : String, rtId : Int) {
+    fun makeAction(service : RetrofitService, title : String, time : Int, memo : String, rtId : Int) {
         d(TAG, "makeAction 변수들 : $title, $time, $memo, $rtId")
         service.makeAction(title, time, memo, rtId, getUserId(this)).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -971,7 +1026,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     }
 
     // '행동 수정하기' 액티비티의 하단 버튼 눌렀을 때의 동작(행동 수정하기)
-    fun updateAction(service : RetrofitService, id : Int, title : String, time : String, memo : String) {
+    fun updateAction(service : RetrofitService, id : Int, title : String, time : Int, memo : String) {
         d(TAG, "updateAction 변수들 : $title, $time, $memo")
         service.updateAction(id, title, time, memo).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {

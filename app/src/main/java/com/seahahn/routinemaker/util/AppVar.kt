@@ -70,4 +70,30 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         return prefs.getInt("PAGER_POS", 0)
     }
+
+    // 사용자가 선택한 다른 사용자의 프로필 방문 시 해당 사용자의 고유 번호 임시 저장
+    fun setOtherUserId(context: Context, input: Int) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putInt("OTHER_USER_ID", input)
+        editor.commit()
+    }
+
+    fun getOtherUserId(context: Context): Int {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getInt("OTHER_USER_ID", 0)
+    }
+
+    // 사용자가 선택한 다른 사용자의 프로필 방문 시 해당 사용자의 고유 번호 임시 저장
+    fun setOtherUserNick(context: Context, input: String) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putString("OTHER_USER_NICK", input)
+        editor.commit()
+    }
+
+    fun getOtherUserNick(context: Context): String {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getString("OTHER_USER_NICK", "").toString()
+    }
 }

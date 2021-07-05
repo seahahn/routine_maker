@@ -190,7 +190,8 @@
 
             <ScrollView
                     android:layout_width="340dp"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
                     android:id="@+id/introbg"
                     android:background="@drawable/introbg"
                     android:padding="12dp"

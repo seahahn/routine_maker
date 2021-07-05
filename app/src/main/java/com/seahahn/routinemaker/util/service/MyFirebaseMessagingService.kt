@@ -75,10 +75,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             if(chatMsg.contentType != 4 && chatMsg.contentType != 5) { // 사용자의 입장 또는 퇴장을 제외한 일반적인 메시지인 경우에만 알림 띄우기
                 getChatRoomData(chatMsg.roomId, remoteMessage) // 이동해야 할 채팅방 데이터 가져오기
-
-                val badgeBefore = chatDB!!.chatDao().getChatroom(chatMsg.roomId).msgBadge // 이전 뱃지 숫자
-                val badgeUpdate = ChatRoomBadgeUpdate(chatMsg.roomId, badgeBefore+1) // 이전 숫자에 1 추가
-                chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
             }
 
 //            sendNotification(remoteMessage)
@@ -158,6 +154,33 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 if(chatroomData.isGroupchat) { // 그룹 채팅인 경우 그룹명을 채팅방 제목으로 설정
                     getGroup(chatroomData.audienceId, remoteMessage)
                 } else { // 1:1 채팅인 경우 대화 상대방 닉네임을 채팅방 제목으로 설정
+                    // 메시지 받은 채팅방의 데이터가 사용자 기기 DB에 없으면 만들기
+                    object : Thread() {
+                        override fun run() {
+                            val chatRoomLocal = chatDB!!.chatDao().getChatroom(chatroomData.id)
+                            d(TAG, "chatRoomLocal : $chatRoomLocal")
+
+                            if(chatRoomLocal == null) {
+                                val chatRoom = ChatRoom(
+                                    chatroomData.id,
+                                    "",
+                                    chatroomData.isGroupchat,
+                                    chatroomData.hostId,
+                                    chatroomData.audienceId,
+                                    chatroomData.createdAt,
+                                    "",
+                                    chatroomData.createdAt,
+                                    0
+                                )
+                                chatDB!!.chatDao().insertChatRoom(chatRoom) // 채팅방 데이터 저장하기
+                            }
+
+                            val badgeBefore = chatDB!!.chatDao().getChatroom(chatMsg.roomId).msgBadge // 이전 뱃지 숫자
+                            val badgeUpdate = ChatRoomBadgeUpdate(chatMsg.roomId, badgeBefore+1) // 이전 숫자에 1 추가
+                            chatDB!!.chatDao().updateBadge(badgeUpdate) // 채팅방에 안 읽은 메시지 갯수 수정(채팅방 목록 뱃지에 표시)
+                        }
+                    }.start()
+
                     if(chatroomData.hostId != getUserId(applicationContext)) {
                         getUserData(roomId, chatroomData.hostId, remoteMessage)
                     } else {

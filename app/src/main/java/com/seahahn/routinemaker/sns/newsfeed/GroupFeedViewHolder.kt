@@ -55,6 +55,8 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         // 피드 누르면 해당 피드의 내용과 좋아요, 댓글만 보이는 액티비티로 이동
         item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
         moreBtn.setOnClickListener(MoreBtnClickListener()) // 더보기 버튼 눌렀을 때의 리스너 초기화하기
+        profile_pic.setOnClickListener(Sns.ProfileClickListener())
+        nick.setOnClickListener(Sns.ProfileClickListener())
     }
 
     fun onBind(feedData : FeedData) {
@@ -78,7 +80,7 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             for(element in imgArray){
                 imgList.add(element.toString()) // 배열을 다시 리스트로 만듦
             }
-            feedImgAdapter.replaceList(imgList) // 만든 리스트를 목록에 넣음
+            if(imgList.isNotEmpty()) feedImgAdapter.replaceList(imgList) // 만든 리스트를 목록에 넣음
         }
 
 
@@ -124,6 +126,10 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                     .error(R.drawable.warning)
                     .into(profile_pic)
                 nick.text = nickname
+
+                // 프로필 사진 및 닉네임에 사용자의 고유 번호를 태그로 담아둠(누르면 해당 사용자의 프로필 정보를 볼 수 있는 액티비티로 이동하기 위함)
+                profile_pic.tag = hashMapOf("id" to writerId, "nick" to nickname)
+                nick.tag = hashMapOf("id" to writerId, "nick" to nickname)
             }
         })
     }

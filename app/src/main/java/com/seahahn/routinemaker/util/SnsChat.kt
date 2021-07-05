@@ -29,10 +29,7 @@ import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.File
-import java.io.IOException
+import java.io.*
 import java.lang.Thread.sleep
 import java.net.Socket
 import java.net.SocketException
@@ -426,6 +423,8 @@ open class SnsChat : Sns() {
             } catch(e: SocketException) {
                 d(TAG, "소켓 연결 해제")
 //                e.printStackTrace()
+            } catch(e: EOFException) {
+                d(TAG, "EOFException")
             }
         }
     }

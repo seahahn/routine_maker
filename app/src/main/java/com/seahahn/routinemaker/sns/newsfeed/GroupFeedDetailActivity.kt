@@ -124,6 +124,9 @@ class GroupFeedDetailActivity : Sns() {
                     smoothScrollTo(scrollX, scrollY + keyboardHeight)
                 }
             })
+
+        profile_pic.setOnClickListener(ProfileClickListener())
+        nick.setOnClickListener(ProfileClickListener())
     }
 
     // 액티비티 구성요소 초기화

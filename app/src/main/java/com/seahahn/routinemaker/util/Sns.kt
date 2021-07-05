@@ -26,21 +26,24 @@ import com.bumptech.glide.Glide
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.nhn.android.idp.common.logger.Logger
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.*
-import com.seahahn.routinemaker.sns.chat.ChatContentsViewModel
-import com.seahahn.routinemaker.sns.chat.ChatImgAdapter
+import com.seahahn.routinemaker.sns.CmtData
+import com.seahahn.routinemaker.sns.FeedData
+import com.seahahn.routinemaker.sns.GroupData
+import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.FullImgAdapter
 import com.seahahn.routinemaker.sns.group.*
 import com.seahahn.routinemaker.sns.newsfeed.FeedCmtViewModel
 import com.seahahn.routinemaker.sns.newsfeed.FeedImgAdapter
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedMakeActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedViewModel
+import com.seahahn.routinemaker.sns.others.OtherMypageActivity
 import com.seahahn.routinemaker.util.AppVar.getAcceptedList
 import com.seahahn.routinemaker.util.AppVar.getNextLeaderId
+import com.seahahn.routinemaker.util.AppVar.setOtherUserId
+import com.seahahn.routinemaker.util.AppVar.setOtherUserNick
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -357,7 +360,7 @@ open class Sns : Main() {
         val dialogView = inf.inflate(R.layout.dialog_select_next_group_leader, null)
 
         val groupMemberList = dialogView.findViewById<RecyclerView>(R.id.groupMemberList) // 리사이클러뷰 초기화
-        val groupMemberListAdapter = GroupMemberListAdapter() // 어댑터 초기화
+        val groupMemberListAdapter = GroupNextLeaderAdapter() // 어댑터 초기화
         groupMemberList.adapter = groupMemberListAdapter // 어댑터 연결
         groupMemberListAdapter.getService(service)
         val predicate: Predicate<GroupMemberData> = Predicate<GroupMemberData> { data -> data.id == getUserId(this) }
@@ -485,6 +488,24 @@ open class Sns : Main() {
                         updateFeed(service, feedId, contentResult.toString(), imagesURL)
                     }
                 }
+            }
+        }
+    }
+
+    // 다른 사용자의 프로필 사진 또는 닉네임을 클릭 시 동작할 내용
+    class ProfileClickListener : View.OnClickListener {
+        private val TAG = this::class.java.simpleName
+        override fun onClick(v: View?) {
+            val context = v!!.context
+            val otherUserId = ((v.tag as HashMap<*, *>)["id"]).toString().toInt()
+            val otherUserNick = ((v.tag as HashMap<*, *>)["nick"]).toString()
+            d(TAG, "otherUserInfo : $otherUserId, $otherUserNick")
+            if(otherUserId != getUserId(context)) {
+                setOtherUserId(context, otherUserId)
+                setOtherUserNick(context, otherUserNick)
+                val it = Intent(v.context, OtherMypageActivity::class.java)
+//                it.putExtra("id", otherUserId)
+                context.startActivity(it)
             }
         }
     }
@@ -650,7 +671,11 @@ open class Sns : Main() {
                 }
             }
         }
-        imagesURL = imagesList.toString() // 이미지 경로를 모아둔 리스트를 문자열로 바꾸어 저장
+        if(imagesList.isNotEmpty()) {
+            imagesURL = imagesList.toString() // 이미지 경로를 모아둔 리스트를 문자열로 바꾸어 저장
+        } else {
+            imagesURL = ""
+        }
         imgDatas.clear()
         imagesList.clear()
 //        val acceptedList = Arrays.stream(acceptedListString.substring(1, acceptedListString.length - 1).split(",").toTypedArray())
@@ -1019,6 +1044,10 @@ open class Sns : Main() {
             .placeholder(R.drawable.warning)
             .error(R.drawable.warning)
             .into(profile_pic)
+
+        // 프로필 사진 및 닉네임에 사용자의 고유 번호를 태그로 담아둠(누르면 해당 사용자의 프로필 정보를 볼 수 있는 액티비티로 이동하기 위함)
+        profile_pic.tag = hashMapOf("id" to feedWriterId, "nick" to nickname)
+        nick.tag = hashMapOf("id" to feedWriterId, "nick" to nickname)
     }
 
     // 그룹 피드 작성하기

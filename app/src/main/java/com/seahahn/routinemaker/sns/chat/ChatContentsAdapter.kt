@@ -1,6 +1,7 @@
 package com.seahahn.routinemaker.sns.chat
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,6 +19,8 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.nhn.android.idp.common.logger.Logger.w
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.sns.others.OtherMypageActivity
+import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,11 +29,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatContentsAdapter(mContext : Context, mIsGroupchat : Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
     val context : Context = mContext
+    val isGroupchat : Boolean = mIsGroupchat
 
     //데이터들을 저장하는 변수
     private var data = mutableListOf<ChatMsg>()
@@ -76,7 +81,7 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerVie
 //        d(TAG, "rt onBindViewHolder")
         if(holder is ChatContentViewHolder){
             holder.onBind(data[position])
-        }else if(holder is ChatUserIOViewHolder){
+        } else if(holder is ChatUserIOViewHolder) {
             holder.onBind(data[position])
         }
     }
@@ -117,6 +122,11 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerVie
         private lateinit var contentImg : RecyclerView
 
         private lateinit var chatImgAdapter : ChatImgAdapter
+
+        init {
+            profilePic.setOnClickListener(Sns.ProfileClickListener())
+            nick.setOnClickListener(Sns.ProfileClickListener())
+        }
 
         fun onBind(chatMsg : ChatMsg) {
             // 채팅 메시지 타입 구분하기
@@ -175,16 +185,37 @@ class ChatContentsAdapter(mContext : Context) : RecyclerView.Adapter<RecyclerVie
                         .error(R.drawable.warning)
                         .into(profilePic)
                     nick.text = nickname
+
+                    // 프로필 사진 및 닉네임에 사용자의 고유 번호를 태그로 담아둠(누르면 해당 사용자의 프로필 정보를 볼 수 있는 액티비티로 이동하기 위함)
+                    profilePic.tag = hashMapOf("id" to writerId, "nick" to nickname)
+                    nick.tag = hashMapOf("id" to writerId, "nick" to nickname)
                 }
             })
         }
+
+//        // 다른 사용자의 프로필 사진 또는 닉네임을 클릭 시 동작할 내용
+//        inner class ProfileClickListener : View.OnClickListener {
+//            override fun onClick(v: View?) {
+//                val context = v!!.context
+//                val otherUserId = v.tag as Int
+//                val it = Intent(context, OtherMypageActivity::class.java)
+//                it.putExtra("id", otherUserId)
+//                context.startActivity(it)
+//            }
+//        }
     }
 
     inner class ChatUserIOViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
+        private val item : ConstraintLayout = itemView.findViewById(R.id.item) // 텍스트
         private val content : TextView = itemView.findViewById(R.id.content) // 텍스트
 
         fun onBind(chatMsg : ChatMsg) {
+            if(!isGroupchat) {
+                item.visibility = View.GONE
+                content.visibility = View.GONE
+            }
+
             // 채팅 메시지 타입 구분하기
             when(chatMsg.contentType) {
                 4 -> content.text = chatMsg.content + context.getString(R.string.chatIn)

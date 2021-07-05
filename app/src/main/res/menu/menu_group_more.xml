@@ -3,10 +3,13 @@
     <item
             android:id="@+id/info"
             android:title="@string/popupMenuGroupInfo"/>
-    <group android:id="@+id/chat_in">
+    <group android:id="@+id/group_in">
         <item
                 android:id="@+id/chat"
                 android:title="@string/popupMenuGroupChat"/>
+        <item
+                android:id="@+id/memberList"
+                android:title="@string/popupMenuGroupMemberList"/>
     </group>
     <group android:id="@+id/group_manage">
         <item

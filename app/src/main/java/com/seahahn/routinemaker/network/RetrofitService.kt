@@ -159,7 +159,7 @@ interface RetrofitService {
     @POST("/api/main/make_action.php") // 루틴 내 행동 추가하기 액티비티에서 데이터 보내 DB에 저장하기
     fun makeAction(
         @Field("title") title: String,
-        @Field("m_time") time: String,
+        @Field("m_time") time: Int,
         @Field("memo") memo: String,
         @Field("rt_id") rtId: Int,
         @Field("user_id") userId: Int
@@ -170,7 +170,7 @@ interface RetrofitService {
     fun updateAction(
         @Field("id") id: Int,
         @Field("title") title: String,
-        @Field("m_time") time: String,
+        @Field("m_time") time: Int,
         @Field("memo") memo: String
     ) : Call<JsonObject>
 

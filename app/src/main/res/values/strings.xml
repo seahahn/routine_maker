@@ -73,6 +73,7 @@
     <string name="popupMenuDelete">삭제</string>
     <string name="popupMenuGroupInfo">그룹 정보 보기</string>
     <string name="popupMenuGroupChat">그룹 채팅 참여하기</string>
+    <string name="popupMenuGroupMemberList">그룹원 목록 보기</string>
     <string name="popupMenuGroupUpdate">그룹 정보 수정</string>
     <string name="popupMenuGroupDelete">그룹 해체</string>
     <string name="popupMenuGroupApplicants">그룹 가입 신청자 목록 보기</string>
@@ -82,6 +83,9 @@
     <string name="btmStts">통계</string>
     <string name="btmGroup">그룹</string>
     <string name="btmNoti">알림</string>
+    <string name="btmRt">루틴</string>
+    <string name="btmChat">채팅</string>
+    <string name="btmPf">프로필</string>
 
     <string name="homeRoutine">루틴</string>
     <string name="homeReview">회고</string>
@@ -157,6 +161,8 @@
     <string name="actionColor">표시 색상</string>
     <string name="rtOnFeed">그룹 피드에 공개하기</string>
     <string name="memo">메모</string>
+    <string name="isPrivateReview">사용자가 비공개한 회고입니다.</string>
+    <string name="isEmptyReview">작성된 내용이 없습니다.</string>
 
     <string name="sunday">일</string>
     <string name="monday">월</string>
@@ -205,6 +211,7 @@
     <string name="groupList">가입한 그룹 목록</string>
     <string name="groupInfo">그룹 정보</string>
     <string name="applicantList">그룹 가입 신청자 목록</string>
+    <string name="memberList">그룹원 목록</string>
     <string name="acceptJoin">그룹 가입 신청 수락하기</string>
     <string name="searchGroup">그룹 찾기</string>
     <string name="makeGroup">그룹 만들기</string>

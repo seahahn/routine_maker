@@ -115,10 +115,10 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             d(TAG, "group onClick")
             val leaderId = (v?.tag as HashMap<*, *>)["leaderId"].toString().toInt()
             val onPublic = (v.tag as HashMap<*, *>)["onPublic"].toString().toBoolean()
-            val popup = PopupMenu(v!!.context, v)
+            val popup = PopupMenu(v.context, v)
             popup.apply {
                 // MainActivity implements OnMenuItemClickListener
-                setOnMenuItemClickListener(GroupPopupMenuListener(v, serviceInViewHolder))
+                setOnMenuItemClickListener(GroupPopupMenuListener(v))
                 // 사용자가 그룹 생성자이면 그룹 수정 및 가입 신청자 목록 보기 가능, 아니라면 그룹 정보 보기만 가능
 //                if(((v.tag as HashMap<*, *>)["userId"]).toString().toInt() == getUserId(context)) {
                 inflate(R.menu.menu_group_more)
@@ -134,11 +134,11 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                     popup.menu.setGroupVisible(R.id.group_applicant, false)
                 }
 
-                // 가입되어 있으면 채팅 입장 가능
+                // 가입되어 있으면 그룹원 목록 보기 및 채팅 입장 가능
                 if(groupMemberIdData.contains(getUserId(context))) {
-                    popup.menu.setGroupVisible(R.id.chat_in, true)
+                    popup.menu.setGroupVisible(R.id.group_in, true)
                 } else {
-                    popup.menu.setGroupVisible(R.id.chat_in, false)
+                    popup.menu.setGroupVisible(R.id.group_in, false)
                 }
 //                } else {
 //                    inflate(R.menu.menu_group_more_normal)
@@ -149,13 +149,12 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
     }
 
     // 루틴 목록의 아이템 내 더보기 버튼의 팝업 메뉴 항목별 동작할 내용
-    inner class GroupPopupMenuListener(v: View, serviceInput: RetrofitService) : Sns(), PopupMenu.OnMenuItemClickListener {
+    inner class GroupPopupMenuListener(v: View) : Sns(), PopupMenu.OnMenuItemClickListener {
 
     private val TAG = this::class.java.simpleName
 
         // 루틴 수정 또는 삭제 시 해당 루틴의 DB 내 고유 번호 전달하기
         private val groupItem = v // 더보기 버튼에 지정해둔 태그를 통해 해당 루틴 데이터를 갖고 오기 위함
-        private val svc = serviceInput // 레트로핏 서비스 객체
         private var context = groupItem.context
 
         override var groupId = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
@@ -177,6 +176,12 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                     it.putExtra("isGroupchat", true)
                     it.putExtra("hostId", leaderId)
                     it.putExtra("audienceId", groupId)
+                    context.startActivity(it)
+                    true
+                }
+                R.id.memberList -> { // 그룹원 목록 보기
+                    val it = Intent(context, GroupMemberListActivity::class.java)
+                    it.putExtra("groupId", groupId)
                     context.startActivity(it)
                     true
                 }

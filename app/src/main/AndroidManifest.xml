@@ -18,22 +18,38 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
-<!--        <meta-data-->
-<!--                android:name="com.google.firebase.messaging.default_notification_icon"-->
-<!--                android:resource="@drawable/ic_stat_ic_notification" />-->
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
-<!--        <meta-data-->
-<!--                android:name="com.google.firebase.messaging.default_notification_color"-->
-<!--                android:resource="@color/colorAccent" />-->
+        <activity android:name=".sns.others.OtherActionListActivity">
+        </activity>
+        <activity
+                android:name=".sns.others.OtherMypageActivity"
+                android:launchMode="singleTop">
+        </activity>
+        <activity
+                android:name=".sns.others.OtherSttsActivity"
+                android:launchMode="singleTop">
+        </activity>
+        <activity
+                android:name=".sns.others.OtherMainActivity"
+                android:launchMode="singleTop">
+        </activity>
+        <!--
+         Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.firebase.messaging.default_notification_icon" -->
+        <!-- android:resource="@drawable/ic_stat_ic_notification" /> -->
+        <!--
+ Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.firebase.messaging.default_notification_color" -->
+        <!-- android:resource="@color/colorAccent" /> -->
         <!-- Set color used with incoming notification messages (알림 채널 메타 데이터 추가) -->
-<!--        <meta-data-->
-<!--                android:name="com.google.firebase.messaging.default_notification_channel_id"-->
-<!--                android:value="@string/default_notification_channel_id" />-->
-
+        <!-- <meta-data -->
+        <!-- android:name="com.google.firebase.messaging.default_notification_channel_id" -->
+        <!-- android:value="@string/default_notification_channel_id" /> -->
         <activity android:name=".sns.chat.ChatActivity">
         </activity>
         <activity android:name=".sns.chat.ChatListActivity">
@@ -56,11 +72,15 @@
         </activity>
         <activity android:name=".sns.group.GroupMakeActivity">
         </activity>
+        <activity android:name=".sns.group.GroupMemberListActivity">
+        </activity>
         <activity android:name=".sns.group.GroupSearchActivity">
         </activity>
         <activity android:name=".notice.NoticeActivity">
         </activity>
-        <activity android:name=".sns.group.GroupListActivity">
+        <activity
+                android:name=".sns.group.GroupListActivity"
+                android:launchMode="singleTop">
         </activity>
         <activity android:name=".main.ActionListActivity">
         </activity>
@@ -76,7 +96,9 @@
         </activity>
         <activity android:name=".main.RtMakeActivity">
         </activity>
-        <activity android:name=".stts.SttsActivity">
+        <activity
+                android:name=".stts.SttsActivity"
+                android:launchMode="singleTop">
         </activity>
         <activity android:name=".util.WebNoticeActivity">
         </activity>
@@ -112,18 +134,17 @@
         </activity>
         <activity android:name=".TestActivity">
         </activity>
-        <activity android:name=".main.MainActivity">
-        </activity>
-
-        <!-- FCM service -->
+        <activity
+                android:name=".main.MainActivity"
+                android:launchMode="singleTop">
+        </activity> <!-- FCM service -->
         <service
                 android:name=".util.service.MyFirebaseMessagingService"
                 android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

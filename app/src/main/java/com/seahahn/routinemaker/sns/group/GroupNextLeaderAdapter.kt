@@ -1,24 +1,13 @@
 package com.seahahn.routinemaker.sns.group
 
-import android.os.Parcel
-import android.os.Parcelable
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
-import com.seahahn.routinemaker.util.AppVar
-import com.seahahn.routinemaker.util.AppVar.setAcceptedList
-import java.util.HashMap
 
-class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>() {
+class GroupNextLeaderAdapter() : RecyclerView.Adapter<GroupNextLeaderViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
@@ -28,14 +17,14 @@ class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>
 
     //ViewHolder에 쓰일 Layout을 inflate하는 함수
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupNextLeaderViewHolder {
 //        d(TAG, "rt onCreateViewHolder")
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_group_member, parent, false)
-        return GroupMemberListViewHolder(view)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_group_member_radio, parent, false)
+        return GroupNextLeaderViewHolder(view)
     }
 
     //ViewHolder에서 데이터 묶는 함수가 실행되는 곳
-    override fun onBindViewHolder(holder: GroupMemberListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: GroupNextLeaderViewHolder, position: Int) {
 //        d(TAG, "rt onBindViewHolder")
         holder.getService(service)
         holder.onBind(data[position])
@@ -57,4 +46,5 @@ class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>
     fun getService(serviceInput : RetrofitService) {
         service = serviceInput
     }
+
 }

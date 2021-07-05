@@ -14,6 +14,9 @@
             android:id="@+id/chat"
             app:showAsAction="never"
             android:title="@string/popupMenuGroupChat"/>
+    <item
+            android:id="@+id/memberList"
+            android:title="@string/popupMenuGroupMemberList"/>
 
     <group android:id="@+id/group_manage"
            app:showAsAction="never">

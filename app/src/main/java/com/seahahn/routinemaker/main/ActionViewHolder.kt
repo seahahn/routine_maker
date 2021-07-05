@@ -16,6 +16,8 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.util.AppVar.getSelectedDate
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.UserInfo
+import com.seahahn.routinemaker.util.UserInfo.getUserId
 import java.time.LocalDate
 import java.util.*
 
@@ -38,7 +40,6 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     init {
 //        d(TAG, "RtViewHolder init")
-        item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
         actionTitle.setOnClickListener(ActionClickListener()) // 체크박스 눌렀을 때의 리스너 초기화하기
         moreBtn.setOnClickListener(MoreBtnClickListener()) // 더보기 버튼 눌렀을 때의 리스너 초기화하기
     }
@@ -47,12 +48,13 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 아이템 태그에 루틴(할 일)의 고유 번호를 담아둠(메소드에서 활용)
         item.tag = hashMapOf("id" to actionData.id, "rtId" to actionData.rtId, "pos" to actionData.pos)
+        if(actionData.userId == getUserId(context)) item.setOnClickListener(ItemClickListener()) // 아이템 눌렀을 때의 리스너 초기화하기
 
         // 행동 제목 표시하기
         actionTitle.text = actionData.actionTitle
 
         // 선택한 루틴이 활성화되어 있으면 활성화, 아니면 비활성화
-        actionTitle.isEnabled = isActionEnabled
+        actionTitle.isEnabled = isActionEnabled && actionData.userId == UserInfo.getUserId(context)
 
         if(!actionTitle.isEnabled) {
             actionTitle.alpha = 0.4f // 비활성화인 경우 흐리게 만들기
@@ -79,6 +81,7 @@ class ActionViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 루틴 수정 or 삭제 메뉴 팝업 나오는 버튼.
         // 수정 또는 삭제 시 루틴의 고유 번호(id)를 넘겨서 이에 맞는 액티비티를 열고 데이터를 받아옴
+        if(actionData.userId != UserInfo.getUserId(context)) moreBtn.visibility = View.GONE
         moreBtn.tag = hashMapOf("id" to actionData.id, "rtId" to actionData.rtId)
 
         // 예상 소요 시간 표시하기

@@ -13,7 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.sns.others.OtherActionListActivity
 import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.UserInfo.getUserId
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -50,7 +52,7 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     fun onBind(rtData : RtData, dateInput : String, dayOfWeekInput : String){
 
         // 아이템 태그에 루틴(할 일)의 고유 번호, 루틴인지 할 일인지 구분과 함께 반복 요일, 수행 예정일, 반복 여부(할 일인 경우)를 담아둠(메소드에서 활용)
-        item.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "title" to rtData.rtTitle, "mDays" to rtData.mDays, "mDate" to rtData.mDate)
+        item.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType, "title" to rtData.rtTitle, "mDays" to rtData.mDays, "mDate" to rtData.mDate, "userId" to rtData.userId)
 
         // 루틴 제목 표시하기
         rtTitle.text = rtData.rtTitle
@@ -64,11 +66,12 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 && date == LocalDate.now() // 사용자가 선택한 날짜가 오늘 날짜와 동일하지 않으면 비활성화
                 ) // 사용자가 선택한 날짜가 루틴의 수행 예정일이 아니면 비활성화 && date == LocalDate.parse(rtData.date)
                 || rtData.mType == "todo"
+        rtTitle.isEnabled = rtData.userId == getUserId(context)
         isActionEnabled = rtTitle.isEnabled
 
         if(!rtTitle.isEnabled) {
             rtTitle.alpha = 0.4f // 비활성화인 경우 흐리게 만들기
-        } else {
+        } else if(rtTitle.isEnabled || rtData.userId != getUserId(context)){
             rtTitle.alpha = 1.0f
         }
 
@@ -86,6 +89,7 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 루틴 수정 or 삭제 메뉴 팝업 나오는 버튼.
         // 수정 또는 삭제 시 루틴의 고유 번호(id)와 구분(type)값을 넘겨서 이에 맞는 액티비티를 열고 데이터를 받아옴
+        if(rtData.userId != getUserId(context)) moreBtn.visibility = View.GONE
         moreBtn.tag = hashMapOf("id" to rtData.id, "type" to rtData.mType)
 
         // 루틴(할 일) 수행 예정일 및 예정 시각 표시하기
@@ -118,10 +122,16 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             val title = ((v.tag as HashMap<*, *>)["title"]).toString()
             val mDays = ((v.tag as HashMap<*, *>)["mDays"]).toString()
             val mDate = ((v.tag as HashMap<*, *>)["mDate"]).toString()
+            val userId = ((v.tag as HashMap<*, *>)["userId"]).toString().toInt()
 
             when(type) {
                 "rt" -> { // 루틴인 경우 루틴 내 행동 목록으로 이동
-                    val it = Intent(context, ActionListActivity::class.java)
+                    val targetActivity : Context = if(userId == getUserId(context)) {
+                        ActionListActivity()
+                    } else {
+                        OtherActionListActivity()
+                    }
+                    val it = Intent(context, targetActivity::class.java)
                     it.putExtra("id", id)
                     it.putExtra("title", title)
                     it.putExtra("mDays", mDays)

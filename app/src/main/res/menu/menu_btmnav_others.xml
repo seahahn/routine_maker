@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/home"
+            android:enabled="true"
+            android:icon="@drawable/home"
+            android:title="@string/btmRt"/>
+    <item
+            android:id="@+id/stts"
+            android:enabled="true"
+            android:icon="@drawable/stts"
+            android:title="@string/btmStts"/>
+    <item
+            android:id="@+id/chat"
+            android:enabled="true"
+            android:icon="@drawable/chat_send"
+            android:title="@string/btmChat"/>
+    <item
+            android:id="@+id/otherProfile"
+            android:enabled="true"
+            android:icon="@drawable/introbg"
+            android:title="@string/btmPf"/>
+</menu>
