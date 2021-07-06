@@ -5,11 +5,13 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.MainReviewFragment
 import com.seahahn.routinemaker.main.MainRoutineFragment
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
+import com.seahahn.routinemaker.util.AppVar.getOtherUserPic
 import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo
@@ -36,6 +38,12 @@ class OtherMainActivity : Sns() {
         // 하단 내비 초기화
         btmnavOthers = findViewById(R.id.btmnav)
         initOtherBtmNav()
+        otherHomeIcon.alpha = 1f // 현재 보고 있는 액티비티의 위치를 나타내기 위해 액티비티에 연결된 아이콘의 투명도 조정
+        // 하단 내비 우측에 방문한 사용자의 프로필 사진 넣기
+        Glide.with(applicationContext).load(getOtherUserPic(this))
+            .placeholder(R.drawable.warning)
+            .error(R.drawable.warning)
+            .into(otherProfilePic)
 
         // 툴바 제목(날짜) 좌우에 위치한 삼각 화살표 초기화
         // 좌측은 1일 전, 우측은 1일 후의 루틴 및 할 일 목록을 보여줌

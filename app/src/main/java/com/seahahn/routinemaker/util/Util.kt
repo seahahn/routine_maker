@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.badge.BadgeDrawable
 import com.google.gson.JsonObject
@@ -52,6 +53,8 @@ open class Util  : AppCompatActivity() {
     lateinit var toolbar : Toolbar
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
     var homeBtn : Int = 0
+
+    lateinit var prograssbar : ContentLoadingProgressBar // 데이터 로딩 또는 이미지 업로드 등 오래 걸리는 작업 시 띄울 프로그레스바
 
     val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
 
@@ -107,6 +110,7 @@ open class Util  : AppCompatActivity() {
                 } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
                     d(TAG, "뒤로 가기")
                     finish() // 액티비티 종료하기
+                    overridePendingTransition(0, 0)
                 }
             }
         }
@@ -217,6 +221,14 @@ open class Util  : AppCompatActivity() {
                 Log.d(TAG, "body : ${response.body().toString()}")
             }
         })
+    }
+
+    open fun showProgress(show : Boolean) {
+        if(show) {
+            prograssbar.show()
+        } else {
+            prograssbar.hide()
+        }
     }
 
 

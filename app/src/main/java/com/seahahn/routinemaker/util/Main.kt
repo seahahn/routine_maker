@@ -83,6 +83,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     lateinit var otherStts : ConstraintLayout // 다른 사용자 루틴 수행 통계 보기
     lateinit var otherChat : ConstraintLayout // 다른 사용자와 1:1 채팅하기
     lateinit var otherProfile : ConstraintLayout // 다른 사용자의 프로필 보기
+    lateinit var otherHomeIcon : ImageView
+    lateinit var otherSttsIcon : ImageView
+    lateinit var otherChatIcon : ImageView
+    lateinit var otherProfilePic : ImageView
 
     // 사용자가 선택한 날짜에 따라 툴바 제목도 그에 맞는 날짜로 변경함
     // 초기값은 오늘 날짜
@@ -193,6 +197,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         otherStts = findViewById(R.id.otherStts)
         otherChat = findViewById(R.id.otherChat)
         otherProfile = findViewById(R.id.otherProfile)
+        otherHomeIcon = findViewById(R.id.otherHomeIcon)
+        otherSttsIcon = findViewById(R.id.otherSttsIcon)
+        otherChatIcon = findViewById(R.id.otherChatIcon)
+        otherProfilePic = findViewById(R.id.otherProfilePic)
 
         otherHome.setOnClickListener(OtherBtmNavClickListener())
         otherStts.setOnClickListener(OtherBtmNavClickListener())

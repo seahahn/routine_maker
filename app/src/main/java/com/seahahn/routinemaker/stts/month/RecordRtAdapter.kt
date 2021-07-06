@@ -1,5 +1,6 @@
 package com.seahahn.routinemaker.stts.month
 
+import android.content.Context
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,11 +9,13 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.util.Stts
 
-class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
+class RecordRtAdapter(mContext : Stts) : RecyclerView.Adapter<RecordRtViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService
+    private val context = mContext
 
     //데이터들을 저장하는 변수
     private var allData = mutableListOf<RtData>()
@@ -21,6 +24,9 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     private var actionData = mutableListOf<ActionData>()
     private lateinit var date : String
     private lateinit var dayOfWeek : String
+
+    // 데이터 로딩이 완료된 아이템의 갯수를 체크할 변수
+    private var loadedDataCount = 0
 
     //ViewHolder에 쓰일 Layout을 inflate하는 함수
     //ViewGroup의 context를 사용하여 특정 화면에서 구현할 수 있도록 함
@@ -37,6 +43,9 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
         holder.getRtDatas(allData)
         holder.getActionDatas(actionData)
         holder.onBind(data[position], date)
+
+//        loadedDataCount++
+//        if(loadedDataCount == itemCount) context.showProgress(false)
     }
 
     override fun getItemCount(): Int = data.size
@@ -50,6 +59,7 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     }
 
     fun replaceList(newList: MutableList<RtData>) {
+//        loadedDataCount = 0
 //        d(TAG, "RRA replaceList")
         data = newList.toMutableList()
         //어댑터의 데이터가 변했다는 notify를 날린다

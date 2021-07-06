@@ -80,6 +80,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
             rtAdapter.getService(service)
         }
 
+        // 날짜 데이터 받기
         dateViewModel.selectedDate.observe(this) { date ->
             d(TAG, "루틴 프래그먼트 date : $date")
             // 사용자가 선택한 날짜를 루틴, 할 일 목록에 보내기
@@ -162,6 +163,7 @@ class MainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListener, 
             }
 
         }
+
         // 루틴, 할 일 목록 데이터 가져오기
         rtTodoViewModel.gottenRtData.observe(this) { rtDatas ->
             d(TAG, "루틴 프래그먼트 rtDatas : $rtDatas")

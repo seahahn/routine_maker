@@ -268,6 +268,9 @@
     <string name="chatIn">님이 입장하셨습니다</string>
     <string name="chatOut">님이 퇴장하셨습니다</string>
 
+    <string name="notiList">알림 목록</string>
+    <string name="notiSetting">알림 설정</string>
+
     <string name="zero">0</string>
     <string name="pic">사진</string>
 

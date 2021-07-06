@@ -20,6 +20,10 @@ open class Stts : Main() {
     // 일간(0), 주간(1), 월간(2). 초기값은 일간(0)임
     var selectedTime = 0
 
+    // 월간 통계에서 하단의 루틴 수행 기록 데이터가 전부 로딩되었는지 체크하기 위한 변수
+    var needToBeLoadedDataCount = 0 // 로딩되어야 할 데이터 수
+    var loadedDataCount = 0 // 로딩된 데이터 수
+
     // 사용자로부터 메인(루틴 목록), 통계 등의 데이터를 불러오기 위해 필요한 날짜 정보를 받을 때 사용되는 메소드
     fun setToolbarDate(selectedTime : Int, title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int) {
         datePicker = DatePickerDialog(this,

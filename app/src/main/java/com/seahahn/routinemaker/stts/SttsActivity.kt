@@ -33,6 +33,10 @@ class SttsActivity : Stts() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
+        // 프로그레스바 초기화
+        prograssbar = findViewById(R.id.prograssbar)
+        showProgress(false)
+
         // 좌측 Navigation Drawer 초기화
         drawerLayout = findViewById(R.id.drawer_layout)
         leftnav = findViewById(R.id.leftnav)
@@ -72,7 +76,7 @@ class SttsActivity : Stts() {
         // 액티비티에 포함될 프래그먼트 초기화
         sttsDayFragment = SttsDayFragment()
         sttsWeekFragment = SttsWeekFragment()
-        sttsMonthFragment = SttsMonthFragment()
+        sttsMonthFragment = SttsMonthFragment(this)
 
         // 탭 레이아웃 초기화. 탭에 따라 보여줄 프래그먼트가 바뀜
 //        tabLayout = findViewById(R.id.tabLayout)

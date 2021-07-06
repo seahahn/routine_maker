@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.bumptech.glide.Glide
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.stts.day.SttsDayFragment
 import com.seahahn.routinemaker.stts.month.SttsMonthFragment
@@ -30,6 +31,10 @@ class OtherSttsActivity : Stts() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
+        // 프로그레스바 초기화
+        prograssbar = findViewById(R.id.prograssbar)
+        showProgress(false)
+
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         initToolbar(title, formattedMDDoW, 1) // 툴바 세팅하기
         toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
@@ -37,6 +42,12 @@ class OtherSttsActivity : Stts() {
         // 하단 BottomNavigationView 초기화
         btmnavOthers = findViewById(R.id.btmnav)
         initOtherBtmNav()
+        otherSttsIcon.alpha = 1f // 현재 보고 있는 액티비티의 위치를 나타내기 위해 액티비티에 연결된 아이콘의 투명도 조정
+        // 하단 내비 우측에 방문한 사용자의 프로필 사진 넣기
+        Glide.with(applicationContext).load(AppVar.getOtherUserPic(this))
+            .placeholder(R.drawable.warning)
+            .error(R.drawable.warning)
+            .into(otherProfilePic)
 
         // 툴바 제목(날짜) 좌우에 위치한 삼각 화살표 초기화
         // 좌측은 1일 전, 우측은 1일 후의 루틴 및 할 일 목록을 보여줌
@@ -53,7 +64,7 @@ class OtherSttsActivity : Stts() {
         // 액티비티에 포함될 프래그먼트 초기화
         sttsDayFragment = SttsDayFragment()
         sttsWeekFragment = SttsWeekFragment()
-        sttsMonthFragment = SttsMonthFragment()
+        sttsMonthFragment = SttsMonthFragment(this)
 
         // 탭 레이아웃 초기화. 탭에 따라 보여줄 프래그먼트가 바뀜
 //        tabLayout = findViewById(R.id.tabLayout)

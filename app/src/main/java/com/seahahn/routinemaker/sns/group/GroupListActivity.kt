@@ -59,7 +59,7 @@ class GroupListActivity : Sns() {
         val leftnav_header = leftnav.getHeaderView(0)
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        val titleText = getString(R.string.groupList) // 툴바 제목에 들어갈 텍스트. 루틴 제목을 가져옴
+        val titleText = getString(R.string.groupList) // 툴바 제목에 들어갈 텍스트
         initToolbar(title, titleText, 0) // 툴바 세팅하기
 
         searchView = findViewById(R.id.searchView) // 그룹명 검색창

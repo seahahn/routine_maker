@@ -12,6 +12,8 @@ import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.util.*
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.AppVar.getOtherUserNick
+import com.seahahn.routinemaker.util.AppVar.getOtherUserPic
+import com.seahahn.routinemaker.util.AppVar.setOtherUserPic
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,6 +40,7 @@ class OtherMypageActivity : Main() {
 
         btmnavOthers = findViewById(R.id.btmnav)
         initOtherBtmNav()
+        otherProfilePic.foreground = getDrawable(R.drawable.round_bg_white) // 현재 보고 있는 액티비티의 위치를 나타내기 위한 표시
 
         // 사용자 정보 불러오기
 //        val id = intent.getIntExtra("id", 0) // DB 내 사용자의 고유 번호
@@ -76,10 +79,17 @@ class OtherMypageActivity : Main() {
                 intro.setText(gson.get("intro").asString)
 
                 photoUrl = gson.get("photo").asString
+                setOtherUserPic(applicationContext, photoUrl) // 방문한 사용자의 프로필 사진 URL 임시 저장
                 Glide.with(applicationContext).load(photoUrl)
                     .placeholder(R.drawable.warning)
                     .error(R.drawable.warning)
                     .into(photo)
+
+                // 하단 내비 우측에 방문한 사용자의 프로필 사진 넣기
+                Glide.with(applicationContext).load(photoUrl)
+                    .placeholder(R.drawable.warning)
+                    .error(R.drawable.warning)
+                    .into(otherProfilePic)
 
 //                d(TAG, "nick.getText() : "+nick.getText())
 //                d(TAG, "intro.getText() : "+intro.getText())

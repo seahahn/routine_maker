@@ -7,12 +7,14 @@ import android.util.Log.d
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.FeedData
@@ -21,8 +23,10 @@ import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
 import com.seahahn.routinemaker.sns.group.GroupInfoActivity
 import com.seahahn.routinemaker.sns.group.GroupMemberListActivity
 import com.seahahn.routinemaker.sns.group.GroupUpdateActivity
+import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserSetting
 import java.util.*
 
 /*
@@ -39,10 +43,12 @@ class GroupFeedActivity : Sns() {
     private lateinit var feedListAdapter: GroupFeedAdapter
     private lateinit var feedList: RecyclerView
     var mDatas = mutableListOf<FeedData>()
-//    var showDatas = mutableListOf<FeedData>()
+    var showDatas = mutableListOf<FeedData>()
     lateinit var it_mDatas : Iterator<FeedData>
 
     private lateinit var searchView: SearchView
+
+    private lateinit var showOnlyMyFeed: MaterialCheckBox // 내 피드만 보기 체크박스
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +76,9 @@ class GroupFeedActivity : Sns() {
 
         searchView = findViewById(R.id.searchView) // 그룹명 검색창
         searchView.setOnQueryTextListener(QueryTextChenageListener())
+
+        showOnlyMyFeed = findViewById(R.id.showOnlyMyFeed)
+        showOnlyMyFeed.setOnCheckedChangeListener(this)
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)
@@ -99,15 +108,20 @@ class GroupFeedActivity : Sns() {
             Logger.d(TAG, "feedDatas : $feedDatas")
             mDatas = feedDatas // 뷰모델에 저장해둔 피드 목록 데이터 가져오기
 
-//            showDatas.clear()
-//            it_mDatas = mDatas.iterator()
-//            while (it_mDatas.hasNext()) {
-//                val it_mData = it_mDatas.next()
-//                // 사용자가 가입한 그룹 목록만 추려서 출력
-//                if (it_mData.joined) {
-//                    showDatas.add(it_mData)
-//                }
-//            }
+            // 사용자가 작성한 피드 목록을 별도로 저장해둠(내 피드만 보기 체크박스에 체크 시 출력할 내용)
+            object : Thread() {
+                override fun run() {
+                    showDatas.clear()
+                    it_mDatas = mDatas.iterator()
+                    while (it_mDatas.hasNext()) {
+                        val it_mData = it_mDatas.next()
+                        // 사용자가 가입한 그룹 목록만 추려서 출력
+                        if (it_mData.writerId == getUserId(applicationContext)) {
+                            showDatas.add(it_mData)
+                        }
+                    }
+                }
+            }.start()
 
             feedListAdapter.replaceList(mDatas) // 그룹 고유 번호에 맞춰서 피드 목록 띄우기
             feedListAdapter.saveOriginalList(mDatas) // 원본 목록 저장하기(검색 이후 다시 제자리로 돌려놓기 위함)
@@ -228,6 +242,24 @@ class GroupFeedActivity : Sns() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    // 내 피드만 보기 체크 여부에 따른 목록 출력 방식 정하기
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        if(isChecked) { // 사용자가 작성한 피드만 보여줌
+            feedListAdapter.replaceList(showDatas)
+            feedListAdapter.saveOriginalList(showDatas)
+
+            // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
+            if(feedListAdapter.itemCount == 0) {
+                viewEmptyList.visibility = View.VISIBLE
+            } else {
+                viewEmptyList.visibility = View.GONE
+            }
+        } else { // 모든 피드를 보여줌
+            feedListAdapter.replaceList(mDatas)
+            feedListAdapter.saveOriginalList(mDatas)
+        }
     }
 
     // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기

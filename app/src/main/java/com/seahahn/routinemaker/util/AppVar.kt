@@ -84,7 +84,7 @@ object AppVar {
         return prefs.getInt("OTHER_USER_ID", 0)
     }
 
-    // 사용자가 선택한 다른 사용자의 프로필 방문 시 해당 사용자의 고유 번호 임시 저장
+    // 사용자가 선택한 다른 사용자의 프로필 방문 시 해당 사용자의 닉네임 임시 저장
     fun setOtherUserNick(context: Context, input: String) {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
@@ -95,5 +95,18 @@ object AppVar {
     fun getOtherUserNick(context: Context): String {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         return prefs.getString("OTHER_USER_NICK", "").toString()
+    }
+
+    // 사용자가 선택한 다른 사용자의 프로필 방문 시 해당 사용자의 프로필 사진 URL 임시 저장
+    fun setOtherUserPic(context: Context, input: String) {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        val editor : SharedPreferences.Editor = prefs.edit()
+        editor.putString("OTHER_USER_PIC", input)
+        editor.commit()
+    }
+
+    fun getOtherUserPic(context: Context): String {
+        val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
+        return prefs.getString("OTHER_USER_PIC", "").toString()
     }
 }

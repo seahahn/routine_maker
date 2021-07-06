@@ -119,8 +119,6 @@ open class Sns : Main() {
 
     lateinit var keyboardVisibilityUtils: KeyboardVisibilityUtils
 
-    lateinit var prograssbar : ContentLoadingProgressBar // 이미지 업로드 중에 띄울 프로그레스바
-
     lateinit var fullImgLayout : ConstraintLayout // 이미지 클릭 시 크게 보여줄 레이아웃
     lateinit var fullImgPager : ViewPager2 // 이미지 클릭 시 크게 보여줄 뷰페이저
     lateinit var fullImgClose : ImageButton // 이미지 클릭 시 크게 보여줄 화면 닫기 버튼
@@ -696,7 +694,7 @@ open class Sns : Main() {
         )
     }
 
-    fun showProgress(show : Boolean) {
+    override fun showProgress(show : Boolean) {
         if(show) {
             prograssbar.show()
         } else {
