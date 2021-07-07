@@ -19,26 +19,17 @@
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="2dp"
             android:layout_marginBottom="4dp" app:layout_constraintBottom_toTopOf="@+id/divider"/>
     <TextView
-            tools:text="닉네임|그룹명|루틴이름"
+            tools:text="닉네임|그룹명|루틴이름 ~한다"
             style="@style/txt_l"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/subject"
+            android:maxLines="2"
+            android:id="@+id/content"
             android:layout_marginStart="4dp"
             app:layout_constraintStart_toEndOf="@+id/img"
             app:layout_constraintBottom_toBottomOf="@+id/img"
-            app:layout_constraintTop_toTopOf="@+id/img"/>
-    <TextView
-            tools:text="~~~한다"
-            style="@style/txt_l"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/action"
-            android:layout_marginStart="4dp"
-            app:layout_constraintStart_toEndOf="@+id/subject"
-            app:layout_constraintBottom_toBottomOf="@+id/img"
-            app:layout_constraintTop_toTopOf="@+id/img"/>
+            app:layout_constraintTop_toTopOf="@+id/img" android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toEndOf="parent"/>
     <View
             android:id="@+id/divider"
             android:layout_width="match_parent"

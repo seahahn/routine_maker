@@ -71,7 +71,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
         // 피드 내용 표시하기
         contentTV.text = cmtData.content
-        if(cmtData.image.isNotEmpty() || cmtData.image != "[]") {
+        if(cmtData.image.isNotEmpty()) {
             d(TAG, "img is not blank")
             imageURL = cmtData.image.substring(1, cmtData.image.length - 1)
             Glide.with(context).load(imageURL).into(cmtImg)

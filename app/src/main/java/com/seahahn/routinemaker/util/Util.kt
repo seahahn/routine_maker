@@ -25,13 +25,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
+import com.seahahn.routinemaker.network.FcmService
 import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.sns.chat.ChatDataBase
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,7 +51,10 @@ open class Util  : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
     private lateinit var retrofit : Retrofit
     lateinit var service : RetrofitService
+    lateinit var fcmService : FcmService
     private val rfServiceViewModel by viewModels<RetrofitServiceViewModel>() // 레트로핏 서비스 객체를 담기 위한 뷰모델
+
+
 
     lateinit var toolbar : Toolbar
     open lateinit var drawerLayout : DrawerLayout // 좌측 내비게이션 메뉴가 포함된 액티비티의 경우 DrawerLayout을 포함하고 있음
@@ -69,6 +76,14 @@ open class Util  : AppCompatActivity() {
         rfServiceViewModel.setService(service) // 뷰모델에 레트로핏 서비스 객체 저장하기
 
         return service
+    }
+
+    fun initFCMRetrofit(): FcmService {
+        d(TAG, "initRetrofit")
+        retrofit = RetrofitClient.getFCMInstance()
+        fcmService = retrofit.create(FcmService::class.java)
+
+        return fcmService
     }
 
     open fun showAlert(title: String, msg: String) {
@@ -228,6 +243,23 @@ open class Util  : AppCompatActivity() {
         } else {
             prograssbar.hide()
         }
+    }
+
+    // SNS 피드 작성자에게 해당 피드에 대한 댓글, 대댓글, 좋아요 알림 보내기
+    fun sendFCMNotification(service: FcmService, contents : NotificationContents) {
+        Log.d(TAG, "sendFCMNotification 변수들 : $contents")
+        service.sendFCMNotification(contents).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.d(TAG, "FCM 발송 실패 : {$t}")
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d(TAG, "FCM 발송 요청 응답 수신 성공")
+                d(TAG, "response : $response")
+//                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+//                val token = gson.get("token").asString
+            }
+        })
     }
 
 

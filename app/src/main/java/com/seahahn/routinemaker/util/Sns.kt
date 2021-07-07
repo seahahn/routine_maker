@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.amplifyframework.core.Amplify
 import com.bumptech.glide.Glide
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger.d
@@ -44,6 +45,7 @@ import com.seahahn.routinemaker.util.AppVar.getNextLeaderId
 import com.seahahn.routinemaker.util.AppVar.setOtherUserId
 import com.seahahn.routinemaker.util.AppVar.setOtherUserNick
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -52,6 +54,7 @@ import retrofit2.Response
 import java.io.File
 import java.util.*
 import java.util.function.Predicate
+
 
 open class Sns : Main() {
 
@@ -1153,19 +1156,44 @@ open class Sns : Main() {
     }
 
     // 그룹 피드 좋아요 기능
-    fun setFeedLike(service: RetrofitService, feedId : Int, writerId : Int, isLiked : Boolean) {
-        Log.d(TAG, "setFeedLike 변수들 : $feedId, $writerId, $isLiked")
-        service.setFeedLike(feedId, writerId, isLiked).enqueue(object : Callback<JsonObject> {
+    fun setFeedLike(service: RetrofitService, feedId : Int, feedWriterId : Int, writerId : Int, isLiked : Boolean, context : Context) {
+        Log.d(TAG, "setFeedLike 변수들 : $feedId, $feedWriterId, $writerId, $isLiked")
+        service.setFeedLike(feedId, feedWriterId, writerId, isLiked).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "그룹 피드 좋아요 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "그룹 피드 좋아요 요청 응답 수신 성공")
-//                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-//                val msg = gson.get("msg").asString
-//                val result = gson.get("result").asBoolean
+                if(isLiked) {
+                    val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                    d(TAG, "gson : $gson")
+                    val alreadyExist = gson.get("alreadyExist").asBoolean // 이전에 좋아요 눌렀는지 아닌지 여부
+                    // 이전에 누른 적 있으면 알림 안 뜨게 함
+                    when {
+                        alreadyExist -> return
+                        else -> {
+                            val token = gson.get("token").asString // 알림 보낼 대상의 파이어베이스 토큰값
+//                            val content = gson.get("content").asString
+//                            val images = gson.get("images").asString
 
+                            fcmService = initFCMRetrofit() // FCM 보내기 위한 레트로핏 객체 초기화
+                            val title = getUserNick(context).plus(getString(R.string.notiLike)) // 알림 제목
+                            val body = response.body().toString() // 피드의 내용(텍스트, 이미지)
+                            val contents = NotificationContents(
+                                token,
+                                NotificationData(
+                                    getUserId(context),
+                                    FCMNotiType.LIKE.type(),
+                                    title,
+                                    body,
+                                    feedId
+                                )
+                            )
+                            sendFCMNotification(fcmService, contents) // FCM 발송
+                        }
+                    }
+                }
             }
         })
     }
@@ -1192,28 +1220,67 @@ open class Sns : Main() {
     }
 
     // 그룹 피드 댓글 작성하기
-    fun makeCmt(service: RetrofitService, feedId: Int, content: String, image: String, isSub: Boolean, mainCmt: Int?) {
-        d(TAG, "makeCmt 변수들 : $feedId, $content, $image, $isSub, $mainCmt")
+    fun makeCmt(service: RetrofitService, feedId: Int, feedWriterId : Int, content: String, image: String, isSub: Boolean, mainCmt: Int?) {
+        d(TAG, "makeCmt 변수들 : $feedId, $feedWriterId, $content, $image, $isSub, $mainCmt")
         val writerId = getUserId(applicationContext)
-        service.makeCmt(writerId, feedId, content, image, isSub, mainCmt).enqueue(object : Callback<JsonObject> {
+        service.makeCmt(writerId, feedId, feedWriterId, content, image, isSub, mainCmt).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.d(TAG, "그룹 피드 댓글 작성 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 Log.d(TAG, "그룹 피드 댓글 작성 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
-//                getCmts(service, feedId)
-//                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
-//                val msg = gson.get("msg").asString
-//                val result = gson.get("result").asBoolean
-//                when(result) {
-//                    true -> {
-//                        toast(msg)
-//                        finish()
-//                    }
-//                    false -> toast(msg)
-//                }
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+
+                fcmService = initFCMRetrofit() // FCM 보내기 위한 레트로핏 객체 초기화
+                var title : String // 알림 제목
+                val body = response.body().toString() // 피드의 내용(텍스트, 이미지)
+
+                var type : Int
+                var titleTextValue : Int
+
+                // 댓글인지 대댓글인지 구분에 따라 알림에 넣을 타입 값을 다르게 함
+                val subCmt = gson.get("subCmt").asBoolean
+                if(subCmt) {
+                    // 대댓글의 대상이 되는 원 댓글의 작성자에게 알림을 보냄
+                    titleTextValue = R.string.notiSubCmt
+                    type = FCMNotiType.SUB_CMT.type()
+
+                    title = getUserNick(applicationContext).plus(getString(titleTextValue)) // 알림 제목
+                    val mainCmtWriterToken = gson.get("mainCmtWriterToken").asString // 알림 보낼 대상의 파이어베이스 토큰값
+                    val contents = NotificationContents(
+                        mainCmtWriterToken,
+                        NotificationData(
+                            getUserId(applicationContext),
+                            type,
+                            title,
+                            body,
+                            feedId
+                        )
+                    )
+                    sendFCMNotification(fcmService, contents) // FCM 발송
+                }
+
+                // 댓글, 대댓글 상관 없이 해당 피드의 작성자에게 알림을 보냄
+                titleTextValue = R.string.notiCmt
+                type = FCMNotiType.CMT.type()
+                title = getUserNick(applicationContext).plus(getString(titleTextValue)) // 알림 제목
+
+                val token = gson.get("token").asString // 알림 보낼 대상의 파이어베이스 토큰값
+//                fcmService = initFCMRetrofit() // FCM 보내기 위한 레트로핏 객체 초기화
+//                val title = getUserNick(applicationContext).plus(getString(titleTextValue)) // 알림 제목
+//                val body = response.body().toString() // 피드의 내용(텍스트, 이미지)
+                val contents = NotificationContents(
+                    token,
+                    NotificationData(
+                        getUserId(applicationContext),
+                        type,
+                        title,
+                        body,
+                        feedId
+                    )
+                )
+                sendFCMNotification(fcmService, contents) // FCM 발송
             }
         })
     }

@@ -20,6 +20,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.FeedData
 import com.seahahn.routinemaker.util.Sns
+import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,7 +62,7 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 
     fun onBind(feedData : FeedData) {
         // 아이템 태그에 피드의 고유 번호와 제목을 담아둠(메소드에서 활용)
-        item.tag = hashMapOf("id" to feedData.id)
+        item.tag = hashMapOf("id" to feedData.id, "writerId" to feedData.writerId)
 
         // 피드 작성자 프로필 사진, 닉네임 및 작성일자 표시하기
         getUserData(feedData.writerId)
@@ -94,8 +95,8 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         commentIcon.setOnClickListener(IconClickListener())
         likeTxt.text = feedData.likeCount.toString()
         commentTxt.text = feedData.commentCount.toString()
-        likeIcon.tag = hashMapOf("id" to feedData.id)
-        commentIcon.tag = hashMapOf("id" to feedData.id)
+        likeIcon.tag = hashMapOf("id" to feedData.id, "writerId" to feedData.writerId)
+        commentIcon.tag = hashMapOf("id" to feedData.id, "writerId" to feedData.writerId)
 
         moreBtn.visibility = View.VISIBLE
         moreBtn.tag = hashMapOf("id" to feedData.id, "writerId" to feedData.writerId)
@@ -149,10 +150,11 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
     inner class IconClickListener() : Sns(), View.OnClickListener {
         override fun onClick(v: View?) {
             val feedId = (v?.tag as HashMap<*, *>)["id"].toString().toInt()
+            val feedWriterId = (v?.tag as HashMap<*, *>)["writerId"].toString().toInt()
             val context = v.context
             when(v.id) {
                 R.id.likeIcon -> {
-                    setFeedLike(serviceInViewHolder, feedId, getUserId(context), !likeState) // 좋아요 누른 결과 서버에 보내기
+                    setFeedLike(serviceInViewHolder, feedId, feedWriterId, getUserId(context), !likeState, context) // 좋아요 누른 결과 서버에 보내기
                     likeState = !likeState // 기존의 좋아요 상태를 반대로 바꿔줌
                     // 바뀐 좋아요 상태에 따라 좋아요 아이콘의 색상 변경
                     if(likeState) {

@@ -3,6 +3,7 @@ package com.seahahn.routinemaker.network
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
+import com.seahahn.routinemaker.notice.NoticeData
 import com.seahahn.routinemaker.sns.*
 import retrofit2.Call
 import retrofit2.http.*
@@ -337,6 +338,7 @@ interface RetrofitService {
     @POST("/api/sns/set_feed_like.php") // 그룹 피드의 고유 번호를 이용하여 해당 피드 삭제하기
     fun setFeedLike(
         @Field("feed_id") feedId: Int,
+        @Field("feed_writer_id") feedWriterId: Int,
         @Field("writer_id") writerId: Int,
         @Field("is_liked") isLiked: Boolean
     ) : Call<JsonObject>
@@ -351,6 +353,7 @@ interface RetrofitService {
     fun makeCmt(
         @Field("writer_id") writerId: Int,
         @Field("feed_id") feedId: Int,
+        @Field("feed_writer_id") feedWriterId: Int,
         @Field("content") content: String,
         @Field("image") image: String,
         @Field("is_sub") isSub: Boolean,
@@ -417,5 +420,21 @@ interface RetrofitService {
         @Field("user_id") userId: Int,
         @Field("room_id") roomId: Int
     ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/noti/insert_noti.php") // SNS 관련 알림 도착 시 DB에 알림 데이터를 저장함
+    fun insertNotiItem(
+        @Field("receiver_id") receiverId: Int,
+        @Field("sender_id") senderId: Int,
+        @Field("type") type: Int,
+        @Field("title") title: String,
+        @Field("body") body: String,
+        @Field("target") target: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/noti/get_notices.php") // 선택한 그룹의 피드 목록 가져오기
+    fun getNotices(
+        @Query("user_id") userId: Int
+    ) : Call<MutableList<NoticeData>>
 
 }

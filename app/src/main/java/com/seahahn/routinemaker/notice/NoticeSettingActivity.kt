@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Sns
 
-class NotiSettingActivity : Sns() {
+class NoticeSettingActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
 

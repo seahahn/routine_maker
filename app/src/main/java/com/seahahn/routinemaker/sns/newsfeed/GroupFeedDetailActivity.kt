@@ -25,6 +25,7 @@ import com.seahahn.routinemaker.util.AppVar.getPagerPos
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
+import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -125,6 +126,7 @@ class GroupFeedDetailActivity : Sns() {
                 }
             })
 
+        // 피드 작성자의 프로필 사진 또는 닉네임 클릭 시 해당 사용자의 프로필 방문
         profile_pic.setOnClickListener(ProfileClickListener())
         nick.setOnClickListener(ProfileClickListener())
     }
@@ -212,7 +214,7 @@ class GroupFeedDetailActivity : Sns() {
         override fun onClick(v: View?) {
             when(v!!.id) {
                 R.id.likeIcon -> {
-                    setFeedLike(service, feedId, getUserId(applicationContext), !likeState) // 좋아요 누른 결과 서버에 보내기
+                    setFeedLike(service, feedId, feedWriterId, getUserId(applicationContext), !likeState, applicationContext) // 좋아요 누른 결과 서버에 보내기
                     likeState = !likeState // 기존의 좋아요 상태를 반대로 바꿔줌
                     // 바뀐 좋아요 상태에 따라 좋아요 아이콘의 색상 변경
                     if(likeState) {
@@ -262,7 +264,7 @@ class GroupFeedDetailActivity : Sns() {
                     val cmt = chatInput.text
                     if(chatInput.text.isNotBlank()) {
                         saveImgsURL(imgDatasCmt, imagesList)
-                        makeCmt(service, feedId, cmt.toString(), imagesURL, isSubCmt, mainCmt)
+                        makeCmt(service, feedId, feedWriterId, cmt.toString(), imagesURL, isSubCmt, mainCmt)
                         chatInput.text = null
                         hideSoftKeyboard()
 
