@@ -11,7 +11,6 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupData
-import com.seahahn.routinemaker.sns.chat.ChatRoom
 import com.seahahn.routinemaker.util.Sns
 import java.util.*
 

@@ -25,7 +25,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.badge.BadgeDrawable
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
@@ -213,12 +212,12 @@ open class Util  : AppCompatActivity() {
         Logger.d(TAG, "setFirebaseToken 변수들 : $id, $token")
         service.setFirebaseToken(id, token).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "토큰값 보내기 실패 : {$t}")
+                d(TAG, "토큰값 보내기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "토큰값 보내기 요청 응답 수신 성공")
-                Log.d(TAG, "body : ${response.body().toString()}")
+                d(TAG, "토큰값 보내기 요청 응답 수신 성공")
+                d(TAG, "body : ${response.body().toString()}")
             }
         })
     }

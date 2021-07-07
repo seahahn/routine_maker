@@ -1,32 +1,18 @@
 package com.seahahn.routinemaker.sns.chat
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.ChatUserData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo.getUserId
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class ChatMembersAdapter(mContext : Context) : RecyclerView.Adapter<ChatMembersAdapter.ChatMemberViewHolder>() {
 

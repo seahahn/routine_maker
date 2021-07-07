@@ -3,7 +3,6 @@ package com.seahahn.routinemaker.sns.group
 import android.os.Bundle
 import android.util.Log.d
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R

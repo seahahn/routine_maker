@@ -3,9 +3,7 @@ package com.seahahn.routinemaker.sns.newsfeed
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.gson.JsonObject
 import com.seahahn.routinemaker.sns.FeedData
-import com.seahahn.routinemaker.sns.GroupData
 
 class GroupFeedViewModel : ViewModel(){
 

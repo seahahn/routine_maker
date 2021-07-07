@@ -1,24 +1,16 @@
 package com.seahahn.routinemaker.sns.chat
 
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.d
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.util.ChatroomsAdapterItemMoveCallback
 import com.seahahn.routinemaker.util.SnsChat
-import com.seahahn.routinemaker.util.UserInfo
 import java.util.*
 
 class ChatListActivity : SnsChat() {
@@ -80,7 +72,7 @@ class ChatListActivity : SnsChat() {
 
         // 채팅 목록 가져오기
         chatDB!!.chatDao().getChatrooms().observe(context) { chatroomData ->
-            Log.d(TAG, "chatroomData : $chatroomData")
+            d(TAG, "chatroomData : $chatroomData")
             mDatas = chatroomData // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
 
             chatroomsAdapter.replaceList(mDatas) // 사용자 고유 번호에 맞춰서 가입한 그룹 목록 띄우기
@@ -121,7 +113,7 @@ class ChatListActivity : SnsChat() {
     inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
 
         override fun onQueryTextSubmit(query: String?): Boolean {
-            Log.d(TAG, "text submitted")
+            d(TAG, "text submitted")
             return true
         }
 

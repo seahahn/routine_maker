@@ -1,30 +1,19 @@
 package com.seahahn.routinemaker.sns.group
 
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.view.MenuItem
 import android.view.View
-import android.widget.*
-import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.AppVar.setAcceptedList
-import com.seahahn.routinemaker.util.AppVar.setNextLeaderId
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo.getUserId
-import org.jetbrains.anko.startActivity
-import java.util.*
 
 class GroupApplicantListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
@@ -74,7 +63,7 @@ class GroupApplicantListViewHolder (itemView : View) : RecyclerView.ViewHolder(i
     }
 
     // 체크박스 클릭 시 동작할 내용
-    inner class ItemCheckedChangeListener() : Sns(), CompoundButton.OnCheckedChangeListener {
+    inner class ItemCheckedChangeListener : Sns(), CompoundButton.OnCheckedChangeListener {
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
             val applicantId = ((buttonView!!.tag as HashMap<*, *>)["id"]).toString().toInt()
             if(isChecked) {

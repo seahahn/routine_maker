@@ -7,7 +7,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupMemberData
 
-class GroupNextLeaderAdapter() : RecyclerView.Adapter<GroupNextLeaderViewHolder>() {
+class GroupNextLeaderAdapter : RecyclerView.Adapter<GroupNextLeaderViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService

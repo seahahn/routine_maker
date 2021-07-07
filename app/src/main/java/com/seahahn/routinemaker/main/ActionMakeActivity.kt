@@ -1,8 +1,6 @@
 package com.seahahn.routinemaker.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
 

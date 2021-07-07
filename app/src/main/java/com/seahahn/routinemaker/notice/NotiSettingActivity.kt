@@ -1,10 +1,6 @@
 package com.seahahn.routinemaker.notice
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Sns
 

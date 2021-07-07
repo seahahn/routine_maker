@@ -30,7 +30,6 @@ import com.nhn.android.naverlogin.OAuthLoginHandler
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.NaverAPI
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.util.UserInfo
 import com.seahahn.routinemaker.util.User
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -116,7 +115,7 @@ class LoginActivity : User(), View.OnClickListener {
         btn_naver_login.setOnClickListener {
             mOAuthLoginInstance = OAuthLogin.getInstance()
             mOAuthLoginInstance.init(this@LoginActivity, naver_client_id, naver_client_secret, naver_client_name)
-            mOAuthLoginInstance.startOauthLoginActivity(this@LoginActivity, mOAuthLoginHandler);
+            mOAuthLoginInstance.startOauthLoginActivity(this@LoginActivity, mOAuthLoginHandler)
         }
     }
 

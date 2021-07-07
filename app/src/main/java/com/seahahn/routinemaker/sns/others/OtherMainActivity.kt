@@ -1,20 +1,15 @@
 package com.seahahn.routinemaker.sns.others
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.MainReviewFragment
-import com.seahahn.routinemaker.main.MainRoutineFragment
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.AppVar.getOtherUserPic
-import com.seahahn.routinemaker.util.Main
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo
 
 class OtherMainActivity : Sns() {
 

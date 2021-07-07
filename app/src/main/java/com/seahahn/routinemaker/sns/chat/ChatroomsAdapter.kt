@@ -2,7 +2,6 @@ package com.seahahn.routinemaker.sns.chat
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChatUserData
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -30,7 +28,6 @@ import java.net.Socket
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.function.Predicate
 
 
 class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapter.ChatRoomViewHolder>(), Filterable {
@@ -230,7 +227,7 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
 //            Logger.d(TAG, "getUserData 변수들 : $writerId")
             service.getUserData(id).enqueue(object : Callback<JsonObject> {
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d(TAG, "사용자 데이터 가져오기 실패 : {$t}")
+                    d(TAG, "사용자 데이터 가져오기 실패 : {$t}")
                 }
 
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -258,19 +255,18 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             Logger.d(TAG, "getChatUsers 변수들 : $roomId")
             service.getChatUsers(roomId).enqueue(object : Callback<MutableList<ChatUserData>> {
                 override fun onFailure(call: Call<MutableList<ChatUserData>>, t: Throwable) {
-                    Log.d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
+                    d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
                 }
 
                 override fun onResponse(call: Call<MutableList<ChatUserData>>, response: Response<MutableList<ChatUserData>>) {
-                    Log.d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
-                    Log.d(TAG, response.body().toString())
+                    d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
+                    d(TAG, response.body().toString())
                     val chatUserData = response.body()!!
                     getUserData(hostId, null, profilePicLeader) // 그룹 리더 사진 가져오기
 
                     // 채팅 참여자 중 그룹 리더 제외한 나머지 참여자들의 이미지 가져오기
-                    chatUserData.removeIf(Predicate { data -> data.userId == hostId })
-                    var count = 0
-                    count = if(chatUserData.size < 3) {
+                    chatUserData.removeIf({ data -> data.userId == hostId })
+                    val count: Int = if(chatUserData.size < 3) {
                         chatUserData.size
                     } else {
                         3
@@ -285,15 +281,15 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
         // 그룹 채팅방의 그룹 데이터 가져오기
         fun getGroup(groupId : Int, chatTitle : TextView) {
             val userId = getUserId(context)
-            Log.d(TAG, "getGroup 변수들 : $groupId, $userId")
+            d(TAG, "getGroup 변수들 : $groupId, $userId")
             service.getGroup(groupId, userId).enqueue(object : Callback<JsonObject> {
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d(TAG, "그룹 데이터 가져오기 실패 : {$t}")
+                    d(TAG, "그룹 데이터 가져오기 실패 : {$t}")
                 }
 
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    Log.d(TAG, "그룹 데이터 가져오기 요청 응답 수신 성공")
-                    Log.d(TAG, "getGroup : " + response.body().toString())
+                    d(TAG, "그룹 데이터 가져오기 요청 응답 수신 성공")
+                    d(TAG, "getGroup : " + response.body().toString())
                     val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                     val mTitle = gson.get("title").asString
                     chatTitle.text = mTitle
@@ -309,12 +305,12 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
             Logger.d(TAG, "deleteChatUser 변수들 : $userId, $roomId")
             service.deleteChatUser(userId, roomId).enqueue(object : Callback<JsonObject> {
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
+                    d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
                 }
 
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    Log.d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
-                    Log.d(TAG, response.body().toString())
+                    d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
+                    d(TAG, response.body().toString())
                 }
             })
         }

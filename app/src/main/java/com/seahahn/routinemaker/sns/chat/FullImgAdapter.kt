@@ -1,19 +1,13 @@
 package com.seahahn.routinemaker.sns.chat
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.github.chrisbanes.photoview.PhotoView
-import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
-import com.seahahn.routinemaker.sns.newsfeed.GroupFeedDetailActivity
-import java.util.HashMap
 
 class FullImgAdapter(mContext : Context) : RecyclerView.Adapter<FullImgAdapter.ChatImgViewHolder>() {
 

@@ -1,7 +1,6 @@
 package com.seahahn.routinemaker.stts.week
 
 import android.content.Context
-import android.util.Log.d
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView

@@ -52,7 +52,7 @@ open class Stts : Main() {
     // 일간인 경우 하루 전후, 주간인 경우 일주일 전후, 월간인 경우 1개월 전후로 이동하는 메소드
     fun oneTimeMove(selectedTime : Int, title: TextView, c: Calendar, dd: Calendar, y: Int, m: Int, d: Int, updown: Int) {
         val cal = Calendar.getInstance()
-        var time = d
+        val time: Int
         when(selectedTime) {
             0 -> {
                 time = d + updown

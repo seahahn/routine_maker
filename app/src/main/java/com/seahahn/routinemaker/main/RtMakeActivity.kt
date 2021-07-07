@@ -1,23 +1,8 @@
 package com.seahahn.routinemaker.main
 
 import android.os.Bundle
-import android.util.Log.d
-import android.widget.*
-import com.bumptech.glide.Glide
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.nex3z.togglebuttongroup.MultiSelectToggleGroup
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.util.Main
-import com.seahahn.routinemaker.util.ToggleEditTextView
-import com.seahahn.routinemaker.util.UserInfo.getUserId
-import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class RtMakeActivity : Main() {
 

@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 
 object AppVar {
-    private val MY_ACCOUNT : String = "account"
+    private const val MY_ACCOUNT : String = "account"
 
     // 사용자가 선택한 날짜의 값을 문자열로 저장
     fun setSelectedDate(context: Context, input: String) {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("SELECETD_DATE", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getSelectedDate(context: Context): String {
@@ -24,7 +24,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putBoolean("DATE_PAST", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getDatePast(context: Context): Boolean {
@@ -37,7 +37,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putInt("NEW_LEADER", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getNextLeaderId(context: Context): Int {
@@ -50,7 +50,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("ACCEPTED_LIST", input.toString())
-        editor.commit()
+        editor.apply()
     }
 
     fun getAcceptedList(context: Context): String {
@@ -63,7 +63,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putInt("PAGER_POS", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getPagerPos(context: Context): Int {
@@ -76,7 +76,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putInt("OTHER_USER_ID", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getOtherUserId(context: Context): Int {
@@ -89,7 +89,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("OTHER_USER_NICK", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getOtherUserNick(context: Context): String {
@@ -102,7 +102,7 @@ object AppVar {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("OTHER_USER_PIC", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getOtherUserPic(context: Context): String {

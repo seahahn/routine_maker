@@ -14,14 +14,10 @@ import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.util.Stts
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.runOnUiThread
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.temporal.WeekFields
-import java.util.*
 
 class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 

@@ -1,14 +1,13 @@
 package com.seahahn.routinemaker.sns.others
 
 import android.os.Bundle
-import android.util.Log.d
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.seahahn.routinemaker.R
@@ -16,7 +15,6 @@ import com.seahahn.routinemaker.main.DateViewModel
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
-import com.seahahn.routinemaker.util.Main
 
 
 class OtherMainReviewFragment : Fragment() {

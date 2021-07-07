@@ -1,13 +1,11 @@
 package com.seahahn.routinemaker.network
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.RtData
 import com.seahahn.routinemaker.sns.*
 import retrofit2.Call
 import retrofit2.http.*
-import retrofit2.http.GET
 
 interface RetrofitService {
 

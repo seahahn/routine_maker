@@ -13,7 +13,6 @@ import com.seahahn.routinemaker.stts.week.SttsWeekFragment
 import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.Stts
-import com.seahahn.routinemaker.util.UserInfo
 
 class OtherSttsActivity : Stts() {
 

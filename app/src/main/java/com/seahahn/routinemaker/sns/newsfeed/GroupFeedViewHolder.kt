@@ -150,7 +150,7 @@ class GroupFeedViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         override fun onClick(v: View?) {
             val feedId = (v?.tag as HashMap<*, *>)["id"].toString().toInt()
             val context = v.context
-            when(v!!.id) {
+            when(v.id) {
                 R.id.likeIcon -> {
                     setFeedLike(serviceInViewHolder, feedId, getUserId(context), !likeState) // 좋아요 누른 결과 서버에 보내기
                     likeState = !likeState // 기존의 좋아요 상태를 반대로 바꿔줌

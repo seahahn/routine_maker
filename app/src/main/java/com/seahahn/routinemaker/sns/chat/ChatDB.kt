@@ -3,8 +3,6 @@ package com.seahahn.routinemaker.sns.chat
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 
 
 @Entity(tableName = "chat_msg")

@@ -3,13 +3,10 @@ package com.seahahn.routinemaker.sns.group
 import android.os.Bundle
 import android.util.Log.d
 import android.view.View
-import android.widget.CompoundButton
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.util.Sns
 import java.util.*

@@ -3,7 +3,6 @@ package com.seahahn.routinemaker.sns.chat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.seahahn.routinemaker.sns.ChatData
 
 class ChatContentsViewModel : ViewModel(){
 

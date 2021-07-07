@@ -47,7 +47,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     // FirebaseInstanceIdService는 이제 사라짐. 이제 이걸 사용함
     override fun onNewToken(token: String) {
-        Log.d(TAG, "new Token: $token")
+        d(TAG, "new Token: $token")
 
         // 토큰 값을 따로 저장해둔다.
         setUserFCMToken(this, token)
@@ -56,7 +56,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        Log.d(TAG, "From: " + remoteMessage!!.from)
+        d(TAG, "From: " + remoteMessage.from)
 
         // Notification 메시지를 수신할 경우는
         // remoteMessage.notification?.body!! 여기에 내용이 저장되어있다.
@@ -144,12 +144,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
         service.getChatRoomData(roomId).enqueue(object : Callback<ChatroomData> {
             override fun onFailure(call: Call<ChatroomData>, t: Throwable) {
-                Log.d(TAG, "채팅방 데이터 가져오기 실패 : {$t}")
+                d(TAG, "채팅방 데이터 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<ChatroomData>, response: Response<ChatroomData>) {
-                Log.d(TAG, "채팅방 데이터 가져오기 요청 응답 수신 성공")
-                Log.d(TAG, "body : ${response.body().toString()}")
+                d(TAG, "채팅방 데이터 가져오기 요청 응답 수신 성공")
+                d(TAG, "body : ${response.body().toString()}")
                 chatroomData = response.body()!!
                 if(chatroomData.isGroupchat) { // 그룹 채팅인 경우 그룹명을 채팅방 제목으로 설정
                     getGroup(chatroomData.audienceId, remoteMessage)
@@ -196,12 +196,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Logger.d(TAG, "getChatRoomData Mini 변수 : $roomId")
         service.getGroup(roomId, getUserId(this)).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "채팅방 그룹 데이터 가져오기 실패 : {$t}")
+                d(TAG, "채팅방 그룹 데이터 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "채팅방 그룹 데이터 가져오기 요청 응답 수신 성공")
-                Log.d(TAG, "body : ${response.body().toString()}")
+                d(TAG, "채팅방 그룹 데이터 가져오기 요청 응답 수신 성공")
+                d(TAG, "body : ${response.body().toString()}")
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 title = gson.get("title").asString
                 d(TAG, "title : $title")
@@ -224,11 +224,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Logger.d(TAG, "getUserData 변수 : $userId")
         service.getUserData(userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "사용자 데이터 가져오기 실패 : {$t}")
+                d(TAG, "사용자 데이터 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "사용자 데이터 가져오기 요청 응답 수신 성공")
+                d(TAG, "사용자 데이터 가져오기 요청 응답 수신 성공")
                 val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
                 title = gson.get("nick").asString
                 d(TAG, "title : $title")

@@ -4,8 +4,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.util.Log.d
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,8 +20,6 @@ import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.SnsChat
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.scrollView
 import java.time.LocalDateTime
 import java.util.*
 

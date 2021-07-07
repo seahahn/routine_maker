@@ -1,13 +1,11 @@
 package com.seahahn.routinemaker.sns.group
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -17,12 +15,9 @@ import com.google.android.material.badge.BadgeUtils
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.GroupData
-import com.seahahn.routinemaker.sns.chat.ChatActivity
-import com.seahahn.routinemaker.sns.chat.ChatDataBase
 import com.seahahn.routinemaker.sns.chat.ChatListActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import org.jetbrains.anko.doAsync
 import java.util.*
 
 /*

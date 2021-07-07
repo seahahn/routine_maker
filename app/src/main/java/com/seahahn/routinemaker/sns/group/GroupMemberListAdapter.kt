@@ -1,24 +1,13 @@
 package com.seahahn.routinemaker.sns.group
 
-import android.os.Parcel
-import android.os.Parcelable
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
-import com.seahahn.routinemaker.util.AppVar
-import com.seahahn.routinemaker.util.AppVar.setAcceptedList
-import java.util.HashMap
 
-class GroupMemberListAdapter() : RecyclerView.Adapter<GroupMemberListViewHolder>() {
+class GroupMemberListAdapter : RecyclerView.Adapter<GroupMemberListViewHolder>() {
 
     private val TAG = this::class.java.simpleName
     lateinit var service : RetrofitService

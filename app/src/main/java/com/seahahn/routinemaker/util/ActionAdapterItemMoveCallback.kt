@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.util.Log.d
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionAdapter
 
 class ActionAdapterItemMoveCallback constructor(private val adapter : ActionAdapter) : ItemTouchHelper.Callback() {

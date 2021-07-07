@@ -2,15 +2,12 @@ package com.seahahn.routinemaker.sns.newsfeed
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.d
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
-import android.widget.LinearLayout
 import android.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +20,8 @@ import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
 import com.seahahn.routinemaker.sns.group.GroupInfoActivity
 import com.seahahn.routinemaker.sns.group.GroupMemberListActivity
 import com.seahahn.routinemaker.sns.group.GroupUpdateActivity
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import com.seahahn.routinemaker.util.UserSetting
 import java.util.*
 
 /*
@@ -148,7 +143,7 @@ class GroupFeedActivity : Sns() {
     inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
 
         override fun onQueryTextSubmit(query: String?): Boolean {
-            Log.d(TAG, "text submitted")
+            d(TAG, "text submitted")
             return true
         }
 
@@ -264,7 +259,7 @@ class GroupFeedActivity : Sns() {
 
     // 뒤로가기 버튼 누르면 좌측 내비게이션 닫기
     override fun onBackPressed() { //뒤로가기 처리
-        Log.d(TAG, "onBackPressed")
+        d(TAG, "onBackPressed")
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawers()
             // 테스트를 위해 뒤로가기 버튼시 Toast 메시지

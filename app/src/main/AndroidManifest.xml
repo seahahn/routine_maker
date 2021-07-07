@@ -10,7 +10,7 @@
             android:required="false"/>
 
     <application
-            android:name=".MyAmplifyApp"
+            android:name=".RoutineMaker"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -109,13 +109,6 @@
         <activity android:name=".user.MembershipRecordActivity">
         </activity>
         <activity android:name=".user.MypageActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN"/> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".user.FindpwActivity">
         </activity>
@@ -134,12 +127,12 @@
         </activity>
         <activity android:name=".user.SignUpActivity">
         </activity>
-        <activity android:name=".TestActivity">
-        </activity>
         <activity
                 android:name=".main.MainActivity"
                 android:launchMode="singleTop">
-        </activity> <!-- FCM service -->
+        </activity>
+
+        <!-- FCM service -->
         <service
                 android:name=".util.service.MyFirebaseMessagingService"
                 android:exported="false">

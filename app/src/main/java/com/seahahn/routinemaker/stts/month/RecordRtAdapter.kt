@@ -1,7 +1,5 @@
 package com.seahahn.routinemaker.stts.month
 
-import android.content.Context
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

@@ -1,21 +1,6 @@
 package com.seahahn.routinemaker.main
 
-import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MotionEvent
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.EditText
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputEditText
-import com.nex3z.togglebuttongroup.MultiSelectToggleGroup
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Main
 

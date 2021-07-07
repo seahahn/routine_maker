@@ -1,12 +1,10 @@
 package com.seahahn.routinemaker.stts.month
 
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionData
-import com.seahahn.routinemaker.main.RtData
 import com.seahahn.routinemaker.network.RetrofitService
 
 class RecordActionAdapter : RecyclerView.Adapter<RecordActionViewHolder>() {

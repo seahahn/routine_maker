@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.util.AppVar.getSelectedDate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

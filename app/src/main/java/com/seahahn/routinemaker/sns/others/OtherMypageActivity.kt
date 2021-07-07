@@ -9,11 +9,11 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.util.*
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.AppVar.getOtherUserNick
-import com.seahahn.routinemaker.util.AppVar.getOtherUserPic
 import com.seahahn.routinemaker.util.AppVar.setOtherUserPic
+import com.seahahn.routinemaker.util.Main
+import com.seahahn.routinemaker.util.ToggleEditTextView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -7,7 +7,7 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin
 
-class MyAmplifyApp: Application() {
+class RoutineMaker: Application() {
 
     override fun onCreate() {
         super.onCreate()

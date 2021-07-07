@@ -4,15 +4,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
 import android.util.Log.d
-import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.LifecycleOwner
 import com.amplifyframework.core.Amplify
-import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger
@@ -93,7 +90,7 @@ open class SnsChat : Sns() {
 
     // 사진 촬영하기
     override fun capturePhoto() {
-        Log.d(TAG, "capturePhoto")
+        d(TAG, "capturePhoto")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         createImageUri(System.currentTimeMillis().toString(), "image/jpeg")?.let { uri ->
             photoURI = uri
@@ -104,7 +101,7 @@ open class SnsChat : Sns() {
 
     // 사진 가져오기(피드 최대 5장, 댓글 최대 1장)
     override fun bringPhoto() {
-        Log.d(TAG, "bringPhoto")
+        d(TAG, "bringPhoto")
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
@@ -116,7 +113,7 @@ open class SnsChat : Sns() {
     // 사진 찍기 혹은 가져오기의 결과물 가져오기
     override val getContent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            Log.d(TAG, "result : $result")
+            d(TAG, "result : $result")
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
                 if (data?.clipData != null) { // 사진 여러개 선택한 경우
@@ -146,7 +143,7 @@ open class SnsChat : Sns() {
                         override fun run() {
                             val now = LocalDateTime.now()
                             val chatMsg = ChatMsg(0,
-                                UserInfo.getUserId(applicationContext),
+                                getUserId(applicationContext),
                                 imagesURL,
                                 1,
                                 chatroomData.id,
@@ -227,10 +224,10 @@ open class SnsChat : Sns() {
             imgPath, // S3 버킷 내 저장 경로. 맨 뒤가 파일명임. 확장자도 붙어야 함
             imgFile, // 실제 저장될 파일
             { result ->
-                Log.d(TAG, "Successfully uploaded : $result")
+                d(TAG, "Successfully uploaded : $result")
 //                showProgress(false)
             },
-            { error -> Log.d(TAG, "Upload failed", error) }
+            { error -> d(TAG, "Upload failed", error) }
         )
     }
 
@@ -239,12 +236,12 @@ open class SnsChat : Sns() {
         Logger.d(TAG, "getChatRoomData 변수들 : $isGroupchat, $hostId, $audienceId")
         service.getChatRoomData(isGroupchat, hostId, audienceId).enqueue(object : Callback<ChatroomData> {
             override fun onFailure(call: Call<ChatroomData>, t: Throwable) {
-                Log.d(TAG, "채팅방 데이터 가져오기 실패 : {$t}")
+                d(TAG, "채팅방 데이터 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<ChatroomData>, response: Response<ChatroomData>) {
-                Log.d(TAG, "채팅방 데이터 가져오기 요청 응답 수신 성공")
-                Log.d(TAG, "body : ${response.body().toString()}")
+                d(TAG, "채팅방 데이터 가져오기 요청 응답 수신 성공")
+                d(TAG, "body : ${response.body().toString()}")
                 chatroomData = response.body()!!
 
                 isSocketConnected = true
@@ -261,32 +258,32 @@ open class SnsChat : Sns() {
 
     // 채팅 메시지 작성하기
     fun makeMsg(service: RetrofitService, content: String, contentType: Int, roomId: Int) {
-        val writerId = UserInfo.getUserId(applicationContext)
+        val writerId = getUserId(applicationContext)
         Logger.d(TAG, "makeMsg 변수들 : $writerId, $content, $contentType, $roomId")
         service.makeMsg(writerId, content, contentType, roomId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "채팅 메시지 작성 실패 : {$t}")
+                d(TAG, "채팅 메시지 작성 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "채팅 메시지 작성 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
+                d(TAG, "채팅 메시지 작성 요청 응답 수신 성공")
+                d(TAG, response.body().toString())
             }
         })
     }
 
     // 사용자의 채팅방 참여 여부 데이터 생성 또는 수정하기
     fun setChatUser(service: RetrofitService, roomId: Int, isIn: Boolean, token: String) {
-        val userId = UserInfo.getUserId(applicationContext)
+        val userId = getUserId(applicationContext)
         Logger.d(TAG, "setChatUser 변수들 : $roomId, $userId, $isIn, $token")
         service.setChatUser(roomId, userId, isIn, token).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "사용자 채팅방 입장 여부 데이터 전송 실패 : {$t}")
+                d(TAG, "사용자 채팅방 입장 여부 데이터 전송 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "사용자 채팅방 입장 여부 데이터 전송 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
+                d(TAG, "사용자 채팅방 입장 여부 데이터 전송 요청 응답 수신 성공")
+                d(TAG, response.body().toString())
             }
         })
     }
@@ -296,12 +293,12 @@ open class SnsChat : Sns() {
         Logger.d(TAG, "getChatUsers 변수들 : $roomId")
         service.getChatUsers(roomId).enqueue(object : Callback<MutableList<ChatUserData>> {
             override fun onFailure(call: Call<MutableList<ChatUserData>>, t: Throwable) {
-                Log.d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
+                d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<MutableList<ChatUserData>>, response: Response<MutableList<ChatUserData>>) {
-                Log.d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
+                d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, response.body().toString())
                 chatUserData = response.body()!!
             }
         })
@@ -312,12 +309,12 @@ open class SnsChat : Sns() {
         Logger.d(TAG, "getChatUsersNickAndPhoto 변수들 : $roomId")
         service.getChatUsersNickAndPhoto(roomId).enqueue(object : Callback<MutableList<GroupMemberData>> {
             override fun onFailure(call: Call<MutableList<GroupMemberData>>, t: Throwable) {
-                Log.d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
+                d(TAG, "채팅방 참여자 목록 가져오기 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<MutableList<GroupMemberData>>, response: Response<MutableList<GroupMemberData>>) {
-                Log.d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
+                d(TAG, "채팅방 참여자 목록 가져오기 요청 응답 수신 성공")
+                d(TAG, response.body().toString())
                 chatUsersNickAndPhoto = response.body()!!
                 chatMembersViewModel.setList(chatUsersNickAndPhoto)
             }
@@ -330,12 +327,12 @@ open class SnsChat : Sns() {
         Logger.d(TAG, "setChatUser 변수들 : $userId, $roomId")
         service.deleteChatUser(userId, roomId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
+                d(TAG, "사용자 채팅방 입장 여부 삭제 실패 : {$t}")
             }
 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
-                Log.d(TAG, response.body().toString())
+                d(TAG, "사용자 채팅방 입장 여부 삭제 요청 응답 수신 성공")
+                d(TAG, response.body().toString())
             }
         })
     }

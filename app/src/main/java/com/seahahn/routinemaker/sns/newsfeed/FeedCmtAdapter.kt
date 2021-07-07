@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.CmtData
-import com.seahahn.routinemaker.sns.FeedData
 
 class FeedCmtAdapter : RecyclerView.Adapter<FeedCmtViewHolder>() {
 

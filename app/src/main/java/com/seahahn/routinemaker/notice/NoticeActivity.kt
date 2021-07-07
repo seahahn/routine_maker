@@ -1,13 +1,10 @@
 package com.seahahn.routinemaker.notice
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.view.isVisible
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.sns.chat.ChatListActivity
 import com.seahahn.routinemaker.util.Sns
 
 class NoticeActivity : Sns() {

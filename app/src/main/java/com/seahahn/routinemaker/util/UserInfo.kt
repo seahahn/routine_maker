@@ -5,13 +5,13 @@ import android.content.SharedPreferences
 
 object UserInfo {
 
-    private val MY_ACCOUNT : String = "account"
+    private const val MY_ACCOUNT : String = "account"
 
     fun setUserId(context: Context, input: Int) {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putInt("MY_ID", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserId(context: Context): Int {
@@ -23,7 +23,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_EMAIL", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserEmail(context: Context): String {
@@ -35,7 +35,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_NICK", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserNick(context: Context): String {
@@ -47,7 +47,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putInt("MY_MBS", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserMbs(context: Context): Int {
@@ -59,7 +59,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_PHOTO", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserPhoto(context: Context): String {
@@ -71,7 +71,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_PASS", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserPass(context: Context): String {
@@ -83,7 +83,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_INWAY", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserInway(context: Context): String {
@@ -95,7 +95,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.putString("MY_FCM_TOKEN", input)
-        editor.commit()
+        editor.apply()
     }
 
     fun getUserFCMToken(context: Context): String {
@@ -107,7 +107,7 @@ object UserInfo {
         val prefs : SharedPreferences = context.getSharedPreferences(MY_ACCOUNT, Context.MODE_PRIVATE)
         val editor : SharedPreferences.Editor = prefs.edit()
         editor.clear()
-        editor.commit()
+        editor.apply()
     }
 
 }

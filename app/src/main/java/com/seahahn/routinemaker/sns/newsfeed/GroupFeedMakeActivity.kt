@@ -1,7 +1,6 @@
 package com.seahahn.routinemaker.sns.newsfeed
 
 import android.os.Bundle
-import androidx.viewpager2.widget.ViewPager2
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserNick

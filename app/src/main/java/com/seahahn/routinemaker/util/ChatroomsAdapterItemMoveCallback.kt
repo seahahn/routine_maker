@@ -1,16 +1,13 @@
 package com.seahahn.routinemaker.util
 
 import android.graphics.Canvas
-import android.util.Log.d
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
-import com.seahahn.routinemaker.main.ActionAdapter
 import com.seahahn.routinemaker.sns.chat.ChatroomsAdapter
-import org.jetbrains.anko.find
 import java.lang.Math.max
 import java.lang.Math.min
 
@@ -113,7 +110,7 @@ class ChatroomsAdapterItemMoveCallback : ItemTouchHelper.Callback() {
         // View의 가로 길이의 절반까지만 swipe 되도록
         val min: Float = -view.width.toFloat()/2
         // RIGHT 방향으로 swipe 막기
-        val max: Float = 0f
+        val max = 0f
 
         val x = if (isClamped) {
             // View가 고정되었을 때 swipe되는 영역 제한

@@ -5,23 +5,20 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
-import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
-import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.AppVar.setNextLeaderId
 import com.seahahn.routinemaker.util.Sns
-import com.seahahn.routinemaker.util.UserInfo.getUserId
 import org.jetbrains.anko.startActivity
-import java.util.*
 
 class GroupNextLeaderViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 

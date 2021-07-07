@@ -1,20 +1,16 @@
 package com.seahahn.routinemaker.sns.others
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionAdapter
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.ActionViewModel
 import com.seahahn.routinemaker.main.DateViewModel
-import com.seahahn.routinemaker.util.ActionAdapterItemMoveCallback
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.Main
-import com.seahahn.routinemaker.util.UserInfo
 
 class OtherActionListActivity : Main() {
 
