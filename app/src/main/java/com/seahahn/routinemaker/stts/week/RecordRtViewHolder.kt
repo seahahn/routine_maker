@@ -1,6 +1,7 @@
 package com.seahahn.routinemaker.stts.week
 
 import android.content.Context
+import android.util.Log.d
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -170,6 +171,15 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 noneCount++
             }
 
+            // 루틴 내 행동은 없지만 루틴이 완료되어 있는 경우에는 루틴쪽 표에만 해당 날짜에 녹색으로 완료했다는 표시를 함
+            it_rtDatas = rtDatas.iterator()
+            while (it_rtDatas.hasNext()) {
+                val it_rtData = it_rtDatas.next()
+                if (firstDayOfWeek.isEqual(LocalDate.parse(it_rtData.mDate)) && it_rtData.id == rtId && it_rtData.done == 1) {
+                    dayOfWeekDoneList[i].imageResource = R.drawable.stts_green
+                }
+            }
+
             firstDayOfWeek = firstDayOfWeek.plusDays(1)
         }
     }
@@ -204,6 +214,7 @@ class RecordRtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
 
     // 사용자의 모든 과거 루틴 수행 내역을 가져오기 위한 메소드
     fun getRtDatas(newList: MutableList<RtData>) {
+        d(TAG, "rtDatas : $rtDatas")
         rtDatas = newList
     }
 

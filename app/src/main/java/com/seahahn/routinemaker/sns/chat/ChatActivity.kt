@@ -3,7 +3,7 @@ package com.seahahn.routinemaker.sns.chat
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.util.Log.d
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -90,12 +90,15 @@ class ChatActivity : SnsChat() {
         chatMembersView.adapter = chatMembersAdapter // 어댑터 연결
         chatMembersAdapter.getService(service)
 
+        viewEmptyList = findViewById(R.id.view_empty_list) // 보여줄 데이터 없을 때 출력할 뷰
+
         // 채팅 메시지의 이미지 크게 보기 기능을 위한 요소 초기화하기
         fullImgAdapter = FullImgAdapter(this) // 어댑터 초기화
         fullImgPager.adapter = fullImgAdapter // 어댑터 연결(이미지 전체화면)
 
+
         chatContentsViewModel.gottenChatMsg.observe(this) { chatMsgs ->
-            Log.d(TAG, "chatMsgs : $chatMsgs")
+            d(TAG, "chatMsgs : $chatMsgs")
             mDatas = chatMsgs // 채팅 내용 데이터 가져오기
 
             chatContentsAdapter.replaceList(mDatas)
@@ -108,7 +111,7 @@ class ChatActivity : SnsChat() {
         }
 
         chatMembersViewModel.gottenChatMembers.observe(this) { memberData ->
-            Log.d(TAG, "memberData : $memberData")
+            d(TAG, "memberData : $memberData")
             groupMemberDatas = memberData
 
             chatMembersAdapter.replaceList(groupMemberDatas) // 들어온 채팅방에 맞는 참여자 목록 넣기
@@ -172,7 +175,7 @@ class ChatActivity : SnsChat() {
 
     // 뒤로가기 버튼 누르면 우측 내비게이션 닫기
     override fun onBackPressed() { //뒤로가기 처리
-        Log.d(TAG, "onBackPressed")
+        d(TAG, "onBackPressed")
         if(drawerLayout.isDrawerOpen(GravityCompat.END)){
             drawerLayout.closeDrawers()
         } else {
@@ -184,7 +187,7 @@ class ChatActivity : SnsChat() {
     inner class QueryTextChenageListener() : SearchView.OnQueryTextListener {
 
         override fun onQueryTextSubmit(query: String?): Boolean {
-            Log.d(TAG, "text submitted")
+            d(TAG, "text submitted")
             val inputText = query!!.lowercase(Locale.getDefault())
 
             searchedDatas.clear() // 검색 결과 목록 비우기
@@ -207,6 +210,11 @@ class ChatActivity : SnsChat() {
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
+            val inputText = newText!!.lowercase(Locale.getDefault())
+            if (inputText == "") {
+                viewEmptyList.visibility = View.GONE
+                chatContentsAdapter.replaceList(mDatas) // 검색창이 비었으면 다시 전체 목록을 출력함
+            }
             return true
         }
     }

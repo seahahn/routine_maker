@@ -187,7 +187,7 @@
     <string name="recordArrowUp">▲</string>
     <string name="recordArrowDown">▼</string>
     <string name="totalTimeCost">총 소요 시간</string>
-    <string name="totalMonthRtDoneNum">루틴 수행 횟수</string>
+    <string name="totalMonthActionDoneNum">행동 수행 횟수</string>
     <string name="divider">/</string>
 
     <string name="tableDate">날짜</string>
@@ -278,5 +278,14 @@
     <string name="notiSubCmt">님이 대댓글을 남겼습니다 : </string>
     <string name="notiLike">님이 이 피드를 좋아합니다 : </string>
     <string name="notiRtTodo">수행할 시각입니다!</string>
+
+    <string name="notiSetAll">전체 알림</string>
+    <string name="notiSetRt">루틴 알림</string>
+    <string name="notiSetRtStart">루틴 시작 알림</string>
+    <string name="notiSetRtDoneYet">루틴 미수행 알림</string>
+    <string name="notiSetSNS">SNS 알림</string>
+    <string name="notiSetCmt">피드 댓글 알림</string>
+    <string name="notiSetLike">피드 좋아요 알림</string>
+    <string name="notiSetChat">채팅 알림</string>
 
 </resources>

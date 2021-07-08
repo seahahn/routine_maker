@@ -112,6 +112,7 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
                     val timestamp = it_mData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
                     if (it_mData.mType == "rt" &&
+//                        it_mData.onFeed && // 다른 사용자에게 공개된 루틴이면 목록에 포함
                         dayOfWeek in it_mData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
                         (parsedDate.isAfter(LocalDateTime.parse(timestamp).toLocalDate()) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
                                 || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate()))) {
@@ -141,6 +142,7 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     // 루틴일 경우 : 오늘 날짜의 요일이 루틴 수행 요일과 맞으면 보여주기 / 할 일인 경우 : 날짜가 맞으면 보여주기
 //                        val timestamp = it_pastData.createdAt.replace(" ", "T") // 루틴을 생성한 시점
                     if (it_pastData.mType == "rt" &&
+//                        it_pastData.onFeed && // 다른 사용자에게 공개된 루틴이면 목록에 포함
                         dayOfWeek in it_pastData.mDays && // 사용자가 선택한 날짜의 요일이 루틴 수행 요일에 포함되면 목록에 출력함
                         (parsedDate.isEqual(LocalDate.parse(it_pastData.mDate)) // 사용자가 선택한 날짜가 루틴을 생성한 날짜와 같거나 이후일 경우 목록에 출력함
 //                                    || parsedDate.isEqual(LocalDateTime.parse(timestamp).toLocalDate())))

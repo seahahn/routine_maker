@@ -159,8 +159,8 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
 
     private fun bindImageToDate(day: CalendarDay, date: String, textView: TextView) {
         // 날짜별 루틴 수행 결과를 날짜를 둘러싼 백그라운드 이미지를 통해서 보여줌
-        object : Thread() {
-            override fun run() {
+//        object : Thread() {
+//            override fun run() {
 //                d(TAG, "bindImageToDate start")
                 if (day.owner == DayOwner.THIS_MONTH) {
                     it_mDatas = mDatas.iterator() // 여기서는 사용자가 선택한 월에 해당하는 데이터만을 대상으로 함
@@ -189,8 +189,8 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
                         textView.background = null
                     }
                 }
-            }
-        }.start()
+//            }
+//        }.start()
     }
 
     // 날짜에 맞는 데이터만 골라서 보여주기 위한 메소드

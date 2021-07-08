@@ -182,6 +182,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             val subCmtPh = nick.text.toString() + context.getString(R.string.subCmtPh)
             context.chatInput.hint = subCmtPh // "~님에게 답글 남기기"로 힌트 변경
             context.chatInput.setText("@"+nick.text.toString()) // 상대방 닉네임 넣기
+            context.chatInput.setSelection(context.chatInput.text.length)
             context.showSoftKeyboard()
 
             context.isSubCmt = true

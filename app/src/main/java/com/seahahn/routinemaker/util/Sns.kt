@@ -1178,7 +1178,10 @@ open class Sns : Main() {
 //                            val images = gson.get("images").asString
 
                             fcmService = initFCMRetrofit() // FCM 보내기 위한 레트로핏 객체 초기화
-                            val title = getUserNick(context).plus(getString(R.string.notiLike)) // 알림 제목
+                            val title = getUserNick(context)
+                                .plus(
+                                    context.getString(
+                                        R.string.notiLike)) // 알림 제목 R.string.notiLike
                             val body = response.body().toString() // 피드의 내용(텍스트, 이미지)
                             val contents = NotificationContents(
                                 token,

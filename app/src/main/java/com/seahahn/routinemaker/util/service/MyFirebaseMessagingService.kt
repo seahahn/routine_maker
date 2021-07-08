@@ -29,6 +29,7 @@ import com.seahahn.routinemaker.sns.newsfeed.GroupFeedDetailActivity
 import com.seahahn.routinemaker.util.FCMNotiType
 import com.seahahn.routinemaker.util.UserInfo.getUserId
 import com.seahahn.routinemaker.util.UserInfo.setUserFCMToken
+import com.seahahn.routinemaker.util.UserSetting
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -72,6 +73,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if(remoteMessage.data.isNotEmpty()){
             Log.i("타이틀: ", remoteMessage.data["title"].toString())
             Log.i("바디: ", remoteMessage.data["body"].toString())
+            Log.i("타입: ", remoteMessage.data["type"].toString())
 
             retrofit = RetrofitClient.getInstance()
             service = retrofit.create(RetrofitService::class.java)
@@ -207,11 +209,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // 알림 생성
         notificationManager.notify(uniId, notificationBuilder.build())
 
-        // 사용자가 알림 목록 액티비티를 보고 있을 경우 알림이 오면 알림 목록도 함께 갱신시킴
-        // 이를 위해 브로드캐스트 리시버를 이용하여 알림 목록 액티비티에 알림 도착을 알려줌
-        val brIntent = Intent()
-        brIntent.action = "refresh"
-        sendBroadcast(brIntent)
+//        // 사용자가 알림 목록 액티비티를 보고 있을 경우 알림이 오면 알림 목록도 함께 갱신시킴
+//        // 이를 위해 브로드캐스트 리시버를 이용하여 알림 목록 액티비티에 알림 도착을 알려줌
+//        val brIntent = Intent()
+//        brIntent.action = "refresh"
+//        sendBroadcast(brIntent)
     }
 
     // 루틴 또는 할 일의 수행 예정 시각이 되면 알림을 띄움
@@ -337,7 +339,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }.start()
 
-                sendChatNotification(remoteMessage)
+                if(UserSetting.getNotiSetChat(applicationContext)) sendChatNotification(remoteMessage)
             }
         })
     }
@@ -364,7 +366,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }.start()
 
-                sendChatNotification(remoteMessage)
+                if(UserSetting.getNotiSetChat(applicationContext)) sendChatNotification(remoteMessage)
             }
         })
     }
@@ -380,10 +382,30 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 d(TAG, "알림 데이터 저장 요청 응답 수신 성공")
 //                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
 
+                // 각각의 알림 설정 값에 따라 기기 상단 알림을 띄우거나 띄우지 않음
                 when(type) {
-                    FCMNotiType.RT.type() -> sendRtTodoNotification(remoteMessage)
-                    else -> sendFeedNotification(remoteMessage)
+                    FCMNotiType.CMT.type() -> {
+                        if(UserSetting.getNotiSetCmt(applicationContext)) sendFeedNotification(remoteMessage)
+                    }
+                    FCMNotiType.SUB_CMT.type() -> {
+                        if(UserSetting.getNotiSetCmt(applicationContext)) sendFeedNotification(remoteMessage)
+                    }
+                    FCMNotiType.LIKE.type() -> {
+                        if(UserSetting.getNotiSetLike(applicationContext)) sendFeedNotification(remoteMessage)
+                    }
+                    FCMNotiType.RT.type() -> {
+                        if(UserSetting.getNotiSetRtStart(applicationContext)) sendRtTodoNotification(remoteMessage)
+                    }
+//                    else -> {
+//                        if(UserSetting.getNotiSetRtStart(applicationContext)) sendFeedNotification(remoteMessage)
+//                    }
                 }
+
+                // 사용자가 알림 목록 액티비티를 보고 있을 경우 알림이 오면 알림 목록도 함께 갱신시킴
+                // 이를 위해 브로드캐스트 리시버를 이용하여 알림 목록 액티비티에 알림 도착을 알려줌
+                val brIntent = Intent()
+                brIntent.action = "refresh"
+                sendBroadcast(brIntent)
             }
         })
     }

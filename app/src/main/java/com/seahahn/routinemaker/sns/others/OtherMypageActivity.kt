@@ -36,7 +36,7 @@ class OtherMypageActivity : Main() {
 
         val tbtitle = findViewById<TextView>(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getOtherUserNick(this) // 툴바 제목에 들어갈 텍스트
-        initToolbar(tbtitle, titleText, 1) // 툴바 세팅하기
+        initToolbar(tbtitle, titleText, 2) // 툴바 세팅하기
 
         btmnavOthers = findViewById(R.id.btmnav)
         initOtherBtmNav()

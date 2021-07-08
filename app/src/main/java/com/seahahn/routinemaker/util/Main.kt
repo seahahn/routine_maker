@@ -83,10 +83,12 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     lateinit var otherStts : ConstraintLayout // 다른 사용자 루틴 수행 통계 보기
     lateinit var otherChat : ConstraintLayout // 다른 사용자와 1:1 채팅하기
     lateinit var otherProfile : ConstraintLayout // 다른 사용자의 프로필 보기
+    lateinit var backToMine : ConstraintLayout // 다른 사용자의 프로필 보기
     lateinit var otherHomeIcon : ImageView
     lateinit var otherSttsIcon : ImageView
     lateinit var otherChatIcon : ImageView
     lateinit var otherProfilePic : ImageView
+    lateinit var backToMineIcon : ImageView
 
     // 사용자가 선택한 날짜에 따라 툴바 제목도 그에 맞는 날짜로 변경함
     // 초기값은 오늘 날짜
@@ -197,15 +199,18 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
         otherStts = findViewById(R.id.otherStts)
         otherChat = findViewById(R.id.otherChat)
         otherProfile = findViewById(R.id.otherProfile)
+//        backToMine = findViewById(R.id.backToMine)
         otherHomeIcon = findViewById(R.id.otherHomeIcon)
         otherSttsIcon = findViewById(R.id.otherSttsIcon)
         otherChatIcon = findViewById(R.id.otherChatIcon)
         otherProfilePic = findViewById(R.id.otherProfilePic)
+//        backToMineIcon = findViewById(R.id.backToMineIcon)
 
         otherHome.setOnClickListener(OtherBtmNavClickListener())
         otherStts.setOnClickListener(OtherBtmNavClickListener())
         otherChat.setOnClickListener(OtherBtmNavClickListener())
         otherProfile.setOnClickListener(OtherBtmNavClickListener())
+//        backToMine.setOnClickListener(OtherBtmNavClickListener())
     }
 
     // 다른 사용자 프로필 들어간 경우 하단 내비 버튼 각각의 동작 내용
@@ -228,6 +233,10 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
                     startActivity<OtherMypageActivity>()
                     overridePendingTransition(0, 0)
                 }
+//                R.id.backToMine -> {
+//                    startActivity<GroupListActivity>()
+////                    overridePendingTransition(0, 0)
+//                }
             }
         }
     }

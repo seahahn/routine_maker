@@ -71,7 +71,8 @@ class SttsWeekFragment : Fragment() {
     private lateinit var recordList: RecyclerView
     private lateinit var recordRtAdapter: RecordRtAdapter
     private var mDatas = mutableListOf<RtData>() // 과거 루틴 수행 내역 전체
-    private var showDatas = mutableListOf<RtData>() // 사용자가 선택한 기간 조건에 맞는 데이터만 골라낸 것
+    private var showDatas = mutableListOf<RtData>() // 사용자가 선택한 기간 조건에 맞는 데이터만 골라낸 것(중복 제거)
+    private var overlapedDatas = mutableListOf<RtData>() // 사용자가 선택한 기간 조건에 맞는 데이터만 골라낸 것(중복 포함)
     private lateinit var it_mDatas : Iterator<RtData>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,7 +126,6 @@ class SttsWeekFragment : Fragment() {
 
         recordViewModel.recordRtData.observe(this) { rtDatas ->
             mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
-            recordRtAdapter.getAllDatas(mDatas)
             setShowDatas(true) // 날짜에 맞는 데이터만 목록에 출력하기
         }
 
@@ -141,6 +141,7 @@ class SttsWeekFragment : Fragment() {
         showDatas.clear() // 기존 목록 비우기
         setTable()
         recordRtAdapter.replaceList(showDatas) // 추려낸 데이터의 목록을 어댑터에 보내줌
+        recordRtAdapter.getAllDatas(overlapedDatas) // 선택된 기간 동안의 모든 루틴 수행 기록을 보내줌
 
         // 출력할 데이터가 없으면 "데이터가 없습니다"를 표시함
         if(recordRtAdapter.itemCount == 0) {
@@ -176,6 +177,7 @@ class SttsWeekFragment : Fragment() {
                         check = showDatas[j].id == it_mData.id
                         if(check) result = check
                     }
+                    overlapedDatas.add(it_mData) // 해당 기간에 포함되는 모든 루틴 수행 기록을 담아둠
                     if(!result || showDatas.size == 0) showDatas.add(it_mData) // 아이템이 없거나 루틴 고유 번호 기준으로 중복되면 포함시키지 않음
                 }
             }

@@ -64,9 +64,10 @@ class RtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
         rtTitle.isEnabled = (rtData.mType == "rt"
                 && dayOfWeekInput in rtData.mDays // 사용자가 선택한 날짜의 요일이 해당 루틴의 수행 요일에 포함되지 않으면 비활성화
                 && date == LocalDate.now() // 사용자가 선택한 날짜가 오늘 날짜와 동일하지 않으면 비활성화
+                && rtData.userId == getUserId(context) // 사용자 본인만 자신의 루틴을 완료 처리할 수 있음
                 ) // 사용자가 선택한 날짜가 루틴의 수행 예정일이 아니면 비활성화 && date == LocalDate.parse(rtData.date)
                 || rtData.mType == "todo"
-        rtTitle.isEnabled = rtData.userId == getUserId(context)
+//        rtTitle.isEnabled = rtData.userId == getUserId(context)
         isActionEnabled = rtTitle.isEnabled
 
         if(!rtTitle.isEnabled) {

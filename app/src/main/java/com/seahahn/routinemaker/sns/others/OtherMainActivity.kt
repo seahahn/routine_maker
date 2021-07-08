@@ -1,6 +1,9 @@
 package com.seahahn.routinemaker.sns.others
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -28,7 +31,7 @@ class OtherMainActivity : Sns() {
         service = initRetrofit()
 
         title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formattedMDDoW, 1) // 툴바 세팅하기
+        initToolbar(title, formattedMDDoW, 2) // 툴바 세팅하기
 
         // 하단 내비 초기화
         btmnavOthers = findViewById(R.id.btmnav)

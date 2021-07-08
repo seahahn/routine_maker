@@ -14,6 +14,256 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+    <ScrollView
+            android:layout_width="match_parent" android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toTopOf="@+id/btmnav"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:id="@+id/LLNotiSetAll"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/notiSetAll"
+                        style="@style/txt_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvNotiSetAll"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/notiSetAll"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+            <View
+                    android:id="@+id/dividerNotiSetAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dark"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/LLNotiSetAll" android:layout_marginTop="24dp"
+                    android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <TextView
+                    style="@style/txt_title"
+                    android:id="@+id/tvNotiSetRt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notiSetRt"
+                    app:layout_constraintTop_toBottomOf="@id/dividerNotiSetAll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="24dp"/>
+
+            <LinearLayout
+                    android:id="@+id/LLNotiSetRtStart"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotiSetRt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/notiSetRtStart"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvNotiSetRtStart"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/notiSetRtStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+<!--            <LinearLayout-->
+<!--                    android:id="@+id/LLNotiSetRtDoneYet"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:background="@drawable/list_bg"-->
+<!--                    android:layout_height="48dp" android:layout_marginTop="12dp"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/LLNotiSetRtStart"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"-->
+<!--                    android:layout_marginEnd="32dp">-->
+
+<!--                <TextView-->
+<!--                        android:text="@string/notiSetRtDoneYet"-->
+<!--                        style="@style/txt_l"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="16dp"-->
+<!--                        android:id="@+id/tvNotiSetRtDoneYet"-->
+<!--                        android:layout_weight="1"/>-->
+
+<!--                <com.google.android.material.switchmaterial.SwitchMaterial-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:checked="true"-->
+<!--                        android:layout_marginEnd="16dp"-->
+<!--                        android:id="@+id/notiSetRtDoneYet"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"/>-->
+<!--            </LinearLayout>-->
+
+            <View
+                    android:id="@+id/dividerNotiSetRt"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/dark"
+                    android:layout_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/LLNotiSetRtStart" android:layout_marginTop="24dp"
+                    android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+
+            <TextView
+                    style="@style/txt_title"
+                    android:id="@+id/tvNotiSetSNS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/notiSetSNS"
+                    app:layout_constraintTop_toBottomOf="@id/dividerNotiSetRt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="24dp"/>
+
+            <LinearLayout
+                    android:id="@+id/LLNotiSetCmt"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotiSetSNS"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/notiSetCmt"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvNotiSetCmt"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/notiSetCmt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/LLNotiSetLike"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/LLNotiSetCmt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/notiSetLike"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvNotiSetLike"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/notiSetLike"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:id="@+id/LLNotiSetChat"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/list_bg"
+                    android:layout_height="48dp" android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/LLNotiSetLike"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp">
+
+
+                <TextView
+                        android:text="@string/notiSetChat"
+                        style="@style/txt_l"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:id="@+id/tvNotiSetChat"
+                        android:layout_weight="1"/>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:layout_marginEnd="16dp"
+                        android:id="@+id/notiSetChat"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
     <include
             layout="@layout/btmnav"
             android:id="@+id/btmnav"

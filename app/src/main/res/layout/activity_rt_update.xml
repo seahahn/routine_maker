@@ -181,6 +181,7 @@ tools:context=".main.RtUpdateActivity">
         </LinearLayout>
 
         <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/LLRtOnFeed"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

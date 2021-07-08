@@ -123,23 +123,23 @@ class NoticeListAdapter(mContext : Context) : RecyclerView.Adapter<NoticeListAda
                             val body = Gson().fromJson(body, JsonObject::class.java)
                             val notiContent = body.get("content").asString
                             text = nickname.plus(context.getString(R.string.notiCmt) +" "+ notiContent)
-                            content.text = setNicknameTextBold(text, nickname)
+                            content.text = setSubjectTextBold(text, nickname)
                         }
                         FCMNotiType.SUB_CMT.type() -> {
                             val body = Gson().fromJson(body, JsonObject::class.java)
                             val notiContent = body.get("content").asString
                             text = nickname.plus(context.getString(R.string.notiSubCmt) +" "+ notiContent)
-                            content.text = setNicknameTextBold(text, nickname)
+                            content.text = setSubjectTextBold(text, nickname)
                         }
                         FCMNotiType.LIKE.type() -> {
                             val body = Gson().fromJson(body, JsonObject::class.java)
                             val notiContent = body.get("content").asString
                             text = nickname.plus(context.getString(R.string.notiLike) +" "+ notiContent)
-                            content.text = setNicknameTextBold(text, nickname)
+                            content.text = setSubjectTextBold(text, nickname)
                         }
                         FCMNotiType.RT.type() -> {
                             text = title.plus(" "+context.getString(R.string.notiRtTodo))
-                            content.text = setNicknameTextBold(text, nickname)
+                            content.text = setSubjectTextBold(text, title)
                         }
                     }
                 }
@@ -147,7 +147,7 @@ class NoticeListAdapter(mContext : Context) : RecyclerView.Adapter<NoticeListAda
         }
 
         // 알림을 발생시킨 사용자의 닉네임 글자만 굵게 만들어줌
-        fun setNicknameTextBold(text : String, nickname : String) : SpannableString {
+        fun setSubjectTextBold(text : String, nickname : String) : SpannableString {
             val spannableString = SpannableString(text)
             val start: Int = text.indexOf(nickname)
             val end: Int = start + nickname.length

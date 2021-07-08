@@ -379,13 +379,13 @@ class ChatroomsAdapter(mContext : Context) : RecyclerView.Adapter<ChatroomsAdapt
         }
     }
 
-    inner class ChatUserIOViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
-
-        private lateinit var content : TextView
-
-        fun onBind(chatMsg : ChatMsg) {
-            // 채팅 메시지 타입 구분하기
-            content.text = chatMsg.content
-        }
-    }
+//    inner class ChatUserIOViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
+//
+//        private lateinit var content : TextView
+//
+//        fun onBind(chatMsg : ChatMsg) {
+//            // 채팅 메시지 타입 구분하기
+//            content.text = chatMsg.content
+//        }
+//    }
 }

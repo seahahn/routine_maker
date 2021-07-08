@@ -35,7 +35,9 @@ import com.seahahn.routinemaker.network.RetrofitClient
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.sns.chat.ChatDataBase
+import com.seahahn.routinemaker.sns.group.GroupListActivity
 import okhttp3.ResponseBody
+import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -110,6 +112,9 @@ open class Util  : AppCompatActivity() {
         } else if(leftIcon == 1){
             supportActionBar!!.setHomeAsUpIndicator(R.drawable.backward_arrow) // 왼쪽 버튼 이미지 설정 - 좌향 화살표
             homeBtn = R.drawable.backward_arrow
+        } else if(leftIcon == 2) {
+            supportActionBar!!.setHomeAsUpIndicator(R.drawable.back_to_mine) // 왼쪽 버튼 이미지 설정 - 되돌아가는 화살표
+            homeBtn = R.drawable.back_to_mine
         }
         title.text = titleText // 제목 설정
     }
@@ -125,6 +130,8 @@ open class Util  : AppCompatActivity() {
                     d(TAG, "뒤로 가기")
                     finish() // 액티비티 종료하기
                     overridePendingTransition(0, 0)
+                } else if(homeBtn == R.drawable.back_to_mine) { // 되돌아가는 화살표일 경우(다른 사용자 프로필 방문한 경우)
+                    startActivity<GroupListActivity>() // 자신의 SNS 그룹 목록 화면으로 돌아감
                 }
             }
         }

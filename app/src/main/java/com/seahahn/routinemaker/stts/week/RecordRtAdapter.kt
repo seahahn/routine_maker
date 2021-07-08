@@ -1,5 +1,6 @@
 package com.seahahn.routinemaker.stts.week
 
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
 
     //데이터들을 저장하는 변수
     private var allData = mutableListOf<RtData>()
+    private var filteredData = mutableListOf<RtData>()
     private var data = mutableListOf<RtData>()
     private var doneCount = 0
     private var actionData = mutableListOf<ActionData>()
@@ -33,7 +35,7 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
     override fun onBindViewHolder(holder: RecordRtViewHolder, position: Int) {
 //        d(TAG, "RRA onBindViewHolder")
 //        holder.replaceDate(date)
-        holder.getRtDatas(allData)
+        holder.getRtDatas(filterRtDatas(data[position], allData))
         holder.getActionDatas(actionData)
         holder.onBind(data[position], date)
     }
@@ -50,13 +52,23 @@ class RecordRtAdapter : RecyclerView.Adapter<RecordRtViewHolder>() {
 
     fun replaceList(newList: MutableList<RtData>) {
 //        d(TAG, "RRA replaceList")
+//        d(TAG, "newList : $newList")
         data = newList.toMutableList()
         //어댑터의 데이터가 변했다는 notify를 날린다
         notifyDataSetChanged()
     }
 
     fun getAllDatas(newList: MutableList<RtData>) {
+        d(TAG, "getAllDatas : $newList")
         allData = newList.toMutableList()
+    }
+
+    fun filterRtDatas(standardRt : RtData, allData: MutableList<RtData>) : MutableList<RtData> {
+        for(i in 0 until allData.size) {
+            if(allData[i].id == standardRt.id) filteredData.add(allData[i])
+        }
+
+        return filteredData
     }
 
     fun replaceActionList(newList: MutableList<ActionData>) {

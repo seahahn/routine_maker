@@ -15,6 +15,7 @@ import com.seahahn.routinemaker.main.*
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.stts.RecordViewModel
+import com.seahahn.routinemaker.util.UserInfo.getUserId
 import java.time.LocalDate
 
 class SttsDayFragment : Fragment() {
@@ -83,6 +84,8 @@ class SttsDayFragment : Fragment() {
             val it_mData = it_mDatas.next()
             // 사용자가 선택한 날짜에 해당하는 데이터만 출력 목록에 포함시킴
             if (parsedDate.isEqual(LocalDate.parse(it_mData.mDate))) {
+//                // 사용자 본인이거나 다른 사용자에게 공개된 루틴인 경우에만 통계에 포함
+//                if(it_mData.userId == getUserId(requireContext()) || it_mData.onFeed)
                 showDatas.add(it_mData)
             }
         }

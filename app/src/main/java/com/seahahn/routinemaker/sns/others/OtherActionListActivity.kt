@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.main.ActionAdapter
 import com.seahahn.routinemaker.main.ActionData
 import com.seahahn.routinemaker.main.ActionViewModel
 import com.seahahn.routinemaker.main.DateViewModel
+import com.seahahn.routinemaker.util.AppVar
 import com.seahahn.routinemaker.util.AppVar.getOtherUserId
 import com.seahahn.routinemaker.util.Main
 
@@ -37,6 +39,12 @@ class OtherActionListActivity : Main() {
         // 하단 내비 초기화
         btmnavOthers = findViewById(R.id.btmnav)
         initOtherBtmNav()
+        otherHomeIcon.alpha = 1f // 현재 보고 있는 액티비티의 위치를 나타내기 위해 액티비티에 연결된 아이콘의 투명도 조정
+        // 하단 내비 우측에 방문한 사용자의 프로필 사진 넣기
+        Glide.with(applicationContext).load(AppVar.getOtherUserPic(this))
+            .placeholder(R.drawable.warning)
+            .error(R.drawable.warning)
+            .into(otherProfilePic)
 
 //        // 우측 하단의 FloatingActionButton 초기화
 //        // 버튼을 누르면 루틴 내 행동 추가하기 액티비티로 이동

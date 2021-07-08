@@ -343,6 +343,7 @@ open class SnsChat : Sns() {
         socket = Socket(host, port) // Socket 생성 및 접속
         connectInputStream()
         connectOutputStream()
+        d(TAG, "outputStream : $outputStream")
 
         val userData = JsonObject()
         userData.addProperty("chatRoomId", chatRoomId)
