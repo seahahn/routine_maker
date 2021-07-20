@@ -17,8 +17,8 @@ data class CmtData(
     val id : Int,
     val writerId : Int,
     val feedId : Int,
-    var content : String,
-    var image : String,
+    val content : String,
+    val image : String,
     val isSub : Boolean,
     val mainCmt : Int,
     val createdAt : String

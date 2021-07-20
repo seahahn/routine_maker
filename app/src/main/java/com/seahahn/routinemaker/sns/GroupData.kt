@@ -12,13 +12,13 @@ package com.seahahn.routinemaker.sns
 * */
 data class GroupData(
     val id : Int,
-    var title : String,
-    var tags : String,
-    var headLimit : Int,
-    var onPublic : Boolean,
-    var memo : String,
+    val title : String,
+    val tags : String,
+    val headLimit : Int,
+    val onPublic : Boolean,
+    val memo : String,
     val leaderId : Int,
-    var joined : Boolean,
-    var memberCount : Int,
+    val joined : Boolean,
+    val memberCount : Int,
     val createdAt : String
 )

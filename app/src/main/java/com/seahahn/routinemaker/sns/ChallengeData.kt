@@ -15,14 +15,14 @@ package com.seahahn.routinemaker.sns
 */
 data class ChallengeData(
     val id : Int,
-    var title : String,
-    var topic : Int,
-    var startDate : String,
-    var endDate : String,
-    var imageGood : String,
-    var imageBad : String,
-    var memo : String,
-    var members : String,
+    val title : String,
+    val topic : Int,
+    val startDate : String,
+    val endDate : String,
+    val imageGood : String,
+    val imageBad : String,
+    val memo : String,
+    val members : String,
     val userId : Int,
     val createdAt : String
 )
