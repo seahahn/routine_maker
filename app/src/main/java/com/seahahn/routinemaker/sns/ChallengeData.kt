@@ -18,11 +18,15 @@ data class ChallengeData(
     val title : String,
     val topic : Int,
     val startDate : String,
-    val endDate : String,
+    val period : Int,
+    val frequency : Int,
+    val certDays : Int,
+    val certNum : Int,
+    val certTimeStart : Int,
+    val certTimeEnd : Int,
     val imageGood : String,
     val imageBad : String,
     val memo : String,
-    val members : String,
     val userId : Int,
     val createdAt : String
 )

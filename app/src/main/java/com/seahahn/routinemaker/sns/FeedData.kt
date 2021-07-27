@@ -19,6 +19,7 @@ data class FeedData(
     val images : String,
     val groupId : Int,
     val challengeId : Int,
+    val warningCount : Int,
     val createdAt : String,
     val likeCount : Int,
     val commentCount : Int,
