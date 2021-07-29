@@ -518,7 +518,7 @@ open class Sns : Main() {
                 fabtn = findViewById(R.id.fabtn)
                 fabMain = findViewById(R.id.fabMain)
                 fabMain.setOnClickListener {
-                    startActivity<GroupFeedMakeActivity>("groupId" to groupId, "challengeId" to challengeId) // '행동 추가' 액티비티로 이동
+                    startActivity<GroupFeedMakeActivity>("groupId" to groupId, "challengeId" to challengeId) // '피드 작성' 액티비티로 이동
                 }
             }
         }
