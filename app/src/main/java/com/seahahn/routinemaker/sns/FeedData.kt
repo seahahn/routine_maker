@@ -15,10 +15,11 @@ import java.io.Serializable
 data class FeedData(
     val id : Int,
     val writerId : Int,
-    var content : String,
-    var images : String,
+    val content : String,
+    val images : String,
     val groupId : Int,
     val challengeId : Int,
+    val warningCount : Int,
     val createdAt : String,
     val likeCount : Int,
     val commentCount : Int,

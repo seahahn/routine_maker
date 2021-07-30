@@ -23,7 +23,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.amplifyframework.core.Amplify
 import com.bumptech.glide.Glide
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.nhn.android.idp.common.logger.Logger.d
@@ -205,6 +204,7 @@ open class Sns : Main() {
         showProgress(false)
     }
 
+    // 채팅 메시지 또는 피드의 댓글을 입력하기 위한 하단의 입력란 요소들 초기화하기
     fun initChatInput(ph : Int) {
         fullBtmChat = findViewById(R.id.full_btm_chat)
         chatInput = findViewById(R.id.chatInput)
@@ -214,6 +214,7 @@ open class Sns : Main() {
         chatInput.setHint(ph)
     }
 
+    // 채팅방 또는 피드 자세히 보기에서 이미지 클릭 시 전체화면으로 출력하기 위한 요소들 초기화하기
     fun initFullImgLayout() {
         fullImgLayout = findViewById(R.id.fullImgLayout)
 //        fullImgLayout = findViewById(R.id.fullImgLayout)
@@ -517,7 +518,7 @@ open class Sns : Main() {
                 fabtn = findViewById(R.id.fabtn)
                 fabMain = findViewById(R.id.fabMain)
                 fabMain.setOnClickListener {
-                    startActivity<GroupFeedMakeActivity>("groupId" to groupId, "challengeId" to challengeId) // '행동 추가' 액티비티로 이동
+                    startActivity<GroupFeedMakeActivity>("groupId" to groupId, "challengeId" to challengeId) // '피드 작성' 액티비티로 이동
                 }
             }
         }
@@ -782,6 +783,7 @@ open class Sns : Main() {
         })
     }
 
+    // 그룹 멤버 목록 불러오기
     fun getGroupMembers(service: RetrofitService, groupId : Int, joined : Boolean) {
         d(TAG, "getGroupMembers 변수들 : $groupId, $joined")
         service.getGroupMembers(groupId, joined).enqueue(object : Callback<MutableList<GroupMemberData>> {
@@ -803,6 +805,7 @@ open class Sns : Main() {
         })
     }
 
+    // 그룹 리더 변경하기
     fun setGroupLeader(service: RetrofitService, groupId : Int, newLeaderId : Int) {
         d(TAG, "setGroupLeader 변수들 : $groupId, $newLeaderId")
         service.setGroupLeader(groupId, newLeaderId).enqueue(object : Callback<JsonObject> {
