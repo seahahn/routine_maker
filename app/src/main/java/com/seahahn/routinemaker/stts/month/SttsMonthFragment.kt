@@ -61,6 +61,7 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
     private var mDatas = mutableListOf<RtData>() // 과거 루틴 수행 내역 전체
     private var showDatas = mutableListOf<RtData>() // 사용자가 선택한 기간 조건에 맞는 데이터만 골라낸 것
     private lateinit var it_mDatas : Iterator<RtData>
+    private lateinit var it_mDatasForimg : Iterator<RtData>
 
     // 프래그먼트 첫 출력 시에 현재 날짜로 달력 초기화하고, 그 다음부터는 선택된 날짜에 따라 달력이 변동될 수 있도록 조건문을 걸기 위해 만든 변수
     private var init = false
@@ -96,11 +97,6 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
                 textView.alpha = if (day.owner == DayOwner.THIS_MONTH) 1f else 0.3f // 선택된 월이 아닌 월의 날짜들은 흐리게 표시
 
                 // 날짜별 루틴 수행 결과를 날짜를 둘러싼 백그라운드 이미지를 통해서 보여줌
-//                object : Thread() {
-//                    override fun run() {
-//                        if(mDatas.isNotEmpty())
-//                    }
-//                }.start()
                 if(mDatas.isNotEmpty()) bindImageToDate(day, date, textView)
             }
         }
@@ -163,11 +159,11 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
             override fun run() {
                 d(TAG, "bindImageToDate start")
                 if (day.owner == DayOwner.THIS_MONTH) {
-                    it_mDatas = mDatas.iterator() // 여기서는 사용자가 선택한 월에 해당하는 데이터만을 대상으로 함
+                    it_mDatasForimg = mDatas.iterator() // 여기서는 사용자가 선택한 월에 해당하는 데이터만을 대상으로 함
                     var total = 0 // 해당 날짜의 총 루틴 수
                     var done = 0 // 해당 날짜의 수행 완료 루틴 수
-                    while (it_mDatas.hasNext()) {
-                        val it_mData = it_mDatas.next()
+                    while (it_mDatasForimg.hasNext()) {
+                        val it_mData = it_mDatasForimg.next()
                         // 사용자가 선택한 월에 해당하는 데이터만 통계 수치에 반영
                         if (date == it_mData.mDate) {
                             total++

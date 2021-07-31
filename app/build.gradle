@@ -52,29 +52,33 @@ dependencies {
 
     // Google login, Firebase
     implementation platform('com.google.firebase:firebase-bom:28.0.1')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx:19.0.0'
+    implementation 'com.google.firebase:firebase-messaging-ktx:22.0.0'
 //    implementation 'com.google.firebase:firebase-admin:7.3.0'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation "com.google.firebase:firebase-auth-ktx:21.0.1"
-    implementation "com.firebaseui:firebase-ui-auth:7.1.1"
-    implementation 'androidx.work:work-runtime:2.5.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation 'androidx.work:work-runtime:2.6.0-beta02'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
+    // Google Play Payment System
+    implementation("com.android.billingclient:billing-ktx:4.0.0")
+
     // naveridlogin dependencies
-    def android_x_version = "1.0.0"
+    def android_x_version = '1.3.0'
     implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.6'
     //noinspection GradleDependency
-    implementation "androidx.appcompat:appcompat:$android_x_version"
-    implementation "androidx.legacy:legacy-support-core-utils:$android_x_version"
-    implementation "androidx.browser:browser:1.3.0"
-    implementation "androidx.legacy:legacy-support-v4:$android_x_version"
+//    implementation "androidx.appcompat:appcompat:$android_x_version"
+//    implementation "androidx.legacy:legacy-support-core-utils:$android_x_version"
+//    implementation "androidx.browser:browser:1.3.0"
+//    implementation "androidx.legacy:legacy-support-v4:$android_x_version"
 
     // Room Database
-    def room_version = "2.4.0-alpha03"
+    def room_version = "2.4.0-alpha04"
+    //noinspection GradleDependency
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version" // To use Kotlin annotation processing tool (kapt)
 //    ksp "androidx.room:room-compiler:$room_version" // To use Kotlin Symbolic Processing (KSP)
@@ -116,6 +120,7 @@ dependencies {
 
     // Kotlin Fragment
     def fragment_version = "1.3.5"
+    //noinspection GradleDependency
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // round shape ToggleButton
