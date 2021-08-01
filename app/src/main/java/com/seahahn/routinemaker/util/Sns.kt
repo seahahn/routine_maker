@@ -34,10 +34,7 @@ import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.FullImgAdapter
 import com.seahahn.routinemaker.sns.group.*
-import com.seahahn.routinemaker.sns.newsfeed.FeedCmtViewModel
-import com.seahahn.routinemaker.sns.newsfeed.FeedImgAdapter
-import com.seahahn.routinemaker.sns.newsfeed.GroupFeedMakeActivity
-import com.seahahn.routinemaker.sns.newsfeed.GroupFeedViewModel
+import com.seahahn.routinemaker.sns.newsfeed.*
 import com.seahahn.routinemaker.sns.others.OtherMypageActivity
 import com.seahahn.routinemaker.util.AppVar.getAcceptedList
 import com.seahahn.routinemaker.util.AppVar.getNextLeaderId
@@ -699,10 +696,15 @@ open class Sns : Main() {
 
     override fun showProgress(show : Boolean) {
         if(show) {
+            d(TAG, "show")
             prograssbar.show()
         } else {
+            d(TAG, "hide")
             prograssbar.hide()
-            if(TAG == "GroupFeedDetailActivity") getCmts(service, feedId)
+            when(TAG) {
+                "GroupFeedActivity" -> getFeeds(service, groupId, getUserId(this))
+                "GroupFeedDetailActivity" -> getCmts(service, feedId)
+            }
         }
     }
 
@@ -1226,7 +1228,7 @@ open class Sns : Main() {
     }
 
     // 그룹 피드 댓글 작성하기
-    fun makeCmt(service: RetrofitService, feedId: Int, feedWriterId : Int, content: String, image: String, isSub: Boolean, mainCmt: Int?) {
+    fun makeCmt(service: RetrofitService, feedId: Int, feedWriterId : Int, content: String, image: String, isSub: Boolean, mainCmt: Int?, context: Context) {
         d(TAG, "makeCmt 변수들 : $feedId, $feedWriterId, $content, $image, $isSub, $mainCmt")
         val writerId = getUserId(applicationContext)
         service.makeCmt(writerId, feedId, feedWriterId, content, image, isSub, mainCmt).enqueue(object : Callback<JsonObject> {
@@ -1287,6 +1289,10 @@ open class Sns : Main() {
                     )
                 )
                 sendFCMNotification(fcmService, contents) // FCM 발송
+
+                getCmts(service, feedId)
+                val contextNow = context as GroupFeedDetailActivity
+                contextNow.getFeedDetail(service, feedId, getUserId(applicationContext))
             }
         })
     }

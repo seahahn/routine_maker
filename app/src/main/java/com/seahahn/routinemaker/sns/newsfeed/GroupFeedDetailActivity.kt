@@ -39,6 +39,7 @@ import java.util.*
 class GroupFeedDetailActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
+    private val context = this@GroupFeedDetailActivity
 
     private lateinit var scrollView: NestedScrollView
 
@@ -161,7 +162,7 @@ class GroupFeedDetailActivity : Sns() {
     }
 
     // 선택된 피드에 해당하는 데이터들 가져오기
-    private fun getFeedDetail(service: RetrofitService, feedIdIn : Int, userId : Int) {
+    fun getFeedDetail(service: RetrofitService, feedIdIn : Int, userId : Int) {
         Log.d(TAG, "getFeedDetail 변수들 : $feedIdIn, $userId")
         service.getFeed(feedIdIn, userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -262,9 +263,9 @@ class GroupFeedDetailActivity : Sns() {
                 }
                 R.id.chatSend -> {
                     val cmt = chatInput.text
-                    if(chatInput.text.isNotBlank()) {
+                    if(cmt.isNotBlank() || imgDatasCmt.isNotEmpty()) {
                         saveImgsURL(imgDatasCmt, imagesList)
-                        makeCmt(service, feedId, feedWriterId, cmt.toString(), imagesURL, isSubCmt, mainCmt)
+                        makeCmt(service, feedId, feedWriterId, cmt.toString(), imagesURL, isSubCmt, mainCmt, context)
                         chatInput.text = null
                         hideSoftKeyboard()
 
@@ -281,7 +282,10 @@ class GroupFeedDetailActivity : Sns() {
                     previewImgArea.visibility = View.GONE
                     Glide.with(applicationContext).load("").into(preview)
 
-                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) getCmts(service, feedId)
+//                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) {
+//                        getCmts(service, feedId)
+//                        getFeedDetail(service, feedId, getUserId(applicationContext))
+//                    }
                 }
                 R.id.subCmtCancel -> {
                     chatInput.setHint(R.string.cmtPh) // "댓글을 입력하세요"로 힌트 변경

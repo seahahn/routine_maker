@@ -140,12 +140,12 @@ class ChatActivity : SnsChat() {
 
     override fun onPause() {
         super.onPause()
-        closeConnect() // 소켓 연결 해제
+//        closeConnect() // 소켓 연결 해제
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        closeConnect() // 소켓 연결 해제
+        closeConnect() // 소켓 연결 해제
     }
 
     // 툴바 우측 메뉴 버튼 설정

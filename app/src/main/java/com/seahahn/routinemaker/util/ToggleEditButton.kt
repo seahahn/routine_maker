@@ -275,12 +275,13 @@ class ToggleEditButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int
                 val msg = gson.get("msg").asString
                 val result = gson.get("result").asBoolean
                 d(TAG, msg)
-//                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 ret = result
                 d(TAG, "check ret : $ret")
                 setEditing(service, textInput, !editing, true, isNick)
                 if(result) {
                     changeInfo(service, "nick", nick)
+                } else {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
             }
         })

@@ -87,6 +87,12 @@ interface RetrofitService {
     ) : Call<JsonObject>
 
     @FormUrlEncoded
+    @POST("/api/users/user_exit.php") // 사용자 탈퇴
+    fun userExit(
+        @Field("id") id: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
     @POST("/api/main/make_rt.php") // 루틴 또는 할 일 만들기 액티비티에서 데이터 보내 DB에 저장하기
     fun makeRt(
         @Field("m_type") mType: String,

@@ -43,8 +43,8 @@
     <string name="verifynum">인증 번호</string>
     <string name="verifynumph">인증 번호 4자리를 입력해주세요</string>
     <string name="or">또는</string>
-    <string name="signupAgree">루틴 메이커의 <a href="https://www.salondeahn.me">이용약관</a> 및 <a
-            href="https://www.salondeahn.me">개인정보처리방침</a>에 동의합니다.
+    <string name="signupAgree">루틴 메이커의 <a href="https://www.notion.so/c5d3ccca2d574331814c4b81a8c5caf1">이용약관</a> 및 <a
+            href="https://www.notion.so/86e04fb287ce486f993b53792ce21981">개인정보처리방침</a>에 동의합니다.
     </string>
 
     <string name="signuptext1">환영합니다!</string>
@@ -132,6 +132,8 @@
     <string name="updateTodo">할 일 수정하기</string>
     <string name="makeAction">행동 추가하기</string>
     <string name="updateAction">행동 수정하기</string>
+
+    <string name="noRt">이 날은 루틴이 없어요</string>
 
     <!-- 루틴, 할 일 만들기에서의 mType 값   -->
     <string name="rt">rt</string>

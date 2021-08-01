@@ -75,6 +75,8 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             d(TAG, "img is not blank")
             imageURL = cmtData.image.substring(1, cmtData.image.length - 1)
             Glide.with(context).load(imageURL).into(cmtImg)
+        } else {
+            Glide.with(context).clear(cmtImg)
         }
         cmtImg.setOnClickListener(ImgClickListener())
 
@@ -302,6 +304,7 @@ class FeedCmtViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                 .setMessage(msg)
                 .setPositiveButton(R.string.okay) { _: DialogInterface, _: Int ->
                     context.deleteCmt(service, cmtId)
+                    context.getFeedDetail(service, context.feedId, getUserId(context))
                 }
                 .setNegativeButton(R.string.cancel) { _: DialogInterface, _: Int -> }
                 .show()

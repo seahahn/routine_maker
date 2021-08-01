@@ -25,7 +25,6 @@ tools:context=".user.FindpwActivity">
     <TextView
             android:text="@string/findpwtext1"
             android:textSize="27sp"
-            android:textColor="@color/fontDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textView6"
             android:layout_marginStart="14dp" app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +32,6 @@ tools:context=".user.FindpwActivity">
     <TextView
             android:text="@string/findpwtext2"
             android:textSize="20sp"
-            android:textColor="@color/fontDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textView7"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView6"

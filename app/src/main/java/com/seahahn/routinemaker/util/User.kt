@@ -1,13 +1,18 @@
 package com.seahahn.routinemaker.util
 
 import android.util.Log
+import android.widget.Toast
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.nhn.android.naverlogin.OAuthLogin
 import com.seahahn.routinemaker.main.MainActivity
 import com.seahahn.routinemaker.network.RetrofitService
+import com.seahahn.routinemaker.sns.group.GroupListActivity
 import com.seahahn.routinemaker.user.LoginActivity
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import retrofit2.Call
@@ -84,20 +89,47 @@ open class User  : Util() {
         })
     }
 
-    // 툴바 버튼 클릭 시 작동할 기능
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        Log.d(TAG, "onOptionsItemSelected")
-//        when(item.itemId){
-//            android.R.id.home->{ // 툴바 좌측 버튼
-//                if(homeBtn == R.drawable.hbgmenu) { // 햄버거 메뉴 버튼일 경우
-////                    drawerLayout.openDrawer(GravityCompat.START) // 네비게이션 드로어 열기
-//                } else if(homeBtn == R.drawable.backward_arrow) { // 좌향 화살표일 경우
-//                    Log.d(TAG, "뒤로 가기")
-//                    finish() // 액티비티 종료하기
-//                }
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
+    // 회원 탈퇴 요청
+    fun userExit(service : RetrofitService, id : Int) {
+        service.userExit(id).enqueue(object : Callback<JsonObject> {
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.d(TAG, "회원 탈퇴 실패 : {$t}")
+            }
 
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                Log.d(TAG, "회원 탈퇴 요청 응답 수신 성공")
+                val gson = Gson().fromJson(response.body().toString(), JsonObject::class.java)
+                Log.d(TAG, response.body().toString())
+                val result = gson.get("result").asBoolean
+                val msg = gson.get("msg").asString
+                when(result) {
+                    true -> {
+                        Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+
+                        // 구글 연동 해제
+                        if(Firebase.auth.currentUser != null) {
+                            val googleUser = Firebase.auth.currentUser
+                            googleUser!!.delete().addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d(TAG, "User account deleted.")
+                                }
+                            }
+                        }
+
+                        // 네이버 연동 해제. 네트워크 사용으로 인해 다른 스레드로 작동시킴
+                        mOAuthLoginInstance = OAuthLogin.getInstance() // 네이버 로그인 인증 객체 가져오기
+                        doAsync {
+                            val isSuccessDeleteToken = mOAuthLoginInstance.logoutAndDeleteToken(applicationContext)
+                            Log.d(TAG, "네이버 로그아웃 : $isSuccessDeleteToken")
+                        }
+
+                        UserInfo.clearUser(applicationContext)
+                        finish()
+                        startActivity<LoginActivity>()
+                    }
+                    false -> Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
 }

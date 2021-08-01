@@ -51,7 +51,11 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 
         // 그룹명 표시하기
         title.text = groupData.title
-        if(!groupData.onPublic) lockMark.visibility = View.VISIBLE
+        if(!groupData.onPublic) {
+            lockMark.visibility = View.VISIBLE
+        } else {
+            lockMark.visibility = View.GONE
+        }
 
         // 그룹의 인원 표시하기
         val headCount = groupData.memberCount // 현재 가입되어 있는 그룹 멤버 수
@@ -80,6 +84,8 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         // 수정 또는 해체 시 그룹의 고유 번호(id)와 그룹 생성자의 고유 번호값을 넘겨서 이에 맞는 액티비티를 열고 데이터를 받아옴
         if(groupData.leaderId == getUserId(context)) {
             leaderMark.visibility = View.VISIBLE
+        } else {
+            leaderMark.visibility = View.GONE
         }
 //            moreBtn.visibility = View.VISIBLE
         moreBtn.tag = hashMapOf("id" to groupData.id, "title" to groupData.title, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
