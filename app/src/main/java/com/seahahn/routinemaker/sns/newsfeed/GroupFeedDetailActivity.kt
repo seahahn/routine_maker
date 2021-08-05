@@ -25,7 +25,6 @@ import com.seahahn.routinemaker.util.AppVar.getPagerPos
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -81,9 +80,9 @@ class GroupFeedDetailActivity : Sns() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.detailFeedTitle) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         initActivity() // 액티비티 구성요소 초기화
         initChatInput(R.string.cmtPh) // 하단 댓글 입력창 초기화

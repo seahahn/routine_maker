@@ -19,8 +19,8 @@ class GroupFeedSearchActivity : Sns() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.searchFeedTitle) // 툴바 제목에 들어갈 텍스트. 루틴 제목을 가져옴
-        initToolbar(title, titleText, 0) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 0) // 툴바 세팅하기
     }
 }

@@ -15,9 +15,9 @@ class ActionMakeActivity : Main() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.makeAction) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         initActionActivity(R.id.makeAction)
 

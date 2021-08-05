@@ -99,7 +99,7 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
     var dateData: Calendar = Calendar.getInstance() // 사용자가 선택한 날짜를 yyyy-MM-dd 형식으로 받아온 것. DB에서 데이터 받을 때 사용함
     var dateformatter: DateFormat = SimpleDateFormat("yyyy-MM-dd") // DB 데이터 불러오기 위한 날짜 형식
     var dateDataFormatted: String = dateformatter.format(dateData.time)
-    lateinit var title : TextView
+    lateinit var toolbarTitle : TextView
     lateinit var datePicker : DatePickerDialog
     val maxDate = Timestamp.valueOf(LocalDateTime.now().toString().replace("T", " ")).time
 
@@ -336,13 +336,13 @@ open class Main  : Util(), NavigationView.OnNavigationItemSelectedListener, Bott
             dateDataFormatted = dateformatter.format(dateData.time)
             when(v?.id) {
                 R.id.toolbarTitle -> { // 제목 클릭한 경우에는 날짜 선택 가능하게 달력(DatePickerDialog)을 띄움
-                    setToolbarDate(title, cal, dateData, y, m, d)
+                    setToolbarDate(toolbarTitle, cal, dateData, y, m, d)
                 }
                 R.id.left -> { // 좌측 화살표 누르면 하루 전으로
-                    oneTimeMove(title, cal, dateData, y, m, d, -1)
+                    oneTimeMove(toolbarTitle, cal, dateData, y, m, d, -1)
                 }
                 R.id.right -> { // 우측 화살표 누르면 하루 뒤로
-                    oneTimeMove(title, cal, dateData, y, m, d, 1)
+                    oneTimeMove(toolbarTitle, cal, dateData, y, m, d, 1)
                 }
             }
 //            Log.d(TAG, "dateDataFormatted : $dateDataFormatted")

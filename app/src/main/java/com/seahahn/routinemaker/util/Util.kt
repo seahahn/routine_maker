@@ -17,6 +17,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +26,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -267,6 +269,14 @@ open class Util  : AppCompatActivity() {
 //                val token = gson.get("token").asString
             }
         })
+    }
+
+    // 글라이드 라이브러리와 이미지 URL 이용하여 이미지뷰에 이미지 불러오기
+    fun setImgByGlide(context : Context, imgURL : String, imageView : ImageView) {
+        Glide.with(context).load(imgURL)
+            .placeholder(R.drawable.no_photo)
+            .error(R.drawable.no_photo)
+            .into(imageView)
     }
 
 

@@ -11,12 +11,12 @@ data class ChallengeData(
     val frequency : Int,
     val certDays : Int,
     val certNum : Int,
-    val certTimeStart : Int,
-    val certTimeEnd : Int,
+    val certTimeStart : String,
+    val certTimeEnd : String,
     val imageGood : String,
     val imageBad : String,
     val memo : String,
     val groupId : Int,
-    val userId : Int,
+    val hostId : Int,
     val createdAt : String
 )

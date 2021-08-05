@@ -388,31 +388,31 @@ interface RetrofitService {
         @Field("token") token: String
     ) : Call<JsonObject>
 
-    @GET("/api/chat/get_chat_users.php") // 사용자가 현재 입장한 채팅방에 들어와 있는 다른 사용자들 목록
+    @GET("/api/chat/get_chat_users.php") // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기
     fun getChatUsers(
         @Query("room_id") roomId: Int
     ) : Call<MutableList<ChatUserData>>
 
-    @GET("/api/chat/get_chat_users_nick_and_photo.php") // 사용자가 현재 입장한 채팅방에 들어와 있는 다른 사용자들 목록
+    @GET("/api/chat/get_chat_users_nick_and_photo.php") // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기(닉네임 및 프로필 사진 URL 포함)
     fun getChatUsersNickAndPhoto(
         @Query("room_id") roomId: Int
     ) : Call<MutableList<GroupMemberData>>
 
     @FormUrlEncoded
-    @POST("/api/chat/get_chatroom_data.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
+    @POST("/api/chat/get_chatroom_data.php") // 그룹 혹은 사용자간 채팅 시작 시 채팅방 데이터 가져옴(첫 채팅인 경우 채팅방 생성)
     fun getChatRoomData(
         @Field("is_groupchat") isGroupChat: Boolean,
         @Field("host_id") hostId: Int,
         @Field("audience_id") audienceId: Int
     ) : Call<ChatroomData>
 
-    @GET("/api/chat/get_chatroom_data_mini.php") // 그룹 피드의 고유 번호를 이용하여 해당 그룹 피드의 정보 가져오기
+    @GET("/api/chat/get_chatroom_data_mini.php") // 채팅 메시지 알림 전송 시 메시지에 채팅방 정보를 포함시키기 위해 채팅방의 데이터를 가져옴
     fun getChatRoomData(
         @Query("id") id: Int
     ) : Call<ChatroomData>
 
     @FormUrlEncoded
-    @POST("/api/chat/make_msg.php") // 그룹 피드 디테일 액티비티에서 댓글 작성 시 데이터 보내 DB에 저장하기
+    @POST("/api/chat/make_msg.php") // DB에 채팅 메시지 저장
     fun makeMsg(
         @Field("writer_id") writerId: Int,
         @Field("content") content: String,
@@ -421,7 +421,7 @@ interface RetrofitService {
     ) : Call<JsonObject>
 
     @FormUrlEncoded
-    @POST("/api/chat/delete_chat_user.php") // 그룹 피드 댓글의 고유 번호를 이용하여 해당 댓글 삭제하기
+    @POST("/api/chat/delete_chat_user.php") // 사용자가 채팅방 나가면 사용자의 채팅방 입장 여부 변경
     fun deleteChatUser(
         @Field("user_id") userId: Int,
         @Field("room_id") roomId: Int
@@ -438,9 +438,65 @@ interface RetrofitService {
         @Field("target") target: Int
     ) : Call<JsonObject>
 
-    @GET("/api/noti/get_notices.php") // 선택한 그룹의 피드 목록 가져오기
+    @GET("/api/noti/get_notices.php") // 사용자의 알림 목록 가져오기
     fun getNotices(
         @Query("user_id") userId: Int
     ) : Call<MutableList<NoticeData>>
+
+    @FormUrlEncoded
+    @POST("/api/sns/clg/make_clg.php") // 챌린지 만들기 액티비티 -> DB에 챌린지 데이터 저장
+    fun makeClg(
+        @Field("title") clgTitle: String,
+        @Field("topic") clgTopic: Int,
+        @Field("start_date") clgStartDate: String,
+        @Field("period") clgPeriod: Int,
+        @Field("frequency") certFrequency: Int,
+        @Field("cert_days") certDays: String,
+        @Field("cert_num") certNum: String,
+        @Field("cert_time_start") certTimeStart: String,
+        @Field("cert_time_end") certTimeEnd: String,
+        @Field("image_good") certImageGood: String,
+        @Field("image_bad") certImageBad: String,
+        @Field("memo") clgMemo: String,
+        @Field("group_id") groupId: Int,
+        @Field("host_id") clgHostId: Int
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/clg/update_clg.php") // 챌린지 수정하기 액티비티 -(챌린지 고유 번호)-> DB의 해당 챌린지 데이터 수정
+    fun updateClg(
+        @Field("id") clgId: Int,
+        @Field("title") clgTitle: String,
+        @Field("topic") clgTopic: Int,
+        @Field("start_date") clgStartDate: String,
+        @Field("period") clgPeriod: Int,
+        @Field("frequency") certFrequency: Int,
+        @Field("cert_days") certDays: String,
+        @Field("cert_num") certNum: String,
+        @Field("cert_time_start") certTimeStart: String,
+        @Field("cert_time_end") certTimeEnd: String,
+        @Field("image_good") certImageGood: String,
+        @Field("image_bad") certImageBad: String,
+        @Field("memo") clgMemo: String,
+    ) : Call<JsonObject>
+
+    @FormUrlEncoded
+    @POST("/api/sns/clg/delete_clg.php.php") // (챌린지 고유 번호)-> DB의 해당 챌린지 데이터 삭제
+    fun deleteClg(
+        @Field("id") clgId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/clg/get_clg.php") // 챌린지 정보 액티비티 -(챌린지 고유 번호)-> DB의 해당 챌린지 데이터 가져오기
+    fun getClg(
+        @Query("id") clgId: Int,
+        @Query("user_id") userId: Int
+    ) : Call<JsonObject>
+
+    @GET("/api/sns/clg/get_clgs.php") // 챌린지 목록 액티비티 -(그룹 고유 번호)-> DB의 해당 그룹의 챌린지들 데이터 가져오기
+    fun getClgs(
+        @Query("group_id") groupId: Int
+    ) : Call<MutableList<ChallengeData>>
+
+
 
 }

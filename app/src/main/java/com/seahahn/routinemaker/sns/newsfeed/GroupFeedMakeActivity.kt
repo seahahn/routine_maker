@@ -23,9 +23,9 @@ class GroupFeedMakeActivity : Sns() {
         groupId = intent.getIntExtra("groupId", 0) // DB 내 그룹의 고유 번호 받기
         challengeId = intent.getIntExtra("challengeId", 0) // DB 내 그룹 챌린지의 고유 번호 받기
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.makeFeedTitle) // 툴바 제목에 들어갈 텍스트. 루틴 제목을 가져옴
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         initFeedActivity(R.id.makeFeed) // 액티비티 구성 요소 초기화하기
         addImg.tag = 5 // 최대 업로드 가능한 사진 개수

@@ -171,13 +171,13 @@ open class Stts : Main() {
             dateDataFormatted = dateformatter.format(dateData.time)
             when(v?.id) {
                 R.id.toolbarTitle -> { // 제목 클릭한 경우에는 날짜 선택 가능하게 달력(DatePickerDialog)을 띄움
-                    setToolbarDate(selectedTime, title, cal, dateData, y, m, d)
+                    setToolbarDate(selectedTime, toolbarTitle, cal, dateData, y, m, d)
                 }
                 R.id.left -> { // 좌측 화살표 누르면 하루 전으로
-                    oneTimeMove(selectedTime, title, cal, dateData, y, m, d, -1)
+                    oneTimeMove(selectedTime, toolbarTitle, cal, dateData, y, m, d, -1)
                 }
                 R.id.right -> { // 우측 화살표 누르면 하루 뒤로
-                    oneTimeMove(selectedTime, title, cal, dateData, y, m, d, 1)
+                    oneTimeMove(selectedTime, toolbarTitle, cal, dateData, y, m, d, 1)
                 }
             }
 //            Log.d(TAG, "dateDataFormatted : $dateDataFormatted")

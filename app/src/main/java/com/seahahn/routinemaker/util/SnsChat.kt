@@ -304,7 +304,7 @@ open class SnsChat : Sns() {
         })
     }
 
-    // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기
+    // 사용자가 들어간 채팅방에 참여하고 있는 다른 사용자들의 목록 가져오기(닉네임 및 프로필 사진 URL 포함)
     fun getChatUsersNickAndPhoto(roomId: Int) {
         Logger.d(TAG, "getChatUsersNickAndPhoto 변수들 : $roomId")
         service.getChatUsersNickAndPhoto(roomId).enqueue(object : Callback<MutableList<GroupMemberData>> {

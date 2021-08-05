@@ -32,9 +32,9 @@ class OtherActionListActivity : Main() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = intent.getStringExtra("title").toString() // 툴바 제목에 들어갈 텍스트. 루틴 제목을 가져옴
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         // 하단 내비 초기화
         btmnavOthers = findViewById(R.id.btmnav)
