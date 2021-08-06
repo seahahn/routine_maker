@@ -28,7 +28,7 @@ class GroupNextLeaderViewHolder (itemView : View) : RecyclerView.ViewHolder(item
     lateinit var serviceInViewHolder : RetrofitService
 
 //    private val item : ConstraintLayout = itemView.findViewById(R.id.item)
-    private val radioBtn : RadioButton = itemView.findViewById(R.id.radioBtn)
+    val radioBtn : RadioButton = itemView.findViewById(R.id.radioBtn)
     private val img : ImageView = itemView.findViewById(R.id.img)
     private val nick : TextView = itemView.findViewById(R.id.nick)
 

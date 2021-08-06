@@ -9,6 +9,8 @@
 <!--    <color name="colorOnSurface">#2699FB</color>-->
     <color name="colorOnSurface">#000000</color>
 
+    <color name="splash_bg">#b3defa</color>
+
     <color name="light">#ffffff</color>
     <color name="dark">#000000</color>
     <color name="red">#FF3232</color>

@@ -15,7 +15,9 @@
 
             <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" app:srcCompat="@drawable/ic_launcher_background"
+                    android:layout_height="200dp"
+                    app:srcCompat="@drawable/login_upper"
+                    android:scaleType="centerCrop"
                     android:background="#2699FB"
                     android:id="@+id/headerimage"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"

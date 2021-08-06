@@ -18,7 +18,8 @@
                 android:title="@string/qna"/>
         <item
                 android:id="@+id/writeReview"
-                android:title="@string/writeReview"/>
+                android:title="@string/writeReview"
+                android:visible="false"/>
 
     </group>
 

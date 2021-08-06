@@ -169,27 +169,8 @@ class MypageActivity : User(), PopupMenu.OnMenuItemClickListener {
                     startActivity<LoginActivity>()
                 }
                 R.id.exit -> {
-                    // 구글 연동 해제
-                    if(Firebase.auth.currentUser != null) {
-                        val googleUser = Firebase.auth.currentUser
-                        googleUser!!.delete().addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                d(TAG, "User account deleted.")
-                            }
-                        }
-                    }
-
-                    // 네이버 연동 해제. 네트워크 사용으로 인해 다른 스레드로 작동시킴
-                    mOAuthLoginInstance = OAuthLogin.getInstance() // 네이버 로그인 인증 객체 가져오기
-                    doAsync {
-                        val isSuccessDeleteToken = mOAuthLoginInstance.logoutAndDeleteToken(this@MypageActivity)
-                        d(TAG, "네이버 로그아웃 : $isSuccessDeleteToken")
-                    }
-
-                    UserInfo.clearUser(this@MypageActivity)
                     d(TAG, "연동 해제")
-                    toast("회원 탈퇴 되었습니다.")
-                    startActivity<LoginActivity>()
+                    userExit(service, getUserId(this@MypageActivity))
                 }
             }
         }

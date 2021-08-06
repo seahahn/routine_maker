@@ -13,7 +13,9 @@ tools:context=".user.SignUpActivity">
 
         <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp" app:srcCompat="@drawable/ic_launcher_background"
+                android:layout_height="150dp"
+                app:srcCompat="@drawable/guide_bg"
+                android:scaleType="centerCrop"
                 android:background="#2699FB"
                 android:id="@+id/headerimage"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +52,7 @@ tools:context=".user.SignUpActivity">
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:hint="@string/emailph"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +62,7 @@ tools:context=".user.SignUpActivity">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailInput"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     style="@style/inputPlaceholder"
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -95,7 +97,7 @@ tools:context=".user.SignUpActivity">
                     android:id="@+id/pwInput"
                     android:inputType="textPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     style="@style/inputPlaceholder"
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -123,7 +125,7 @@ tools:context=".user.SignUpActivity">
                     android:id="@+id/pwconfirmInput"
                     android:inputType="textPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     style="@style/inputPlaceholder"
             />
         </com.google.android.material.textfield.TextInputLayout>
@@ -150,7 +152,7 @@ tools:context=".user.SignUpActivity">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/nickInput"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     style="@style/inputPlaceholder"
             />
         </com.google.android.material.textfield.TextInputLayout>

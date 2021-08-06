@@ -42,8 +42,8 @@ class SttsActivity : Stts() {
         leftnav.setNavigationItemSelectedListener(this)
         val leftnavHeader = leftnav.getHeaderView(0)
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        initToolbar(toolbarTitle, formattedMDDoW, 0) // 툴바 세팅하기
 //        toolbar = findViewById(R.id.toolbar)
         toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
 
@@ -67,7 +67,7 @@ class SttsActivity : Stts() {
 
         // 툴바 제목에 위치한 날짜를 누르면 날짜 선택이 가능함
         // 선택한 날짜에 따라 툴바 제목과 함께 날짜 정보가 변경됨
-        title.setOnClickListener(DateClickListener())
+        toolbarTitle.setOnClickListener(DateClickListener())
         leftArrow.setOnClickListener(DateClickListener())
         rightArrow.setOnClickListener(DateClickListener())
         rightArrow.isEnabled = false
@@ -114,19 +114,19 @@ class SttsActivity : Stts() {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_d)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsDayFragment) .commit()
                 selectedTime = 0
-                initToolbarDate(cal, selectedTime, dateData.time, title)
+                initToolbarDate(cal, selectedTime, dateData.time, toolbarTitle)
             }
             R.id.toolbarWeek -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_w)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsWeekFragment) .commit()
                 selectedTime = 1
-                initToolbarDate(cal, selectedTime, dateData.time, title)
+                initToolbarDate(cal, selectedTime, dateData.time, toolbarTitle)
             }
             R.id.toolbarMonth -> {
                 toolbar.overflowIcon = getDrawable(R.drawable.letter_m)
                 supportFragmentManager.beginTransaction().replace(R.id.container, sttsMonthFragment) .commit()
                 selectedTime = 2
-                initToolbarDate(cal, selectedTime, dateData.time, title)
+                initToolbarDate(cal, selectedTime, dateData.time, toolbarTitle)
             }
         }
         return super.onOptionsItemSelected(item)

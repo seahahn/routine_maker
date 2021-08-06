@@ -1,9 +1,6 @@
 package com.seahahn.routinemaker.sns.others
 
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
@@ -30,8 +27,8 @@ class OtherMainActivity : Sns() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formattedMDDoW, 2) // 툴바 세팅하기
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        initToolbar(toolbarTitle, formattedMDDoW, 2) // 툴바 세팅하기
 
         // 하단 내비 초기화
         btmnavOthers = findViewById(R.id.btmnav)
@@ -50,7 +47,7 @@ class OtherMainActivity : Sns() {
 
         // 툴바 제목에 위치한 날짜를 누르면 날짜 선택이 가능함
         // 선택한 날짜에 따라 툴바 제목과 함께 날짜 정보가 변경됨
-        title.setOnClickListener(DateClickListener())
+        toolbarTitle.setOnClickListener(DateClickListener())
         leftArrow.setOnClickListener(DateClickListener())
         rightArrow.setOnClickListener(DateClickListener())
 

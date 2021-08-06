@@ -44,9 +44,9 @@ class NoticeActivity : Sns() {
         leftnav.setNavigationItemSelectedListener(this)
         val leftnav_header = leftnav.getHeaderView(0)
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.notiList) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 0) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 0) // 툴바 세팅하기
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)

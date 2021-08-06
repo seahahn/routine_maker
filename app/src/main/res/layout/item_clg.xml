@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/list_item_state"
+        android:padding="16dp"
+        android:id="@+id/item">
+    <ImageView
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/leaderMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/clgTitle"
+            app:layout_constraintTop_toTopOf="@+id/clgTitle" app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/crown"
+            app:layout_constraintEnd_toStartOf="@+id/clgTitle" android:layout_marginEnd="4dp"/>
+    <TextView
+            tools:text="챌린지 제목"
+            style="@style/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/clgTitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/leaderMark"/>
+    <ImageButton
+            android:visibility="visible"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:srcCompat="@drawable/more_dark"
+            android:id="@+id/moreBtn"
+            style="@style/imgBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+    />
+    <TextView
+            tools:text="2021-08-30"
+            style="@style/txt_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/startDate"
+            app:layout_constraintTop_toBottomOf="@+id/clgTitle" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="8dp"/>
+    <TextView
+            android:text="@string/startUnit"
+            style="@style/txt_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/start_unit"
+            app:layout_constraintStart_toEndOf="@+id/startDate"
+            android:layout_marginStart="4dp" app:layout_constraintBottom_toBottomOf="@+id/startDate"
+            app:layout_constraintTop_toTopOf="@+id/startDate"/>
+    <TextView
+            tools:text="1"
+            style="@style/txt_l"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/period"
+            android:layout_marginStart="16dp" app:layout_constraintStart_toEndOf="@+id/start_unit"
+            app:layout_constraintBottom_toBottomOf="@+id/startDate"
+            app:layout_constraintTop_toTopOf="@+id/startDate"/>
+    <TextView
+            android:text="@string/weekPeriodUnit"
+            style="@style/txt_l"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/weekPeriodUnit"
+            app:layout_constraintBottom_toBottomOf="@+id/startDate"
+            app:layout_constraintTop_toTopOf="@+id/startDate"
+            app:layout_constraintStart_toEndOf="@+id/period"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

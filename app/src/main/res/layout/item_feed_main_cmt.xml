@@ -30,6 +30,13 @@
             android:id="@+id/content"
             app:layout_constraintTop_toBottomOf="@+id/nick" app:layout_constraintStart_toEndOf="@+id/profile_pic"
             android:layout_marginStart="4dp"/>
+    <ImageView
+            android:id="@+id/cmt_img"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/content"
+            app:layout_constraintStart_toStartOf="@+id/under_content"
+            app:layout_constraintEnd_toEndOf="@+id/under_content"/>
     <LinearLayout
             android:id="@+id/under_content"
             android:visibility="visible"
@@ -37,7 +44,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/profile_pic"
+            app:layout_constraintTop_toBottomOf="@+id/cmt_img"
             app:layout_constraintStart_toStartOf="@+id/content" android:layout_marginTop="4dp">
         <TextView
                 android:id="@+id/createdAt"
@@ -59,20 +66,14 @@
                 android:layout_marginStart="4dp"
                 android:text="@string/makeSubCmt"/>
     </LinearLayout>
-    <ImageView
-            android:id="@+id/cmt_img"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/under_content"
-            app:layout_constraintStart_toStartOf="@+id/under_content"
-            app:layout_constraintEnd_toEndOf="@+id/under_content"/>
+
     <View
             android:visibility="visible"
             android:id="@+id/divider_tv"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#707070"
-            app:layout_constraintTop_toBottomOf="@+id/cmt_img"
+            app:layout_constraintTop_toBottomOf="@+id/under_content"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="8dp" android:layout_marginEnd="8dp" android:layout_marginTop="4dp"/>
 

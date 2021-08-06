@@ -27,8 +27,6 @@ class GroupListActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
 
-//    lateinit var viewEmptyList : LinearLayout
-
     private lateinit var groupListAdapter: GroupListAdapter
     private lateinit var groupList: RecyclerView
     var mDatas = mutableListOf<GroupData>()
@@ -37,7 +35,6 @@ class GroupListActivity : Sns() {
 
     private lateinit var searchView: SearchView
 
-//    val chatDB by lazy { ChatDataBase.getInstance(this) } // 채팅 내용 저장해둔 Room DB 객체 가져오기
     lateinit var badgeOfChat: BadgeDrawable // 우상단 채팅 아이콘에 붙어 있는 안 읽은 메시지 갯수 배지
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,9 +50,9 @@ class GroupListActivity : Sns() {
         leftnav.setNavigationItemSelectedListener(this)
         val leftnav_header = leftnav.getHeaderView(0)
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.groupList) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 0) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 0) // 툴바 세팅하기
 
         searchView = findViewById(R.id.searchView) // 그룹명 검색창
         searchView.setOnQueryTextListener(QueryTextChenageListener())
@@ -87,7 +84,7 @@ class GroupListActivity : Sns() {
         // 그룹 목록 가져오기
         groupListViewModel.gottenGroupData.observe(this) { groupDatas ->
             d(TAG, "groupDatas : $groupDatas")
-            mDatas = groupDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+            mDatas = groupDatas // 뷰모델에 저장해둔 그룹 목록 데이터 가져오기
 
             // 사용자가 가입한 그룹 목록만 추려서 출력
             showDatas.clear()

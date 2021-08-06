@@ -59,8 +59,10 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
     private lateinit var recordList: RecyclerView
     private lateinit var recordRtAdapter: RecordRtAdapter
     private var mDatas = mutableListOf<RtData>() // 과거 루틴 수행 내역 전체
+    private var mDatasForImg = mutableListOf<RtData>()
     private var showDatas = mutableListOf<RtData>() // 사용자가 선택한 기간 조건에 맞는 데이터만 골라낸 것
     private lateinit var it_mDatas : Iterator<RtData>
+    private lateinit var it_mDatasForimg : Iterator<RtData>
 
     // 프래그먼트 첫 출력 시에 현재 날짜로 달력 초기화하고, 그 다음부터는 선택된 날짜에 따라 달력이 변동될 수 있도록 조건문을 걸기 위해 만든 변수
     private var init = false
@@ -96,11 +98,6 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
                 textView.alpha = if (day.owner == DayOwner.THIS_MONTH) 1f else 0.3f // 선택된 월이 아닌 월의 날짜들은 흐리게 표시
 
                 // 날짜별 루틴 수행 결과를 날짜를 둘러싼 백그라운드 이미지를 통해서 보여줌
-//                object : Thread() {
-//                    override fun run() {
-//                        if(mDatas.isNotEmpty())
-//                    }
-//                }.start()
                 if(mDatas.isNotEmpty()) bindImageToDate(day, date, textView)
             }
         }
@@ -110,7 +107,7 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
         lastMonth = currentMonth.plusMonths(1)
         d(TAG, "calendarView setup : $currentMonth, $firstMonth, $lastMonth, $firstDayOfWeek")
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
-        calendarView.scrollToMonth(currentMonth)
+//        calendarView.scrollToMonth(currentMonth)
 
         viewEmptyList = view.findViewById(R.id.view_empty_list) // 데이터 없으면 없다고 보여줄 화면
 
@@ -128,7 +125,7 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
             val inDate = LocalDate.parse(date).format(formatterYM)
 
             // 프래그먼트가 처음 초기화된 경우에는 생략하고, 그 다음에 다른 월을 선택하는 등의 경우는 바뀐 날짜 값에 따라 달력을 변동시킴
-            if (init) {
+//            if (init) {
                 currentMonth = YearMonth.parse(inDate)
                 firstMonth = currentMonth.minusMonths(1)
                 lastMonth = currentMonth.plusMonths(1)
@@ -136,8 +133,9 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
                 d(TAG, "calendarView setup in viewModel : $currentMonth, $firstMonth, $lastMonth, $firstDayOfWeek")
                 calendarView.updateMonthRange(firstMonth, lastMonth)
                 calendarView.scrollToMonth(currentMonth)
-            }
-            init = true // 프래그먼트가 처음 출력되면 false였던 것을 true로 바꿔서 위의 달력 변동 기능이 작동하게 함
+//            }
+//            init = true // 프래그먼트가 처음 출력되면 false였던 것을 true로 바꿔서 위의 달력 변동 기능이 작동하게 함
+            d(TAG, "dataViewModel currentMonth : $currentMonth")
             if(mDatas.isNotEmpty()) setShowDatas(false) // 날짜에 맞는 데이터만 목록에 출력하기
         }
 
@@ -146,7 +144,9 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
             context.loadedDataCount = 0
 
             mDatas = rtDatas // 뷰모델에 저장해둔 루틴 및 할 일 목록 데이터 가져오기
+            mDatasForImg = rtDatas.toMutableList()
             recordRtAdapter.getAllDatas(mDatas)
+            d(TAG, "recordViewModel currentMonth : $currentMonth")
             if(mDatas.isNotEmpty()) setShowDatas(true) // 날짜에 맞는 데이터만 목록에 출력하기
         }
 
@@ -163,11 +163,11 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
             override fun run() {
                 d(TAG, "bindImageToDate start")
                 if (day.owner == DayOwner.THIS_MONTH) {
-                    it_mDatas = mDatas.iterator() // 여기서는 사용자가 선택한 월에 해당하는 데이터만을 대상으로 함
+                    it_mDatasForimg = mDatasForImg.iterator() // 여기서는 사용자가 선택한 월에 해당하는 데이터만을 대상으로 함
                     var total = 0 // 해당 날짜의 총 루틴 수
                     var done = 0 // 해당 날짜의 수행 완료 루틴 수
-                    while (it_mDatas.hasNext()) {
-                        val it_mData = it_mDatas.next()
+                    while (it_mDatasForimg.hasNext()) {
+                        val it_mData = it_mDatasForimg.next()
                         // 사용자가 선택한 월에 해당하는 데이터만 통계 수치에 반영
                         if (date == it_mData.mDate) {
                             total++
@@ -195,7 +195,7 @@ class SttsMonthFragment(mContext : Stts) : Fragment() {
 
     // 날짜에 맞는 데이터만 골라서 보여주기 위한 메소드
     private fun setShowDatas(initData : Boolean) {
-//        d(TAG, "setTable")
+        d(TAG, "setShowDatas currentMonth : $currentMonth")
         showDatas.clear() // 기존 목록 비우기
 
         var totalCount: Int

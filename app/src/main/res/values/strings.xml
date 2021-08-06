@@ -43,8 +43,8 @@
     <string name="verifynum">인증 번호</string>
     <string name="verifynumph">인증 번호 4자리를 입력해주세요</string>
     <string name="or">또는</string>
-    <string name="signupAgree">루틴 메이커의 <a href="https://www.salondeahn.me">이용약관</a> 및 <a
-            href="https://www.salondeahn.me">개인정보처리방침</a>에 동의합니다.
+    <string name="signupAgree">루틴 메이커의 <a href="https://www.notion.so/c5d3ccca2d574331814c4b81a8c5caf1">이용약관</a> 및 <a
+            href="https://www.notion.so/86e04fb287ce486f993b53792ce21981">개인정보처리방침</a>에 동의합니다.
     </string>
 
     <string name="signuptext1">환영합니다!</string>
@@ -133,6 +133,8 @@
     <string name="makeAction">행동 추가하기</string>
     <string name="updateAction">행동 수정하기</string>
 
+    <string name="noRt">이 날은 루틴이 없어요</string>
+
     <!-- 루틴, 할 일 만들기에서의 mType 값   -->
     <string name="rt">rt</string>
     <string name="todo">todo</string>
@@ -207,6 +209,8 @@
 
     <string name="numCountUnit">개</string>
     <string name="humanCountUnit">명</string>
+    <string name="startUnit">시작</string>
+    <string name="weekPeriodUnit">주 동안</string>
 
     <string name="groupList">가입한 그룹 목록</string>
     <string name="groupInfo">그룹 정보</string>
@@ -268,15 +272,72 @@
     <string name="chatIn">님이 입장하셨습니다</string>
     <string name="chatOut">님이 퇴장하셨습니다</string>
 
+    <string name="makeClg">챌린지 만들기</string>
+    <string name="updateClg">챌린지 수정하기</string>
+    <string name="clgInfo">챌린지 정보</string>
+    <string name="makeClgTitle">챌린지 만들기</string>
+    <string name="updateClgTitle">챌린지 수정</string>
+    <string name="clgFeedListTitle">챌린지 수행 인증 피드</string>
+    <string name="makeClgFeed">챌린지 수행 인증하기</string>
+    <string name="makeClgFeedTitle">챌린지 수행 인증</string>
+    <string name="updateClgFeed">챌린지 수행 인증 수정하기</string>
+    <string name="updateClgFeedTitle">챌린지 수행 인증 수정</string>
+
+    <string name="clgTitle">챌린지명</string>
+    <string name="clgTitlePh">챌린지의 이름을 정해주세요</string>
+    <string name="topic">주제</string>
+    <string name="period">기간</string>
+    <string name="certFrequency">인증 빈도</string>
+    <string name="certDays">인증 가능 요일</string>
+    <string name="certNum">하루 인증 횟수</string>
+    <string name="certTime">인증 가능 시간</string>
+    <string name="certWay">인증 방법</string>
+    <string name="clgMemo">추가 설명</string>
+
+    <string name="clgStd">달성 기준</string>
+    <string name="clgStd100">100% 달성</string>
+    <string name="clgStd70">70% 이상 달성</string>
+    <string name="clgStdUnder70">70% 미만 달성</string>
+    <string name="clgStd100Result">챌린지코인 페이백 + 추가 코인 지급</string>
+    <string name="clgStd70Result">챌린지 코인 페이백</string>
+    <string name="clgStdUnder70Result">성취도에 비례하여 챌린지 코인 페이백</string>
+
+    <string name="topicHealth">건강</string>
+    <string name="topicEmotion">정서</string>
+    <string name="topicLife">생활</string>
+    <string name="topicCompetence">역량</string>
+    <string name="topicAsset">자산</string>
+    <string name="topicHobby">취미</string>
+    <string name="topicEtc">그 외</string>
+    <string name="topicError">오류 : 잘못된 값</string>
+
+    <string name="dateFrom">부터</string>
+    <string name="dateDuringWeeks">주 동안</string>
+    <string name="certNumUnit">회</string>
+    <string name="certTime24">24시간</string>
+    <string name="certTimeLimit">시간 설정</string>
+    <string name="certTimestart">시작</string>
+    <string name="certTimeEnd">종료</string>
+    <string name="certWayGood">이렇게 해요</string>
+    <string name="certWayBad">이러면 안돼요</string>
+
+    <string name="frequency1">주 1회 인증하기</string>
+    <string name="frequency2">주 2회 인증하기</string>
+    <string name="frequency3">주 3회 인증하기</string>
+    <string name="frequency4">주 4회 인증하기</string>
+    <string name="frequency5">주 5회 인증하기</string>
+    <string name="frequency6">주 6회 인증하기</string>
+    <string name="frequency7">주 7회 인증하기</string>
+
     <string name="notiList">알림 목록</string>
     <string name="notiSetting">알림 설정</string>
 
     <string name="zero">0</string>
     <string name="pic">사진</string>
 
-    <string name="notiCmt">님이 피드에 댓글을 남겼습니다 : </string>
-    <string name="notiSubCmt">님이 대댓글을 남겼습니다 : </string>
-    <string name="notiLike">님이 이 피드를 좋아합니다 : </string>
+    <string name="notiCmt">님이 피드에 댓글을 남겼습니다 :</string>
+    <string name="notiSubCmt">님이 대댓글을 남겼습니다 :</string>
+    <string name="notiLike">님이 이 피드를 좋아합니다 :</string>
     <string name="notiRtTodo">수행할 시각입니다!</string>
 
     <string name="notiSetAll">전체 알림</string>

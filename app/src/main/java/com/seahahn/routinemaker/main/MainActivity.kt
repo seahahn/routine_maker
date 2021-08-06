@@ -39,8 +39,8 @@ class MainActivity : Main() {
         leftnav.setNavigationItemSelectedListener(this)
         val leftnav_header = leftnav.getHeaderView(0)
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
-        initToolbar(title, formattedMDDoW, 0) // 툴바 세팅하기
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        initToolbar(toolbarTitle, formattedMDDoW, 0) // 툴바 세팅하기
 
         // 좌측 내비 메뉴의 헤더 부분에 사용자 정보 넣기
         hd_email = leftnav_header.findViewById(R.id.hd_email)
@@ -62,7 +62,7 @@ class MainActivity : Main() {
 
         // 툴바 제목에 위치한 날짜를 누르면 날짜 선택이 가능함
         // 선택한 날짜에 따라 툴바 제목과 함께 날짜 정보가 변경됨
-        title.setOnClickListener(DateClickListener())
+        toolbarTitle.setOnClickListener(DateClickListener())
         leftArrow.setOnClickListener(DateClickListener())
         rightArrow.setOnClickListener(DateClickListener())
 

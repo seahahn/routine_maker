@@ -10,7 +10,6 @@ import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserSetting.getNotiSetChat
 import com.seahahn.routinemaker.util.UserSetting.getNotiSetCmt
 import com.seahahn.routinemaker.util.UserSetting.getNotiSetLike
-import com.seahahn.routinemaker.util.UserSetting.getNotiSetRtDoneYet
 import com.seahahn.routinemaker.util.UserSetting.getNotiSetRtStart
 import com.seahahn.routinemaker.util.UserSetting.setNotiSetChat
 import com.seahahn.routinemaker.util.UserSetting.setNotiSetCmt
@@ -36,9 +35,9 @@ class NoticeSettingActivity : Sns(), View.OnClickListener {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.notiSetting) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         // 하단 BottomNavigationView 초기화
         btmnav = findViewById(R.id.btmnav)

@@ -25,7 +25,6 @@ import com.seahahn.routinemaker.util.AppVar.getPagerPos
 import com.seahahn.routinemaker.util.KeyboardVisibilityUtils
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
-import com.seahahn.routinemaker.util.UserInfo.getUserNick
 import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,6 +38,7 @@ import java.util.*
 class GroupFeedDetailActivity : Sns() {
 
     private val TAG = this::class.java.simpleName
+    private val context = this@GroupFeedDetailActivity
 
     private lateinit var scrollView: NestedScrollView
 
@@ -80,9 +80,9 @@ class GroupFeedDetailActivity : Sns() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.detailFeedTitle) // 툴바 제목에 들어갈 텍스트
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
         initActivity() // 액티비티 구성요소 초기화
         initChatInput(R.string.cmtPh) // 하단 댓글 입력창 초기화
@@ -161,7 +161,7 @@ class GroupFeedDetailActivity : Sns() {
     }
 
     // 선택된 피드에 해당하는 데이터들 가져오기
-    private fun getFeedDetail(service: RetrofitService, feedIdIn : Int, userId : Int) {
+    fun getFeedDetail(service: RetrofitService, feedIdIn : Int, userId : Int) {
         Log.d(TAG, "getFeedDetail 변수들 : $feedIdIn, $userId")
         service.getFeed(feedIdIn, userId).enqueue(object : Callback<JsonObject> {
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -262,9 +262,9 @@ class GroupFeedDetailActivity : Sns() {
                 }
                 R.id.chatSend -> {
                     val cmt = chatInput.text
-                    if(chatInput.text.isNotBlank()) {
+                    if(cmt.isNotBlank() || imgDatasCmt.isNotEmpty()) {
                         saveImgsURL(imgDatasCmt, imagesList)
-                        makeCmt(service, feedId, feedWriterId, cmt.toString(), imagesURL, isSubCmt, mainCmt)
+                        makeCmt(service, feedId, feedWriterId, cmt.toString(), imagesURL, isSubCmt, mainCmt, context)
                         chatInput.text = null
                         hideSoftKeyboard()
 
@@ -281,7 +281,10 @@ class GroupFeedDetailActivity : Sns() {
                     previewImgArea.visibility = View.GONE
                     Glide.with(applicationContext).load("").into(preview)
 
-                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) getCmts(service, feedId)
+//                    if(!prograssbar.isShown || imgDatasCmt.isEmpty()) {
+//                        getCmts(service, feedId)
+//                        getFeedDetail(service, feedId, getUserId(applicationContext))
+//                    }
                 }
                 R.id.subCmtCancel -> {
                     chatInput.setHint(R.string.cmtPh) // "댓글을 입력하세요"로 힌트 변경

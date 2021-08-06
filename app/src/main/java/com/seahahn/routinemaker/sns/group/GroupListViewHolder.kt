@@ -51,7 +51,11 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
 
         // 그룹명 표시하기
         title.text = groupData.title
-        if(!groupData.onPublic) lockMark.visibility = View.VISIBLE
+        if(!groupData.onPublic) {
+            lockMark.visibility = View.VISIBLE
+        } else {
+            lockMark.visibility = View.GONE
+        }
 
         // 그룹의 인원 표시하기
         val headCount = groupData.memberCount // 현재 가입되어 있는 그룹 멤버 수
@@ -80,6 +84,8 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
         // 수정 또는 해체 시 그룹의 고유 번호(id)와 그룹 생성자의 고유 번호값을 넘겨서 이에 맞는 액티비티를 열고 데이터를 받아옴
         if(groupData.leaderId == getUserId(context)) {
             leaderMark.visibility = View.VISIBLE
+        } else {
+            leaderMark.visibility = View.GONE
         }
 //            moreBtn.visibility = View.VISIBLE
         moreBtn.tag = hashMapOf("id" to groupData.id, "title" to groupData.title, "leaderId" to groupData.leaderId, "onPublic" to groupData.onPublic)
@@ -140,9 +146,6 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                 } else {
                     popup.menu.setGroupVisible(R.id.group_in, false)
                 }
-//                } else {
-//                    inflate(R.menu.menu_group_more_normal)
-//                }
                 show()
             }
         }
@@ -211,45 +214,9 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                     context.startActivity(it)
                     true
                 }
-//                R.id.delete -> { // 그룹 해체
-////                    d(TAG, "rtDelete")
-//                    val id = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
-////                    showAlert("그룹 해체하기", "정말 해체하시겠어요?", id, svc)
-//                    showAlert("그룹 해체하기", "정말 해체하시겠어요?")
-//                    true
-//                }
                 else -> false
             }
         }
-
-//        override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-//            d(TAG, "onPrepareOptionsMenu")
-//            if(leaderId == getUserId(context)) {
-//                menu!!.setGroupVisible(R.id.group_manage, true)
-//            } else {
-//                menu!!.setGroupVisible(R.id.group_manage, false)
-//            }
-//            return super.onPrepareOptionsMenu(menu)
-//        }
-
-        // 그룹 해체 시 재확인 받는 다이얼로그 띄우기
-        // 해체 후 가입한 그룹 목록 액티비티 다시 열어서 삭제 완료 후의 목록을 보여줌
-//        private fun showAlert(title: String, msg: String, groupId: Int, service: RetrofitService) {
-//            AlertDialog.Builder(context)
-//                .setTitle(title)
-//                .setMessage(msg)
-//                .setPositiveButton(R.string.okay) { _: DialogInterface, _: Int ->
-//                    if(headCount > 1) {
-//                        selectNextLeader()
-//                    } else {
-//                        deleteGroup(service, groupId, context)
-//                        finish()
-//                        startActivity<GroupListActivity>()
-//                    }
-//                }
-//                .setNegativeButton(R.string.cancel) { _: DialogInterface, _: Int -> }
-//                .show()
-//        }
     }
 
     fun getGroupMembers(groupId : Int) {
@@ -262,7 +229,6 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
             override fun onResponse(call: Call<MutableList<GroupMemberData>>, response: Response<MutableList<GroupMemberData>>) {
                 Log.d(TAG, "그룹 멤버 목록 가져오기 요청 응답 수신 성공")
                 d(TAG, "getGroupMembers : "+response.body().toString())
-//                groupMemberListData = response.body()!!
                 val groupMemberDatas = response.body()
                 groupMemberDatas!!
                 for(i in 0 until groupMemberDatas.size) {

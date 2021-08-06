@@ -63,9 +63,9 @@ class GroupFeedActivity : Sns() {
         leftnav.setNavigationItemSelectedListener(this)
         val leftnav_header = leftnav.getHeaderView(0)
 
-        title = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
+        toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = groupTitle // 툴바 제목에 들어갈 텍스트. 그룹명을 가져옴
-        initToolbar(title, titleText, 1) // 툴바 세팅하기
+        initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 //        toolbar = findViewById(R.id.toolbar)
         toolbar.overflowIcon = getDrawable(R.drawable.more) // 우측 상단의 더보기 아이콘 모양 변경
 
