@@ -7,9 +7,7 @@ import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.CompoundButton
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,6 +19,7 @@ import com.seahahn.routinemaker.network.RetrofitServiceViewModel
 import com.seahahn.routinemaker.util.AppVar.getDatePast
 import com.seahahn.routinemaker.util.UserSetting.getRtListMode
 import com.seahahn.routinemaker.util.UserSetting.setRtListMode
+import org.jetbrains.anko.imageResource
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -52,6 +51,8 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
     lateinit var parsedDate : LocalDate
     lateinit var dayOfWeek : String
 
+    lateinit var viewEmptyList : LinearLayout
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_main_routine, container, false)
     }
@@ -73,6 +74,13 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
         rtAdapter = RtAdapter() // 어댑터 초기화
         rtList.adapter = rtAdapter // 어댑터 연결
         showAll.isChecked = getRtListMode(view.context) // 전체 보기 선택했던 경우 다시 액티비티 열면 그대로 전체 보기 되도록 유지
+
+        // 수행할 루틴이 없는 경우 보여줄 뷰
+        viewEmptyList = view.findViewById(R.id.view_empty_list)
+        val emptyImage = view.findViewById<ImageView>(R.id.empty_image)
+        val emptyMessage = view.findViewById<TextView>(R.id.empty_message)
+        emptyImage.imageResource = R.drawable.resting
+        emptyMessage.text = getString(R.string.noRt)
 
         // 리사이클러뷰의 스크롤 위치 복구하는 기능
 //        rtAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
@@ -132,6 +140,8 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     rtAdapter.replaceList(showDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
                     rtAdapter.setDayOfWeek(dayOfWeek)
                 }
+
+                showEmptyRt()
             } else {
                 // 받은 날짜 정보에 해당하는 루틴 또는 할 일 목록 추려내기
                 pastShowDatas.clear()
@@ -163,6 +173,8 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     rtAdapter.replaceList(pastShowDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
                     rtAdapter.setDayOfWeek(dayOfWeek)
                 }
+
+                showEmptyRt()
             }
 
         }
@@ -202,6 +214,8 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     rtAdapter.replaceList(showDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
                     rtAdapter.setDayOfWeek(dayOfWeek)
                 }
+
+                showEmptyRt()
             }
         }
 
@@ -242,6 +256,8 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
                     rtAdapter.replaceList(pastShowDatas) // 받은 날짜 정보에 맞춰서 목록 띄우기
                     rtAdapter.setDayOfWeek(dayOfWeek)
                 }
+
+                showEmptyRt()
             }
         }
     }
@@ -287,5 +303,14 @@ class OtherMainRoutineFragment : Fragment(), CompoundButton.OnCheckedChangeListe
             }
             .setNegativeButton("취소") { _: DialogInterface, _: Int -> }
             .show()
+    }
+
+    private fun showEmptyRt() {
+        // 출력할 데이터가 없으면 "이 날은 루틴이 없어요"를 표시함
+        if(rtAdapter.itemCount == 0) {
+            viewEmptyList.visibility = View.VISIBLE
+        } else {
+            viewEmptyList.visibility = View.GONE
+        }
     }
 }

@@ -20,6 +20,6 @@ class ChallengeMakeActivity : SnsChallenge() {
         val titleText = getString(R.string.makeClgTitle) // 툴바 제목에 들어갈 텍스트
         initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
-        initClgActivity(R.id.makeClg) // 액티비티 구성 요소 초기화하기
+//        initClgActivity(R.id.makeClg) // 액티비티 구성 요소 초기화하기
     }
 }

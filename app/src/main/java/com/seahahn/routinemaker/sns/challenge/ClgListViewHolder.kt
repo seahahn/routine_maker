@@ -13,9 +13,12 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChallengeData
-import com.seahahn.routinemaker.sns.challengeData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.ChatActivity
+import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
+import com.seahahn.routinemaker.sns.group.GroupInfoActivity
+import com.seahahn.routinemaker.sns.group.GroupMemberListActivity
+import com.seahahn.routinemaker.sns.group.GroupUpdateActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
 import com.seahahn.routinemaker.util.Sns
 import com.seahahn.routinemaker.util.UserInfo.getUserId
@@ -72,10 +75,10 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     // 아이템 클릭 시 동작할 내용
     inner class ItemClickListener() : View.OnClickListener {
         override fun onClick(v: View?) {
-            val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()
-            val it = Intent(context, ChallengeInfoActivity::class.java)
-            it.putExtra("id", id)
-            context.startActivity(it)
+//            val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()
+//            val it = Intent(context, ChallengeInfoActivity::class.java)
+//            it.putExtra("id", id)
+//            context.startActivity(it)
         }
     }
 

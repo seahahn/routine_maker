@@ -102,7 +102,7 @@ open class SnsChat : Sns() {
     // 사진 가져오기(피드 최대 5장, 댓글 최대 1장)
     override fun bringPhoto() {
         d(TAG, "bringPhoto")
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         val chooser = Intent.createChooser(intent, getString(R.string.maxFivePics))
@@ -116,7 +116,8 @@ open class SnsChat : Sns() {
             d(TAG, "result : $result")
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
-                if (data?.clipData != null) { // 사진 여러개 선택한 경우
+                if (data?.clipData != null) { // 갤러리에서 사진 선택한 경우
+                    d(TAG, "사진 여러 장 선택")
                     val count = data.clipData!!.itemCount
                     if (count > 30) {
                         toast(getString(R.string.maxThirtyPicsWarning))
@@ -126,7 +127,14 @@ open class SnsChat : Sns() {
                             imgDatasChat.add(imageUri)
                         }
                     }
-                } else if(photoURI != null) { // 카메라로 사진 촬영한 경우
+                } else if(data?.clipData == null){ // 카메라로 사진 촬영한 경우
+//                    Logger.d(TAG, "clipData == null")
+//                    Logger.d(TAG, "data : $data")
+//                    val imageUri = data?.data
+//
+//                    imgDatasChat.add(imageUri!!)
+
+//                } else if(photoURI != null) { // 카메라로 사진 촬영한 경우
                     Logger.d(TAG, "photoURI : $photoURI")
                     Logger.d(TAG, "data : $data")
                     val imageUri = photoURI

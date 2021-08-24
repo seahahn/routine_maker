@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.nhn.android.idp.common.logger.Logger
 import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
@@ -560,13 +561,13 @@ open class Sns : Main() {
             if (result.resultCode == RESULT_OK) {
                 imgDatas = feedImgAdapter.returnList()
                 val data = result.data
-                if (data?.clipData != null) { // 사진 여러개 선택한 경우
+                if (data?.clipData != null) { // 갤러리에서 사진 선택한 경우
+                    d(TAG, "clipData != null")
                     val count = data.clipData!!.itemCount
                     if (count > 5) {
                         toast(getString(R.string.maxFivePicsWarning))
                     } else if(count + imgDatas.size > 5) {
                         toast(getString(R.string.maxFivePicsWarning))
-
                     } else {
                         for (i in 0 until count) {
                             val imageUri = data.clipData!!.getItemAt(i).uri
@@ -575,11 +576,14 @@ open class Sns : Main() {
                         feedImgAdapter.replaceList(imgDatas)
                     }
 
-                } else {
-                    val thumbnail: Bitmap? = data?.getParcelableExtra("data") // 찍은 사진 이미지 썸네일 비트맵 가져오기
+                } else if(data?.clipData == null) { // 카메라로 사진 촬영한 경우
+                    d(TAG, "photoURI : $photoURI")
+                    val imageUri = photoURI
 
-                    imgDatas.add(thumbnail!!)
+                    imgDatas.add(imageUri!!)
                     feedImgAdapter.replaceList(imgDatas)
+                } else {
+                    d(TAG, "photo error")
                 }
                 mViewPager.setCurrentItem(imgDatas.size, false)
             }
@@ -601,8 +605,15 @@ open class Sns : Main() {
         if(imgDatas.size > 5) {
             toast(getString(R.string.maxFivePicsWarning))
         } else {
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            getContent.launch(intent)
+
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            getContent.launch(intent)
+            createImageUri(System.currentTimeMillis().toString(), "image/jpeg")?.let { uri ->
+                photoURI = uri
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                getContent.launch(intent)
+            }
         }
     }
 
@@ -612,7 +623,7 @@ open class Sns : Main() {
         if(imgDatas.size > 5) {
             toast(getString(R.string.maxFivePicsWarning))
         } else {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            val intent = Intent(Intent.ACTION_PICK)
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
             val chooser = Intent.createChooser(intent, getString(R.string.maxFivePics))
@@ -633,6 +644,7 @@ open class Sns : Main() {
         var imgPath : String
         val s3url = getString(R.string.s3_bucket_route) // s3 루트 경로(위 imgPath의 앞부분)
 
+        showProgress(true)
         for(i in 0 until imgDatas.size) {
             when {
                 imgDatas[i] is Uri -> { // 갤러리에서 사진 가져온 경우
@@ -646,10 +658,10 @@ open class Sns : Main() {
                     imagesList.add("$s3url$imgPath") // 이미지 경로 추가
 
                     // s3에 저장하기
-                    runOnUiThread {
-                        showProgress(true)
-                        uploadFileToAWS(imgPath, imgFile)
-                    }
+//                    runOnUiThread {
+//                        showProgress(true)
+//                    }
+                    uploadFileToAWS(imgPath, imgFile)
                 }
                 imgDatas[i] is Bitmap -> { // 카메라로 사진 찍은 경우
                     img = saveBitmapToJpg(imgDatas[i] as Bitmap, System.currentTimeMillis().toString(), 100) // 사진 비트맵이 저장된 파일 경로 가져오기
@@ -659,10 +671,10 @@ open class Sns : Main() {
                     imagesList.add("$s3url$imgPath") // 이미지 경로 추가
 
                     // s3에 저장하기
-                    runOnUiThread {
-                        showProgress(true)
-                        uploadFileToAWS(imgPath, imgFile)
-                    }
+//                    runOnUiThread {
+//                        showProgress(true)
+//                    }
+                    uploadFileToAWS(imgPath, imgFile)
                 }
                 else -> { // 원래 있던 것 그대로 둔 경우
                     imagesList.add(imgDatas[i].toString())
@@ -676,6 +688,8 @@ open class Sns : Main() {
         }
         imgDatas.clear()
         imagesList.clear()
+        Thread.sleep(1000)
+        showProgress(false)
 //        val acceptedList = Arrays.stream(acceptedListString.substring(1, acceptedListString.length - 1).split(",").toTypedArray())
 //            .map { obj: String -> obj.trim { it <= ' ' } }.mapToInt(Integer::parseInt).toArray()
     }
@@ -687,7 +701,7 @@ open class Sns : Main() {
             imgFile, // 실제 저장될 파일
             { result ->
                 Log.d(TAG, "Successfully uploaded : $result")
-                showProgress(false)
+//                showProgress(false)
                 //                changeInfo(service, "photo", "$s3url$imgPath") // DB 내 사용자의 프로필 사진 경로 정보 변경하기
             },
             { error -> Log.d(TAG, "Upload failed", error) }

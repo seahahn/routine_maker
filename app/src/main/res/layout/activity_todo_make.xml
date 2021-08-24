@@ -171,13 +171,13 @@ tools:context=".main.TodoMakeActivity">
                     app:layout_constraintBottom_toBottomOf="parent"/>
         </LinearLayout>
 
-        <TextView
-                android:text="@string/activateAlarmGuide"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/activateAlarmGuide"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp" app:layout_constraintTop_toBottomOf="@+id/LLActivateAlarm"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"/>
+<!--        <TextView-->
+<!--                android:text="@string/activateAlarmGuide"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" android:id="@+id/activateAlarmGuide"-->
+<!--                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"-->
+<!--                android:layout_marginTop="4dp" app:layout_constraintTop_toBottomOf="@+id/LLActivateAlarm"-->
+<!--                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="32dp"/>-->
 
         <LinearLayout
                 android:id="@+id/LLstartDate"
@@ -185,7 +185,7 @@ tools:context=".main.TodoMakeActivity">
                 android:layout_width="match_parent"
                 android:background="@drawable/list_bg"
                 android:layout_height="48dp" android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/activateAlarmGuide"
+                app:layout_constraintTop_toBottomOf="@+id/LLActivateAlarm"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp">
