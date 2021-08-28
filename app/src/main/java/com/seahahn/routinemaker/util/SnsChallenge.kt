@@ -18,6 +18,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChallengeData
 import com.seahahn.routinemaker.sns.FeedData
+import com.seahahn.routinemaker.sns.challenge.ChallengeMakeActivity
 import com.seahahn.routinemaker.sns.challenge.ClgListViewModel
 import com.seahahn.routinemaker.sns.challenge.ClgTopic
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedMakeActivity
@@ -62,7 +63,7 @@ open class SnsChallenge : Sns() {
     var clgId: Int = 0 // 챌린지 고유 번호
 
     // 챌린지 만들기, 수정하기 액티비티 내의 공통 요소들 초기화하기
-    fun initClgActivity() {
+    fun initClgActivity(btmBtnId : Int) {
 
     }
 
@@ -71,7 +72,7 @@ open class SnsChallenge : Sns() {
         fabtn = findViewById(R.id.fabtn)
         fabMain = findViewById(R.id.fabMain)
         fabMain.setOnClickListener {
-//            startActivity<ChallengeMakeActivity>("groupId" to groupId, "challengeId" to challengeId) // '피드 작성' 액티비티로 이동
+            startActivity<ChallengeMakeActivity>("groupId" to groupId) // '챌린지 만들기' 액티비티로 이동
         }
     }
 
@@ -235,7 +236,7 @@ open class SnsChallenge : Sns() {
 
     // 챌린지 목록 불러오기
     fun getClgs(service: RetrofitService, groupId : Int) {
-        Logger.d(TAG, "getFeeds 변수들 : $groupId")
+        Logger.d(TAG, "getClgs 변수들 : $groupId")
         service.getClgs(groupId).enqueue(object : Callback<MutableList<ChallengeData>> {
             override fun onFailure(call: Call<MutableList<ChallengeData>>, t: Throwable) {
                 Log.d(TAG, "챌린지 목록 가져오기 실패 : {$t}")

@@ -14,6 +14,7 @@ import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.GroupData
 import com.seahahn.routinemaker.sns.GroupMemberData
+import com.seahahn.routinemaker.sns.challenge.ChallengeListActivity
 import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
 import com.seahahn.routinemaker.util.Sns
@@ -184,6 +185,12 @@ class GroupListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) 
                 }
                 R.id.memberList -> { // 그룹원 목록 보기
                     val it = Intent(context, GroupMemberListActivity::class.java)
+                    it.putExtra("groupId", groupId)
+                    context.startActivity(it)
+                    true
+                }
+                R.id.clgList -> { // 그룹 챌린지 목록 보기
+                    val it = Intent(context, ChallengeListActivity::class.java)
                     it.putExtra("groupId", groupId)
                     context.startActivity(it)
                     true

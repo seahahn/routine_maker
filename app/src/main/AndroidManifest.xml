@@ -21,6 +21,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".sns.challenge.ChallengeUpdateActivity">
+        </activity>
         <activity android:name=".sns.challenge.ChallengeMakeActivity">
         </activity>
         <activity android:name=".sns.challenge.ChallengeListActivity">
