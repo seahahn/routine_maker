@@ -15,6 +15,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import com.nhn.android.idp.common.logger.Logger
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.sns.FeedData
+import com.seahahn.routinemaker.sns.challenge.ChallengeListActivity
 import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.group.GroupApplicantListActivity
 import com.seahahn.routinemaker.sns.group.GroupInfoActivity
@@ -212,6 +213,12 @@ class GroupFeedActivity : Sns() {
                 val it = Intent(this, GroupMemberListActivity::class.java)
                 it.putExtra("groupId", groupId)
                 startActivity(it)
+            }
+            R.id.clgList -> { // 그룹 챌린지 목록 보기
+                val it = Intent(this, ChallengeListActivity::class.java)
+                it.putExtra("groupId", groupId)
+                startActivity(it)
+                true
             }
             R.id.update -> {
                 d(TAG, "그룹 정보 수정")

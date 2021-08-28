@@ -74,6 +74,7 @@
     <string name="popupMenuGroupInfo">그룹 정보 보기</string>
     <string name="popupMenuGroupChat">그룹 채팅 참여하기</string>
     <string name="popupMenuGroupMemberList">그룹원 목록 보기</string>
+    <string name="popupMenuGroupClgList">그룹 챌린지 목록 보기</string>
     <string name="popupMenuGroupUpdate">그룹 정보 수정</string>
     <string name="popupMenuGroupDelete">그룹 해체</string>
     <string name="popupMenuGroupApplicants">그룹 가입 신청자 목록 보기</string>
@@ -298,9 +299,9 @@
     <string name="clgStd100">100% 달성</string>
     <string name="clgStd70">70% 이상 달성</string>
     <string name="clgStdUnder70">70% 미만 달성</string>
-    <string name="clgStd100Result">챌린지코인 페이백 + 추가 코인 지급</string>
+    <string name="clgStd100Result">챌린지코인 페이백\n+ 추가 코인 지급</string>
     <string name="clgStd70Result">챌린지 코인 페이백</string>
-    <string name="clgStdUnder70Result">성취도에 비례하여 챌린지 코인 페이백</string>
+    <string name="clgStdUnder70Result">성취도에 비례하여\n챌린지 코인 페이백</string>
 
     <string name="topicHealth">건강</string>
     <string name="topicEmotion">정서</string>

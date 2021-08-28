@@ -41,11 +41,13 @@ class ChallengeListActivity : SnsChallenge() {
         // 레트로핏 통신 연결
         service = initRetrofit()
 
+        groupId = intent.getIntExtra("id", 0) // DB 내 그룹의 고유 번호 받기
+
         toolbarTitle = findViewById(R.id.toolbarTitle) // 상단 툴바 제목
         val titleText = getString(R.string.groupList) // 툴바 제목에 들어갈 텍스트
         initToolbar(toolbarTitle, titleText, 1) // 툴바 세팅하기
 
-        searchView = findViewById(R.id.searchView) // 그룹명 검색창
+        searchView = findViewById(R.id.searchView) // 챌린지명 검색창
         searchView.setOnQueryTextListener(QueryTextChenageListener())
 
         // 하단 BottomNavigationView 초기화
@@ -55,7 +57,7 @@ class ChallengeListActivity : SnsChallenge() {
         setBtmNavBadge()
 
         // 우측 하단의 FloatingActionButton 초기화
-        // 버튼을 누르면 그룹 찾기 또는 그룹 만들기를 할 수 있는 액티비티로 이동 가능한 FAB 2개가 나타남
+        // 버튼을 누르면 챌린지 만들기를 할 수 있는 액티비티로 이동
         initFABinSNSClg()
 
         clgList = findViewById(R.id.groupList) // 리사이클러뷰 초기화

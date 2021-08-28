@@ -10,6 +10,9 @@
         <item
                 android:id="@+id/memberList"
                 android:title="@string/popupMenuGroupMemberList"/>
+        <item
+                android:id="@+id/clgList"
+                android:title="@string/popupMenuGroupClgList"/>
     </group>
     <group android:id="@+id/group_manage">
         <item

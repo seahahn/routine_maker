@@ -13,7 +13,6 @@ import com.nhn.android.idp.common.logger.Logger.d
 import com.seahahn.routinemaker.R
 import com.seahahn.routinemaker.network.RetrofitService
 import com.seahahn.routinemaker.sns.ChallengeData
-import com.seahahn.routinemaker.sns.challengeData
 import com.seahahn.routinemaker.sns.GroupMemberData
 import com.seahahn.routinemaker.sns.chat.ChatActivity
 import com.seahahn.routinemaker.sns.newsfeed.GroupFeedActivity
@@ -73,9 +72,9 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
     inner class ItemClickListener() : View.OnClickListener {
         override fun onClick(v: View?) {
             val id = ((v!!.tag as HashMap<*, *>)["id"]).toString().toInt()
-            val it = Intent(context, ChallengeInfoActivity::class.java)
-            it.putExtra("id", id)
-            context.startActivity(it)
+//            val it = Intent(context, ChallengeInfoActivity::class.java)
+//            it.putExtra("id", id)
+//            context.startActivity(it)
         }
     }
 
@@ -132,9 +131,9 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
             return when (item.itemId) {
                 R.id.info -> { // 그룹 정보 보기
 //                    val id = ((groupItem.tag as HashMap<*, *>)["id"]).toString().toInt()
-                    val it = Intent(context, GroupInfoActivity::class.java)
-                    it.putExtra("id", groupId)
-                    context.startActivity(it)
+//                    val it = Intent(context, GroupInfoActivity::class.java)
+//                    it.putExtra("id", groupId)
+//                    context.startActivity(it)
                     true
                 }
                 R.id.chat -> { // 그룹 채팅 참여하기
@@ -147,9 +146,9 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                     true
                 }
                 R.id.memberList -> { // 그룹원 목록 보기
-                    val it = Intent(context, GroupMemberListActivity::class.java)
-                    it.putExtra("groupId", groupId)
-                    context.startActivity(it)
+//                    val it = Intent(context, GroupMemberListActivity::class.java)
+//                    it.putExtra("groupId", groupId)
+//                    context.startActivity(it)
                     true
                 }
                 R.id.update -> { // 그룹 정보 수정
@@ -160,9 +159,9 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                     } else {
                         !item.isVisible
                     }
-                    val it = Intent(context, GroupUpdateActivity::class.java)
-                    it.putExtra("id", groupId)
-                    context.startActivity(it)
+//                    val it = Intent(context, GroupUpdateActivity::class.java)
+//                    it.putExtra("id", groupId)
+//                    context.startActivity(it)
                     true
                 }
                 R.id.applicants -> { // 그룹 가입 신청자 목록 보기
@@ -173,9 +172,9 @@ class ClgListViewHolder (itemView : View) : RecyclerView.ViewHolder(itemView) {
                     } else {
                         !item.isVisible
                     }
-                    val it = Intent(context, GroupApplicantListActivity::class.java)
-                    it.putExtra("id", groupId)
-                    context.startActivity(it)
+//                    val it = Intent(context, GroupApplicantListActivity::class.java)
+//                    it.putExtra("id", groupId)
+//                    context.startActivity(it)
                     true
                 }
                 else -> false
