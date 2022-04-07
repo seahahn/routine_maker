@@ -5,7 +5,10 @@
 루틴을 만들고 실천하는 사람들의 SNS
 
 **<작품 소개 영상>** (아래 이미지 클릭 시 유튜브 동영상으로 이동)
-[![Routine Maker - 작품 소개 영상](https://user-images.githubusercontent.com/73585246/161067603-f4335081-9794-4501-913b-d23cbc279716.png)](https://youtu.be/Naww_XSVQB8)
+
+[<img src="https://user-images.githubusercontent.com/73585246/162259002-07d9e7fa-ee8d-4e31-8ce3-7d4c7b1feca8.png" width="25%"/>](https://youtu.be/Naww_XSVQB8)
+
+:back: Backend Repo : https://github.com/seahahn/rtmaker_back
 
 <br/>
 
