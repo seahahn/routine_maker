@@ -6,7 +6,7 @@
 
 **<작품 소개 영상>** (아래 이미지 클릭 시 유튜브 동영상으로 이동)
 
-[<img src="https://user-images.githubusercontent.com/73585246/162259002-07d9e7fa-ee8d-4e31-8ce3-7d4c7b1feca8.png" width="25%"/>](https://youtu.be/Naww_XSVQB8)
+[<img src="https://user-images.githubusercontent.com/73585246/162259002-07d9e7fa-ee8d-4e31-8ce3-7d4c7b1feca8.png" width="25%"/>](https://youtu.be/geaqyEtG8P8)
 
 :back: Backend Repo : https://github.com/seahahn/rtmaker_back
 
