@@ -4,11 +4,9 @@
 
 루틴을 만들고 실천하는 사람들의 SNS
 
-**<작품 소개 영상>** (아래 이미지 클릭 시 유튜브 동영상으로 이동)
+- 작품 소개 영상 : https://youtu.be/geaqyEtG8P8
 
-[<img src="https://user-images.githubusercontent.com/73585246/162259002-07d9e7fa-ee8d-4e31-8ce3-7d4c7b1feca8.png" width="25%"/>](https://youtu.be/geaqyEtG8P8)
-
-:back: Backend Repo : https://github.com/seahahn/rtmaker_back
+- Backend Repo : https://github.com/seahahn/rtmaker_back
 
 <br/>
 
@@ -23,7 +21,7 @@
 | 분류 | 기술 목록 |
 | --- | --- |
 | Mobile | Android - Kotlin 1.5.10, Gson 2.8.7, Glide 4.12.0, Retrofit 2.9.0, Room 2.4.0, FCM 22.0.0, Gradle 6.6.1 |
-| Backend | PHP 7.4.0, Apache 2.4.41 |
+| Backend | PHP 7.4.0, Apache HTTP Server 2.4.41 |
 | Database | MariaDB 10.5.7 |
 | DevOps | AWS (EC2, S3) |
 
@@ -165,3 +163,13 @@
   ![image](https://user-images.githubusercontent.com/73585246/162248950-0355b1a0-ff28-454d-b476-30a3ec208656.png)
 </details>
 </blockquote>
+
+<br/>
+
+## 5️⃣ 사이트맵
+
+<details>
+  <summary>펼쳐보기</summary><br/>
+
+  ![image](https://user-images.githubusercontent.com/73585246/162989638-524a8d93-7871-4d37-ae40-2a2282587389.png)
+</details>
